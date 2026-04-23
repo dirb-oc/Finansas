@@ -1,0 +1,85 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    width: 420px;
+    background: #0b1220;
+    border-radius: 16px;
+    padding: 20px;
+    color: #e5e7eb;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subtitle {
+    color: #9ca3af;
+    margin-bottom: 15px;
+}
+
+.toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.toggle button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 999px;
+    border: none;
+    background: #1f2937;
+    color: #9ca3af;
+    cursor: pointer;
+}
+
+.toggle .active.ingreso {
+    background: #10b981;
+    color: black;
+}
+
+.toggle .active.gasto {
+    background: #ef4444;
+    color: white;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0 12px;
+    border-radius: 8px;
+    border: 1px solid #1f2937;
+    background: #020617;
+    color: white;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel {
+    background: transparent;
+    border: 1px solid #374151;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: #d1d5db;
+}
+
+.submit {
+    background: #10b981;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: black;
+}

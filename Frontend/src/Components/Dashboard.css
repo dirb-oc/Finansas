@@ -1,0 +1,56 @@
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%;
+}
+
+/* Card base */
+.card {
+    background: var(--card);
+    border: 1px solid var(--bordes);
+    border-radius: 14px;
+    padding: 20px;
+}
+
+/* Título */
+.card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: #9ca3af;
+    margin-bottom: 10px;
+}
+
+/* Valor grande (protagonista) */
+.card p {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e5e7eb;
+}
+
+/* ===================== */
+/* 📱 RESPONSIVE */
+/* ===================== */
+
+/* Tablets */
+@media (max-width: 900px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Móviles */
+@media (max-width: 500px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        min-height: 100px;
+        padding: 16px;
+    }
+
+    .card p {
+        font-size: 24px;
+    }
+}

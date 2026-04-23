@@ -1,0 +1,56 @@
+# Entorno virtual
+venv/
+env/
+ENV/
+
+# Archivos compilados
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Variables de entorno
+.env
+
+# Base de datos (si usas SQLite)
+db.sqlite3
+
+# Archivos estáticos generados
+staticfiles/
+
+# Media (opcional, si no quieres subir archivos)
+media/
+
+# Logs
+*.log
+
+# Migraciones (opcional, depende del equipo)
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Configuración local
+local_settings.py
+
+# Dependencias
+node_modules/
+
+# Build
+dist/
+
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
+Backend/.env
+Frontend/.env
+Scripts/.env
+**/.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

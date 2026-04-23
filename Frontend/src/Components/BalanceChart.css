@@ -1,0 +1,23 @@
+.chart-card {
+    width: 100%;
+    background: linear-gradient(180deg, #0b0f17, #0a0d14);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #1f2937;
+    margin-top: 20px;
+}
+
+.chart-header {
+    margin-bottom: 10px;
+}
+
+.chart-header h3 {
+    color: #e5e7eb;
+    font-size: 18px;
+    margin: 0;
+}
+
+.chart-header span {
+    color: #9ca3af;
+    font-size: 14px;
+}

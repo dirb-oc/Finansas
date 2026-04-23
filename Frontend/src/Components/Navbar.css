@@ -1,0 +1,18 @@
+.navbar {
+    display: flex;
+    gap: 12px;
+    padding: 22px;
+    background: var(--card);
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #ccc;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.navbar a:hover {
+    color: white;
+}

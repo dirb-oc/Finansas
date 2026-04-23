@@ -1,0 +1,41 @@
+.tooltip-box {
+  background: #020617;
+  border: 1px solid #1e293b;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+}
+
+.tooltip-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.tooltip-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.green {
+  background: #10b981;
+}
+
+.red {
+  background: #ef4444;
+}
+
+.ingreso {
+  color: #10b981;
+}
+
+.gasto {
+  color: #ef4444;
+}

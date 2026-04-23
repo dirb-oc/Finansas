@@ -1,0 +1,32 @@
+:root {
+    --card: oklch(0.16 0.015 260);
+    --cardH: #12141b;
+    --bordes: #1f2937;
+    --title: #e5e7eb;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===== BASE ===== */
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: oklch(0.12 0.015 260);
+}
+
+.General {
+    margin: 40px 18%;
+}
+
+.General h1{
+    color: var(--title);
+}
+
+@media (max-width: 500px) {
+    .General{
+        margin: 20px 10%;
+    }
+}
