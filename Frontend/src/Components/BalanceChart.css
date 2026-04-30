@@ -1,23 +1,25 @@
 .chart-card {
     width: 100%;
-    background: linear-gradient(180deg, #0b0f17, #0a0d14);
-    border-radius: 16px;
-    padding: 20px;
-    border: 1px solid #1f2937;
-    margin-top: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-top: 24px;
+    transition: var(--transition);
 }
 
 .chart-header {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 }
 
 .chart-header h3 {
-    color: #e5e7eb;
-    font-size: 18px;
+    color: var(--text-primary);
+    font-size: 1.1rem;
     margin: 0;
+    font-weight: 600;
 }
 
 .chart-header span {
-    color: #9ca3af;
-    font-size: 14px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }

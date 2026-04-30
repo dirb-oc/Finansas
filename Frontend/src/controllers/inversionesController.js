@@ -4,6 +4,10 @@ export async function getInversiones() {
   return await apiGet("/inversiones/");
 }
 
+export async function getResumenInversiones() {
+  return await apiGet("/resumen-inv/");
+}
+
 export async function createInversion(data) {
   return apiPost("/inversiones/", data);
 }

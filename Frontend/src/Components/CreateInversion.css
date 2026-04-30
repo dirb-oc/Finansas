@@ -1,56 +1,179 @@
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 999;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+    padding: 16px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modal {
-    background: #111;
-    padding: 25px;
-    border-radius: 12px;
-    width: 400px;
-    color: #fff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background: var(--bg-secondary);
+    padding: 28px;
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .modal h2 {
-    margin-bottom: 15px;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+}
+
+.modal label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
 .modal input,
 .modal select {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 12px;
-    background: #1e1e1e;
-    border: 1px solid #333;
-    color: #fff;
-    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.modal input:focus,
+.modal select:focus {
+    outline: none;
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.modal input::placeholder {
+    color: var(--text-muted);
 }
 
 .modal-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
 }
 
 .modal button {
-    padding: 10px;
+    padding: 12px 24px;
     border: none;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: var(--transition);
 }
 
 .modal button[type="submit"] {
-    background: #22c55e;
+    background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+    color: white;
+}
+
+.modal button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
 }
 
 .modal button[type="button"] {
-    background: #ef4444;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.modal button[type="button"]:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+}
+
+.inversion-info {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.inversion-info .inv-name {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.inversion-info .inv-monto {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.inversion-info .inv-monto span {
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
+.btn-cancel {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.btn-cancel:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+}
+
+@media (max-width: 500px) {
+    .modal {
+        padding: 20px;
+        max-width: 100%;
+    }
+    
+    .modal h2 {
+        font-size: 1.1rem;
+    }
+    
+    .modal input,
+    .modal select {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+    
+    .modal-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .modal button {
+        width: 100%;
+        padding: 14px;
+    }
 }

@@ -11,42 +11,52 @@ export default function CreateTransactionModal({ open, onClose, cuentaId, onCrea
     const [tipoId, setTipoId] = useState("");
     const [monto, setMonto] = useState("");
 
-    // cargar tipos desde controller
-    useEffect(() => { if (!open) return; getTipos().then(setTipos); }, [open]);
-
-    // filtrar según ingreso/gasto
-    const tiposFiltrados = tipos.filter(t => t.tipo === tipo);
-
-    // ESC
     useEffect(() => {
-        const handleEsc = (e) => e.key === "Escape" && onClose();
-        if (open) window.addEventListener("keydown", handleEsc);
+        if (!open) return;
+        getTipos().then(setTipos);
+    }, [open]);
+
+    useEffect(() => {
+        if (!open) return;
+        const handleEsc = (e) => {
+            if (e.key === "Escape") onClose();
+        };
+        window.addEventListener("keydown", handleEsc);
         return () => window.removeEventListener("keydown", handleEsc);
     }, [open, onClose]);
 
+    const tiposFiltrados = tipos.filter(t => t.tipo === tipo);
+
     if (!open) return null;
+
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
 
     const handleSubmit = async () => {
         if (!tipoId || !monto) return;
 
         await createMovimiento({
-            cuenta: cuentaId,   // 🔥 clave
+            cuenta: cuentaId,
             tipo: tipoId,
             descripcion,
-            monto: parseFloat(monto)
+            monto: parseFloat(monto.replace(/[$,.]/g, ""))
         });
 
-        onCreated && onCreated(); // refrescar lista
+        onCreated && onCreated();
         onClose();
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-overlay" onClick={handleOverlayClick}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2>Nuevo Movimiento</h2>
+                </div>
 
-                <div className="modal-header"><h2>Add Transaction</h2></div>
-
-                <p className="subtitle">Record a new income or expense</p>
+                <p className="subtitle">Registrar un nuevo ingreso o gasto</p>
 
                 <div className="toggle">
                     <button
@@ -56,7 +66,7 @@ export default function CreateTransactionModal({ open, onClose, cuentaId, onCrea
                             setTipoId("");
                         }}
                     >
-                        ↑ Income
+                        ↑ Ingreso
                     </button>
 
                     <button
@@ -66,23 +76,23 @@ export default function CreateTransactionModal({ open, onClose, cuentaId, onCrea
                             setTipoId("");
                         }}
                     >
-                        ↓ Expense
+                        ↓ Gasto
                     </button>
                 </div>
 
-                <label>Description</label>
+                <label>Descripción</label>
                 <input
                     value={descripcion}
                     onChange={(e) => setDescripcion(e.target.value)}
+                    placeholder="Descripción"
                 />
 
-                {/* select dinamico */}
-                <label>Category</label>
+                <label>Categoría</label>
                 <select
                     value={tipoId}
                     onChange={(e) => setTipoId(e.target.value)}
                 >
-                    <option value="">Select</option>
+                    <option value="">Seleccionar</option>
                     {tiposFiltrados.map(t => (
                         <option key={t.id} value={t.id}>
                             {t.nombre}
@@ -90,20 +100,31 @@ export default function CreateTransactionModal({ open, onClose, cuentaId, onCrea
                     ))}
                 </select>
 
-                {/* monto */}
-                <label>Amount</label>
+                <label>Monto</label>
                 <input
-                    type="number"
+                    type="text"
                     value={monto}
-                    onChange={(e) => setMonto(e.target.value)}
+                    onChange={(e) => {
+                        const val = e.target.value.replace(/[^\d]/g, "");
+                        setMonto(val);
+                    }}
+                    onBlur={(e) => {
+                        const num = parseFloat(e.target.value.replace(/[^\d]/g, ""));
+                        if (num) {
+                            setMonto(num.toString());
+                        }
+                    }}
+                    placeholder="0"
                 />
 
                 <div className="actions">
+                    <button className="cancel" onClick={onClose}>
+                        Cancelar
+                    </button>
                     <button className="submit" onClick={handleSubmit}>
-                        Add {tipo === "ingreso" ? "Income" : "Expense"}
+                        Agregar {tipo === "ingreso" ? "Ingreso" : "Gasto"}
                     </button>
                 </div>
-
             </div>
         </div>
     );

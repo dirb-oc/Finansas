@@ -1,131 +1,191 @@
-/* HEADER */
-.accounts-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.accounts-header h2 {
-    font-size: 22px;
-    color: #f9fafb;
-}
-
 .total {
-    color: #9ca3af;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    margin-top: 4px;
 }
 
 .total span {
-    color: #10b981;
+    color: var(--accent-green);
     font-weight: 700;
 }
 
-/* FORM */
+.btn-primary {
+    background: var(--accent-green);
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #12141b;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}
+
 .cuentas-form {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .cuentas-form input {
-    padding: 8px 12px;
-    background: #020617;
-    border: 1px solid #1f2937;
-    border-radius: 10px;
-    color: white;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.cuentas-form input:focus {
+    outline: none;
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
 }
 
 .cuentas-form button {
-    background: #10b981;
+    background: var(--accent-green);
     border: none;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 18px;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
     cursor: pointer;
+    transition: var(--transition);
 }
 
-/* ROW */
+.cuentas-list {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
 .cuenta-row {
     display: grid;
-    grid-template-columns: 1fr 140px 160px;
+    grid-template-columns: 1fr 150px 180px;
     align-items: center;
-    padding: 22px;
-    border: 1px solid #1f2937;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
     cursor: pointer;
-    transition: 0.2s;
-    gap: 35px;
-}
-
-.cuenta-row:first-child {
-    border-radius: 20px 20px 0 0;
+    transition: var(--transition);
+    gap: 20px;
 }
 
 .cuenta-row:last-child {
-    border-radius: 0 0 20px 20px;
+    border-bottom: none;
 }
 
 .cuenta-row:hover {
-    background: rgba(255,255,255,0.02);
+    background: var(--bg-card-hover);
 }
 
-/* LEFT */
+.cuenta-row:first-child {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.cuenta-row:last-child {
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
 .cuenta-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.icono {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--accent-green-dim) 0%, #047857 100%);
+    color: #6ee7b7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    font-size: 1.25rem;
+}
+
+.nombre {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.balance {
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+    font-size: 1rem;
+}
+
+.progress-container {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.icono {
-    width: 42px;
-    height: 42px;
-    background: #064e3b;
-    color: #34d399;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-/* TEXT */
-.nombre {
-    font-weight: 600;
-    color: #f9fafb;
-}
-
-.sub {
-    font-size: 13px;
-    color: #6b7280;
-}
-
-/* BALANCE */
-.balance {
-    font-weight: 600;
-    color: #e5e7eb;
-    text-align: right;
-}
-
-/* PROGRESS */
-.progress-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
 .barra {
     flex: 1;
-    height: 6px;
-    background: #111827;
-    border-radius: 4px;
+    height: 8px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-full);
     overflow: hidden;
 }
 
 .barra-fill {
     height: 100%;
-    background: linear-gradient(90deg, #10b981, #34d399);
+    background: linear-gradient(90deg, var(--accent-green) 0%, #34d399 100%);
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease;
 }
 
 .progress-container span {
-    font-size: 13px;
-    color: #9ca3af;
-    min-width: 40px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-width: 42px;
     text-align: right;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .cuenta-row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+            "icon nombre"
+            "icon balance"
+            "progress progress";
+        gap: 6px 12px;
+        align-items: center;
+    }
+
+    .cuenta-info {
+        display: contents; /* clave para usar grid areas */
+    }
+
+    .icono {
+        grid-area: icon;
+    }
+
+    .nombre {
+        grid-area: nombre;
+        font-weight: 600;
+    }
+
+    .balance {
+        grid-area: balance;
+        text-align: left;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .progress-container {
+        grid-area: progress;
+        padding-left: 0; /* eliminamos el hack */
+    }
 }

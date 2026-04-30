@@ -1,6 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, } from "recharts";
 import formatCOP from "../Services/utils";
-
 import './BalanceChart.css'
 
 export default function BalanceChart({ data }) {

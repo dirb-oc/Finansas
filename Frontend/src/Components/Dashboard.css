@@ -3,54 +3,71 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     width: 100%;
+    margin-bottom: 32px;
 }
 
-/* Card base */
 .card {
-    background: var(--card);
-    border: 1px solid var(--bordes);
-    border-radius: 14px;
-    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: var(--transition);
 }
 
-/* Título */
+.card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
 .card h3 {
-    font-size: 14px;
+    font-size: 0.85rem;
     font-weight: 500;
-    color: #9ca3af;
-    margin-bottom: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-/* Valor grande (protagonista) */
 .card p {
-    font-size: 28px;
+    font-size: 1.75rem;
     font-weight: 700;
-    color: #e5e7eb;
+    color: var(--text-primary);
 }
 
-/* ===================== */
-/* 📱 RESPONSIVE */
-/* ===================== */
+.card.disponible p { color: var(--accent-green); }
+.card.invertido p { color: var(--accent-yellow); }
+.card.total p { color: var(--accent-blue); }
+.card.ingresos p { color: var(--accent-green); }
+.card.gastos p { color: var(--accent-red); }
 
-/* Tablets */
+.dashboard-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 28px;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 @media (max-width: 900px) {
     .cards {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Móviles */
 @media (max-width: 500px) {
     .cards {
         grid-template-columns: 1fr;
     }
-
+    
     .card {
-        min-height: 100px;
-        padding: 16px;
+        padding: 20px;
     }
-
+    
     .card p {
-        font-size: 24px;
+        font-size: 1.5rem;
     }
 }

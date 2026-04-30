@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { getStats } from "../controllers/statsController";
 import StatCard from "../Components/StatCard";
 import BalanceChart from "../Components/BalanceChart";
-import "../Components/Dashboard.css";
 import CashFlowChart from "../Components/CashFlowChart";
+import "../Components/Dashboard.css";
 
 export default function Dashboard() {
-
     const [stats, setStats] = useState(null);
-
+    
     useEffect(() => { getStats().then(setStats); }, []);
 
     if (!stats) return <p className="loading">Cargando...</p>;
@@ -35,8 +34,7 @@ export default function Dashboard() {
                 ))}
             </div>
             <BalanceChart data={stats.patrimonio_6_meses} />
-            <CashFlowChart data={stats.flujo_6_meses} />;
-
+            <CashFlowChart data={stats.flujo_6_meses} />
         </div>
     );
 }

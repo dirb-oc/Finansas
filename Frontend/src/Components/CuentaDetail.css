@@ -1,108 +1,104 @@
-/* HEADER */
-.cuenta-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.cuenta-header h1 {
-    color: #f9fafb;
-}
-
-/* BOTÓN */
-.btn-primary {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s;
-}
-
-.btn-primary:hover {
-    background: #1d4ed8;
-}
-
-/* STATS */
 .cuenta-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
 }
 
 .stat {
-    background: #111827;
-    padding: 20px;
-    border-radius: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+}
+
+.stat:hover {
+    background: var(--bg-card-hover);
 }
 
 .stat span {
-    color: #9ca3af;
-    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
 }
 
 .stat h2 {
-    color: #f9fafb;
-    font-size: 1.8rem;
-    margin-top: 5px;
+    color: var(--text-primary);
+    font-size: 1.75rem;
+    margin-top: 8px;
+    font-weight: 700;
 }
 
-/* COLORES */
 .stat.saldo {
-    border-left: 5px solid #3b82f6;
+    border-left: 4px solid #3b82f6;
 }
 
 .stat.ingreso {
-    border-left: 5px solid #22c55e;
+    border-left: 4px solid #10b981;
 }
 
 .stat.gasto {
-    border-left: 5px solid #ef4444;
+    border-left: 4px solid #ef4444;
 }
 
-/* TABLA */
 .table-container h2 {
-    color: #e5e7eb;
-    margin-bottom: 10px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-size: 1.25rem;
 }
 
 .mov-table {
     width: 100%;
     border-collapse: collapse;
-    background: #111827;
-    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     overflow: hidden;
 }
 
 .mov-table th {
     text-align: left;
-    padding: 12px;
-    background: #1f2937;
-    color: #9ca3af;
+    padding: 16px 20px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+}
+
+.mov-table th.text-right {
+    text-align: right;
 }
 
 .mov-table td {
-    padding: 12px;
-    border-bottom: 1px solid #1f2937;
-    color: #e5e7eb;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
 }
 
-.mov-table tr:hover {
-    background: #1f2937;
+.mov-table td.text-right {
+    text-align: right;
 }
 
-/* BADGES */
-.badge {
-    font-size: 1.2rem;
+.mov-table td:last-child {
+    border-bottom: none;
 }
 
-/* MONTO */
+.mov-table tbody tr {
+    transition: var(--transition);
+}
+
+.mov-table tbody tr:hover {
+    background: var(--bg-card-hover);
+}
+
 .monto.ingreso {
-    color: #22c55e;
+    color: #10b981;
     font-weight: 600;
 }
 
@@ -116,28 +112,26 @@
     font-weight: 600;
 }
 
-/* LOADING */
 .loading {
     text-align: center;
     margin-top: 50px;
-    color: #9ca3af;
+    color: var(--text-secondary);
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
     .cuenta-stats {
         grid-template-columns: 1fr;
     }
-
+    
     .cuenta-header {
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
         align-items: flex-start;
     }
-
+    
     .mov-table th,
     .mov-table td {
-        font-size: 0.9rem;
-        padding: 10px;
+        font-size: 0.85rem;
+        padding: 12px;
     }
 }

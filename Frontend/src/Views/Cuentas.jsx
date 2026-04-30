@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCuentas } from "../controllers/cuentasController";
-import formatCOP from "../Services/utils";
+import { Landmark } from "lucide-react";
 import CreateCuentaModal from "../Components/CreateCuentaModal";
+import formatCOP from "../Services/utils";
 import "../Components/Cuentas.css";
 
 export default function Cuentas() {
@@ -21,20 +22,18 @@ export default function Cuentas() {
 
     return (
         <div className="General">
+            <h2>Cuentas</h2>
 
-            <div className="accounts-header">
-                <div>
-                    <h2>Cuentas</h2>
-                    <p className="total">
-                        Total: <span>{formatCOP(total)}</span>
-                    </p>
-                </div>
+            <div className="header">
+                <p className="total">
+                    Total: <span>{formatCOP(total)}</span>
+                </p>
 
                 <button
                     className="btn-primary"
                     onClick={() => setOpenModal(true)}
                 >
-                    + Nueva cuenta
+                    Nueva cuenta
                 </button>
             </div>
 
@@ -53,7 +52,7 @@ export default function Cuentas() {
                         onClick={() => navigate(`/cuentas/${c.id}`)}
                     >
                         <div className="cuenta-info">
-                            <div className="icono">🏦</div>
+                            <div className="icono"><Landmark size={20} /></div>
                             <div className="nombre">{c.nombre}</div>
                         </div>
 

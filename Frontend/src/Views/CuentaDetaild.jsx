@@ -11,6 +11,15 @@ export default function CuentaDetail() {
     const [openModal, setOpenModal] = useState(false);
     const [refresh, setRefresh] = useState(false);
 
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString("es-CO", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        }).replace(/\./g, "");
+    };
+
     useEffect(() => {
         getCuentaById(id).then(setCuenta);
     }, [id, refresh]);
@@ -19,13 +28,13 @@ export default function CuentaDetail() {
 
     return (
         <div className="General">
-            <div className="cuenta-header">
+            <div className="header">
                 <h1>{cuenta.nombre}</h1>
                 <button
                     className="btn-primary"
                     onClick={() => setOpenModal(true)}
                 >
-                    + Crear movimiento
+                    Crear movimiento
                 </button>
             </div>
 
@@ -62,9 +71,8 @@ export default function CuentaDetail() {
                     <thead>
                         <tr>
                             <th>Tipo</th>
-                            <th></th>
-                            <th>Monto</th>
-                            <th>Fecha</th>
+                            <th className="text-right">Monto</th>
+                            <th className="text-right">Fecha</th>
                         </tr>
                     </thead>
 
@@ -73,19 +81,11 @@ export default function CuentaDetail() {
                             <tr key={mov.id}>
                                 <td>{mov.tipo_nombre}</td>
 
-                                <td>
-                                    <span className={`badge ${mov.tipo_base}`}>
-                                        {mov.tipo_base === "ingreso" && "🟢"}
-                                        {mov.tipo_base === "gasto" && "🔴"}
-                                        {mov.tipo_base === "inicial" && "🔵"}
-                                    </span>
-                                </td>
-
-                                <td className={`monto ${mov.tipo_base}`}>
+                                <td className={`monto ${mov.tipo_base} text-right`}>
                                     {formatCOP(mov.monto)}
                                 </td>
 
-                                <td>{mov.fecha}</td>
+                                <td className="text-right">{formatDate(mov.fecha)}</td>
                             </tr>
                         ))}
                     </tbody>

@@ -1,12 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip, } from "recharts";
+import formatCOP from "../Services/utils"
 import "./CashFlowChart.css";
-
-const formatCOP = (value) =>
-    new Intl.NumberFormat("es-CO", {
-        style: "currency",
-        currency: "COP",
-        maximumFractionDigits: 0,
-    }).format(value);
 
 // 🧠 FIX MES
 const getMonthName = (mesStr) => {
@@ -14,6 +8,12 @@ const getMonthName = (mesStr) => {
     const date = new Date(Number(year), Number(month) - 1, 1);
 
     return date.toLocaleString("es-CO", { month: "short" });
+};
+
+const formatCompactCOP = (value) => {
+    if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+    if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
+    return formatCOP(value);
 };
 
 // 🎯 TOOLTIP CUSTOM
@@ -59,7 +59,7 @@ export default function CashFlowChart({ data }) {
                     <CartesianGrid strokeDasharray="4 4" stroke="#334155" />
 
                     <XAxis dataKey="mes" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <YAxis stroke="#94a3b8" tickFormatter={formatCompactCOP} />
 
                     <Tooltip content={<CustomTooltip />} />
 

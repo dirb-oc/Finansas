@@ -1,41 +1,67 @@
+.cashflow-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-top: 24px;
+}
+
+.cashflow-header {
+    margin-bottom: 16px;
+}
+
+.cashflow-header h2 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.cashflow-header span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
 .tooltip-box {
-  background: #020617;
-  border: 1px solid #1e293b;
-  padding: 10px;
-  border-radius: 10px;
-  color: white;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-md);
 }
 
 .tooltip-title {
-  font-weight: bold;
-  margin-bottom: 6px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
 }
 
 .tooltip-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    margin-top: 4px;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
 }
 
-.green {
-  background: #10b981;
+.dot.green {
+    background: var(--accent-green);
 }
 
-.red {
-  background: #ef4444;
+.dot.red {
+    background: var(--accent-red);
 }
 
 .ingreso {
-  color: #10b981;
+    color: var(--accent-green);
 }
 
 .gasto {
-  color: #ef4444;
+    color: var(--accent-red);
 }

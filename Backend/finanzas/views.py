@@ -1,16 +1,15 @@
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from django.db import transaction
-from .models import Cuenta, TipoMovimiento, Movimiento, Inversion
 from .serializers import CuentaSerializer, TipoMovimientoSerializer, MovimientoSerializer, FinalizarInversionSerializer, InversionSerializer, CuentaDetailSerializer
-from rest_framework.decorators import api_view
-from django.db.models import Sum, F, Q
-from django.utils import timezone
+from .models import Cuenta, TipoMovimiento, Movimiento, Inversion
 from django.db.models.functions import TruncMonth
-from datetime import timedelta
-
 from dateutil.relativedelta import relativedelta
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from django.utils.timezone import now
+from django.db.models import Sum, F
+from rest_framework import viewsets
+from django.db import transaction
+from django.utils import timezone
 
 class CuentaViewSet(viewsets.ModelViewSet):
     queryset = Cuenta.objects.all()
@@ -59,12 +58,10 @@ class TipoMovimientoViewSet(viewsets.ModelViewSet):
     queryset = TipoMovimiento.objects.all()
     serializer_class = TipoMovimientoSerializer
 
-
 class MovimientoViewSet(viewsets.ModelViewSet):
 
     queryset = Movimiento.objects.all()
     serializer_class = MovimientoSerializer
-
 
 class InversionViewSet(viewsets.ModelViewSet):
 
@@ -141,7 +138,6 @@ def stats(request):
     # 💎 Total
     total = disponible + invertido
 
-    # 🚫 Exclusiones
     EXCLUDE_NAMES = ["Inicio", "Transferencia", "Inversión", "Reintegro inversión"]
 
     # 📈 Ingresos del mes
@@ -171,7 +167,7 @@ def stats(request):
         total=Sum(F("monto_final") - F("monto_inicial"))
     )["total"] or 0
 
-    EXCLUDE_NAMES = ["Inicio", "Transferencia", "Inversión"]
+    EXCLUDE_NAMES = ["Inicio", "Transferencia", "Inversión", "Reintegro inversión"]
 
     hoy = timezone.now()
     hace_6_meses = hoy - relativedelta(months=5)
@@ -227,48 +223,44 @@ def stats(request):
     resultado = sorted(data.values(), key=lambda x: x["mes"])
 
 
+    # 📆 Últimos 6 meses
+    today = now().replace(day=1)
+    months = []
 
-    meses = []
-    for i in range(6):
-        fecha = hoy - relativedelta(months=i)
-        inicio = fecha.replace(day=1)
-        fin = (inicio + relativedelta(months=1)) - timedelta(seconds=1)
-        meses.append((inicio, fin))
+    for i in range(5, -1, -1):
+        m = today - relativedelta(months=i)
+        months.append(m)
 
+    meses = months
     patrimonio_mensual = []
 
-    for inicio, fin in reversed(meses):
+    for mes in meses:
+        fin_mes = (mes + relativedelta(months=1)) - relativedelta(seconds=1)
 
-        # 💰 Disponible hasta ese mes
         ingresos = Movimiento.objects.filter(
-            tipo__tipo="ingreso",
-            fecha__lte=fin
+            fecha__lte=fin_mes,
+            tipo__tipo="ingreso"
+        ).exclude(
+            tipo_id=11  # reintegro ❌
         ).aggregate(total=Sum("monto"))["total"] or 0
 
         gastos = Movimiento.objects.filter(
-            tipo__tipo="gasto",
-            fecha__lte=fin
+            fecha__lte=fin_mes,
+            tipo__tipo="gasto"
+        ).exclude(
+            tipo_id=2  # inversión ❌
         ).aggregate(total=Sum("monto"))["total"] or 0
 
         inicial = Movimiento.objects.filter(
-            tipo__tipo="inicial",
-            fecha__lte=fin
+            fecha__lte=fin_mes,
+            tipo_id=1
         ).aggregate(total=Sum("monto"))["total"] or 0
 
-        disponible_mes = ingresos + inicial - gastos
-
-        # 🔒 Inversiones activas en ese mes
-        invertido_mes = Inversion.objects.filter(
-            fecha_inicio__lte=fin
-        ).filter(
-            Q(estado="activa") | Q(fecha_fin__gte=inicio)
-        ).aggregate(total=Sum("monto_inicial"))["total"] or 0
-
-        total_mes = disponible_mes + invertido_mes
+        saldo_cuentas = ingresos + inicial - gastos
 
         patrimonio_mensual.append({
-            "mes": inicio.strftime("%Y-%m"),
-            "total": float(total_mes)
+            "mes": mes.strftime("%Y-%m"),
+            "total": float(saldo_cuentas)
         })
 
     return Response({
@@ -280,4 +272,57 @@ def stats(request):
         "ganancia_inversiones": ganancia,
         "flujo_6_meses": resultado,
         "patrimonio_6_meses": patrimonio_mensual
+    })
+
+@api_view(["GET"])
+def resumen_inversiones(request):
+
+    # -------------------------
+    # TOTAL DINERO (PATRIMONIO)
+    # -------------------------
+    ingresos = Movimiento.objects.filter(
+        tipo__tipo="ingreso"
+    ).exclude(
+        tipo_id=11  # reintegro ❌
+    ).aggregate(total=Sum("monto"))["total"] or 0
+
+    gastos = Movimiento.objects.filter(
+        tipo__tipo="gasto"
+    ).exclude(
+        tipo_id=2  # inversión ❌
+    ).aggregate(total=Sum("monto"))["total"] or 0
+
+    inicial = Movimiento.objects.filter(
+        tipo_id=1
+    ).aggregate(total=Sum("monto"))["total"] or 0
+
+    total = ingresos + inicial - gastos
+
+    # -------------------------
+    # GANANCIA INVERSIONES
+    # -------------------------
+    retornos = Movimiento.objects.filter(
+        tipo_id=3  # retorno inversión ✅
+    ).aggregate(total=Sum("monto"))["total"] or 0
+
+    # -------------------------
+    # DINERO INVERTIDO ACTUAL
+    # -------------------------
+    invertido = Inversion.objects.filter(
+        estado="activa"
+    ).aggregate(total=Sum("monto_inicial"))["total"] or 0
+
+    # -------------------------
+    # PORCENTAJE
+    # -------------------------
+    if total > 0:
+        porcentaje = round((retornos / total) * 100, 1)
+    else:
+        porcentaje = 0.0
+
+    return Response({
+        "total": float(total),
+        "invertido": float(invertido),
+        "ganancia_inversiones": float(retornos),
+        "porcentaje": porcentaje
     })

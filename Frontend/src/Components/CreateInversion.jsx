@@ -3,13 +3,20 @@ import { createInversion } from "../controllers/inversionesController";
 import { getCuentas } from "../controllers/cuentasController";
 import "./CreateInversion.css";
 
+const formatCOP = (value) =>
+    new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        maximumFractionDigits: 0,
+    }).format(value || 0);
+
 export default function CreateInversion({ onClose, onCreated }) {
     const [form, setForm] = useState({
         nombre: "",
         tipo: "",
         monto_inicial: "",
         cuenta: "",
-        fecha_fin : "",
+        fecha_fin: "",
     });
 
     const [cuentas, setCuentas] = useState([]);
@@ -17,6 +24,14 @@ export default function CreateInversion({ onClose, onCreated }) {
     useEffect(() => {
         getCuentas().then(setCuentas);
     }, []);
+
+    useEffect(() => {
+        const handleEsc = (e) => {
+            if (e.key === "Escape") onClose();
+        };
+        window.addEventListener("keydown", handleEsc);
+        return () => window.removeEventListener("keydown", handleEsc);
+    }, [onClose]);
 
     const handleChange = (e) => {
         setForm({
@@ -31,25 +46,34 @@ export default function CreateInversion({ onClose, onCreated }) {
         try {
             await createInversion({
                 ...form,
-                monto_inicial: parseFloat(form.monto_inicial),
+                monto_inicial: parseFloat(form.monto_inicial.replace(/[$,.]/g, "")),
             });
 
-            onCreated(); // refrescar lista
-            onClose();   // cerrar modal
+            onCreated();
+            onClose();
         } catch (err) {
             console.error(err);
             alert("Error creando inversión");
         }
     };
 
-    return (
-        <div className="modal-overlay">
-            <div className="modal">
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
 
+    const parseMonto = (value) => {
+        const num = value.replace(/[$,.]/g, "");
+        return num ? parseFloat(num) : "";
+    };
+
+    return (
+        <div className="modal-overlay" onClick={handleOverlayClick}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <h2>Nueva Inversión</h2>
 
                 <form onSubmit={handleSubmit}>
-
                     <input
                         name="nombre"
                         placeholder="Nombre"
@@ -72,11 +96,20 @@ export default function CreateInversion({ onClose, onCreated }) {
                     </select>
 
                     <input
-                        type="number"
+                        type="text"
                         name="monto_inicial"
-                        placeholder="Monto inicial"
+                        placeholder={`Monto inicial (${formatCOP(0)})`}
                         value={form.monto_inicial}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                            const val = e.target.value.replace(/[^\d]/g, "");
+                            setForm({ ...form, monto_inicial: val });
+                        }}
+                        onBlur={(e) => {
+                            const num = parseFloat(e.target.value.replace(/[^\d]/g, ""));
+                            if (num) {
+                                setForm({ ...form, monto_inicial: num.toString() });
+                            }
+                        }}
                         required
                     />
 
@@ -94,11 +127,11 @@ export default function CreateInversion({ onClose, onCreated }) {
                         ))}
                     </select>
                     <input
-  type="date"
-  name="fecha_fin"
-  value={form.fecha_fin || ""}
-  onChange={handleChange}
-/>
+                        type="date"
+                        name="fecha_fin"
+                        value={form.fecha_fin || ""}
+                        onChange={handleChange}
+                    />
 
                     <div className="modal-actions">
                         <button type="submit">Crear</button>
@@ -106,7 +139,6 @@ export default function CreateInversion({ onClose, onCreated }) {
                             Cancelar
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>
