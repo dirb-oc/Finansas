@@ -4,6 +4,11 @@ import './BalanceChart.css'
 
 export default function BalanceChart({ data }) {
 
+    const values = data.map(d => d.total);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const padding = Math.max((max - min) * 0.2, 5000);
+
     const formatMonth = (mes) => {
         const [year, month] = mes.split("-");
         const date = new Date(year, month - 1); // 👈 clave
@@ -38,7 +43,7 @@ export default function BalanceChart({ data }) {
         <div className="chart-card">
             <div className="chart-header">
                 <h3>Evolucion de Patrimonio</h3>
-                <span>Last 6 months overview</span>
+                <span>Ultimos 6 meses</span>
             </div>
 
             <ResponsiveContainer width="100%" height={300}>
@@ -50,11 +55,17 @@ export default function BalanceChart({ data }) {
                         </linearGradient>
                     </defs>
 
-                    <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#363636" vertical={false} />
 
                     <XAxis dataKey="mes" tickFormatter={formatMonth} stroke="#aaa" />
 
-                    <YAxis tickFormatter={formatMoney} stroke="#aaa"
+                    <YAxis
+                        domain={[
+                            Math.max(0, min - padding), // 👈 evita negativos
+                            max + padding
+                        ]}
+                        tickFormatter={formatMoney}
+                        stroke="#aaa"
                     />
 
                     <Tooltip content={<CustomTooltip />} />

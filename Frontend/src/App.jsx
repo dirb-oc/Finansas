@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./Components/Navbar";
 
 import CuentaDetail from "./Views/CuentaDetaild";
 import Inversiones from "./Views/Inversiones";
@@ -11,7 +10,6 @@ import './App.css';
 function App() {
     return (
         <BrowserRouter>
-            <Navbar />
             <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/cuentas" element={<Cuentas />} />

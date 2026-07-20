@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTipos } from "../controllers/tiposController";
 import { createMovimiento } from "../controllers/movimientosController";
+import CustomSelect from "../Components/CustomSelect";
 import "./CreateTransactionModal.css";
 
 export default function CreateTransactionModal({ open, onClose, cuentaId, onCreated }) {
@@ -42,11 +43,21 @@ export default function CreateTransactionModal({ open, onClose, cuentaId, onCrea
             cuenta: cuentaId,
             tipo: tipoId,
             descripcion,
-            monto: parseFloat(monto.replace(/[$,.]/g, ""))
+            monto: parseFloat(monto)
         });
 
         onCreated && onCreated();
         onClose();
+    };
+
+    const formatCOP = (value) => {
+        if (!value) return "";
+
+        return new Intl.NumberFormat("es-CO", {
+            style: "currency",
+            currency: "COP",
+            minimumFractionDigits: 0,
+        }).format(value);
     };
 
     return (
@@ -88,41 +99,29 @@ export default function CreateTransactionModal({ open, onClose, cuentaId, onCrea
                 />
 
                 <label>Categoría</label>
-                <select
+                <CustomSelect
                     value={tipoId}
-                    onChange={(e) => setTipoId(e.target.value)}
+                    onChange={setTipoId}
+                    options={tiposFiltrados}
                 >
-                    <option value="">Seleccionar</option>
-                    {tiposFiltrados.map(t => (
-                        <option key={t.id} value={t.id}>
-                            {t.nombre}
-                        </option>
-                    ))}
-                </select>
+                </CustomSelect>
 
                 <label>Monto</label>
                 <input
                     type="text"
-                    value={monto}
+                    value={formatCOP(monto)}
                     onChange={(e) => {
-                        const val = e.target.value.replace(/[^\d]/g, "");
-                        setMonto(val);
+                        // elimina todo excepto números
+                        const rawValue = e.target.value.replace(/\D/g, "");
+
+                        setMonto(rawValue);
                     }}
-                    onBlur={(e) => {
-                        const num = parseFloat(e.target.value.replace(/[^\d]/g, ""));
-                        if (num) {
-                            setMonto(num.toString());
-                        }
-                    }}
-                    placeholder="0"
+                    placeholder="$ 0"
                 />
 
                 <div className="actions">
-                    <button className="cancel" onClick={onClose}>
-                        Cancelar
-                    </button>
-                    <button className="submit" onClick={handleSubmit}>
-                        Agregar {tipo === "ingreso" ? "Ingreso" : "Gasto"}
+                    <button className={`submit ${tipo === "ingreso" ? "Ingreso" : "Gasto"}`} onClick={handleSubmit}>
+                        Agregar
                     </button>
                 </div>
             </div>

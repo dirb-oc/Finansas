@@ -2,6 +2,7 @@ from django.db import transaction
 from django.db.models import Sum
 from rest_framework import serializers
 from .models import Cuenta, TipoMovimiento, Movimiento, Inversion
+from django.utils.timezone import localtime
 
 class CuentaSerializer(serializers.ModelSerializer):
     porcentaje_total = serializers.SerializerMethodField()
@@ -42,6 +43,8 @@ class CuentaDetailSerializer(serializers.ModelSerializer):
     movimientos = serializers.SerializerMethodField()
     ingresos_total = serializers.SerializerMethodField()
     gastos_total = serializers.SerializerMethodField()
+    mes_resumen = serializers.SerializerMethodField()
+    impacto = serializers.SerializerMethodField()
 
     class Meta:
         model = Cuenta
@@ -49,8 +52,10 @@ class CuentaDetailSerializer(serializers.ModelSerializer):
             "id",
             "nombre",
             "saldo",
+            "mes_resumen",
             "ingresos_total",
             "gastos_total",
+            "impacto",
             "movimientos",
         ]
 
@@ -61,24 +66,107 @@ class CuentaDetailSerializer(serializers.ModelSerializer):
         movimientos = obj.movimientos.all().order_by("-fecha")
         return MovimientoSerializer(movimientos, many=True).data
 
+    def _get_ultimo_mes(self, obj):
+        ultimo_movimiento = obj.movimientos.order_by("-fecha").first()
+
+        if not ultimo_movimiento:
+            return None, None
+
+        fecha = localtime(ultimo_movimiento.fecha)
+        return fecha.year, fecha.month
+
+    def get_mes_resumen(self, obj):
+        year, month = self._get_ultimo_mes(obj)
+
+        if not year:
+            return None
+
+        return f"{month:02}/{year}"
+
     def get_ingresos_total(self, obj):
+        year, month = self._get_ultimo_mes(obj)
+
+        if not year:
+            return 0
+
         return Movimiento.objects.filter(
             cuenta=obj,
-            tipo__tipo="ingreso"
+            tipo__tipo="ingreso",
+            fecha__year=year,
+            fecha__month=month
         ).aggregate(total=Sum("monto"))["total"] or 0
 
     def get_gastos_total(self, obj):
+        year, month = self._get_ultimo_mes(obj)
+
+        if not year:
+            return 0
+
         return Movimiento.objects.filter(
             cuenta=obj,
-            tipo__tipo="gasto"
+            tipo__tipo="gasto",
+            fecha__year=year,
+            fecha__month=month
         ).aggregate(total=Sum("monto"))["total"] or 0
+
+    def get_impacto(self, obj):
+        year, month = self._get_ultimo_mes(obj)
+
+        if not year:
+            return {
+                "gastos": [],
+                "ingresos": []
+            }
+
+        gastos = Movimiento.objects.filter(
+            cuenta=obj,
+            tipo__tipo="gasto",
+            fecha__year=year,
+            fecha__month=month
+        ).values(
+            "tipo__nombre"
+        ).annotate(
+            total=Sum("monto")
+        ).order_by("-total")
+
+        ingresos = Movimiento.objects.filter(
+            cuenta=obj,
+            tipo__tipo="ingreso",
+            fecha__year=year,
+            fecha__month=month
+        ).values(
+            "tipo__nombre"
+        ).annotate(
+            total=Sum("monto")
+        ).order_by("-total")
+
+        total_gastos = sum(item["total"] for item in gastos) or 1
+        total_ingresos = sum(item["total"] for item in ingresos) or 1
+
+        return {
+            "gastos": [
+                {
+                    "nombre": item["tipo__nombre"],
+                    "total": item["total"],
+                    "porcentaje": round(item["total"] * 100 / total_gastos, 2)
+                }
+                for item in gastos
+            ],
+            "ingresos": [
+                {
+                    "nombre": item["tipo__nombre"],
+                    "total": item["total"],
+                    "porcentaje": round(item["total"] * 100 / total_ingresos, 2)
+                }
+                for item in ingresos
+            ]
+        }
 
 class TipoMovimientoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TipoMovimiento
         fields = "__all__"
-
 
 class MovimientoSerializer(serializers.ModelSerializer):
 

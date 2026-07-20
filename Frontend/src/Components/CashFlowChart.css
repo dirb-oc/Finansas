@@ -65,3 +65,21 @@
 .gasto {
     color: var(--accent-red);
 }
+
+.tooltip-item.balance {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.tooltip-item.balance.positive strong {
+    color: #22c55e;
+}
+
+.tooltip-item.balance.negative strong {
+    color: #ef4444;
+}
+
+.dot.blue {
+    background: #3b82f6;
+}
