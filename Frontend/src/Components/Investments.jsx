@@ -34,7 +34,6 @@ export default function Investments({ inversiones }) {
 
                     ) : (
 
-
                         inversiones.map((inv) => {
 
                             const porcentaje = total === 0 ? 0 : (inv.monto / total) * 100;

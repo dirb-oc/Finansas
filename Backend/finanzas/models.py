@@ -96,3 +96,77 @@ class Inversion(models.Model):
 
     def __str__(self):
         return self.nombre
+
+
+class TarjetaCredito(models.Model):
+
+    nombre = models.CharField(max_length=100)
+    cupo_total = models.DecimalField(max_digits=12,decimal_places=2)
+    dia_corte = models.PositiveSmallIntegerField()
+    dia_pago = models.PositiveSmallIntegerField()
+    activa = models.BooleanField(default=True)
+
+    @property
+    def deuda_actual(self):
+        deuda = (
+            self.compras
+            .exclude(estado="saldada")
+            .aggregate(total=Sum("monto"))["total"]
+            or 0
+        )
+
+        return deuda
+
+    @property
+    def cupo_disponible(self):
+        return self.cupo_total - self.deuda_actual
+
+    @property
+    def porcentaje_utilizado(self):
+        if self.cupo_total == 0:
+            return 0
+
+        return round((self.deuda_actual / self.cupo_total) * 100, 2)
+
+    def __str__(self):
+        return self.nombre
+
+class CompraCredito(models.Model):
+
+    tarjeta = models.ForeignKey(
+        TarjetaCredito,
+        on_delete=models.CASCADE,
+        related_name="compras"
+    )
+
+    tipo = models.ForeignKey(
+        TipoMovimiento,
+        on_delete=models.PROTECT,
+        limit_choices_to={"tipo": "gasto"}
+    )
+
+    monto = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    descripcion = models.TextField(
+        blank=True
+    )
+
+    fecha_compra = models.DateField()
+
+    numero_cuotas = models.PositiveSmallIntegerField()
+
+    estado = models.CharField(
+        max_length=20,
+        choices=[
+            ("pendiente", "Pendiente"),
+            ("pagando", "Pagando"),
+            ("saldada", "Saldada"),
+        ],
+        default="pendiente"
+    )
+
+    def __str__(self):
+        return f"{self.tipo.nombre} - ${self.monto}"

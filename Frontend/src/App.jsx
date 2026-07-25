@@ -3,8 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CuentaDetail from "./Views/CuentaDetaild";
 import Inversiones from "./Views/Inversiones";
 import Dashboard from "./Views/Dashboard";
-import Cuentas from "./Views/Cuentas";
-
 import './App.css';
 
 function App() {
@@ -12,7 +10,6 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/cuentas" element={<Cuentas />} />
                 <Route path="/inversiones" element={<Inversiones />} />
                 <Route path="/cuentas/:id" element={<CuentaDetail />} />
             </Routes>

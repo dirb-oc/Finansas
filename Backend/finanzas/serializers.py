@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.db.models import Sum
 from rest_framework import serializers
-from .models import Cuenta, TipoMovimiento, Movimiento, Inversion
+from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito
 from django.utils.timezone import localtime
 
 class CuentaSerializer(serializers.ModelSerializer):
@@ -218,3 +218,22 @@ class InversionSerializer(serializers.ModelSerializer):
         
 class FinalizarInversionSerializer(serializers.Serializer):
     monto_final = serializers.DecimalField(max_digits=12, decimal_places=2)
+
+class TarjetaCreditoSerializer(serializers.ModelSerializer):
+
+    deuda_actual = serializers.ReadOnlyField()
+    cupo_disponible = serializers.ReadOnlyField()
+    porcentaje_utilizado = serializers.ReadOnlyField()
+
+    class Meta:
+        model = TarjetaCredito
+        fields = "__all__"
+
+class CompraCreditoSerializer(serializers.ModelSerializer):
+
+    tarjeta_nombre = serializers.CharField(source="tarjeta.nombre",read_only=True)
+    tipo_nombre = serializers.CharField(source="tipo.nombre",read_only=True)
+
+    class Meta:
+        model = CompraCredito
+        fields = "__all__"

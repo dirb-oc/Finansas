@@ -59,13 +59,13 @@ export default function Totals({ cuenta }) {
 
             <ImpactSection
                 titulo="Impacto de gastos"
-                color="#ff3b5c"
+                color="var(--spent)"
                 data={cuenta.impacto.gastos}
             />
 
             <ImpactSection
                 titulo="Impacto de ingresos"
-                color="#22c55e"
+                color="var(--income)"
                 data={cuenta.impacto.ingresos}
             />
 

@@ -9,5 +9,5 @@ export async function getCuentaById(id) {
 }
 
 export function createCuenta(data) {
-  return apiPost("/cuentas/", data);
+    return apiPost("/cuentas/", data);
 }

@@ -1,5 +1,5 @@
-from .serializers import CuentaSerializer, TipoMovimientoSerializer, MovimientoSerializer, FinalizarInversionSerializer, InversionSerializer, CuentaDetailSerializer
-from .models import Cuenta, TipoMovimiento, Movimiento, Inversion
+from .serializers import CuentaSerializer, TipoMovimientoSerializer, MovimientoSerializer, FinalizarInversionSerializer, InversionSerializer, CuentaDetailSerializer, TarjetaCreditoSerializer, CompraCreditoSerializer
+from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -118,6 +118,21 @@ class InversionViewSet(viewsets.ModelViewSet):
                 )
     
         return Response({"message": "Inversión finalizada"})
+
+class TarjetaCreditoViewSet(viewsets.ModelViewSet):
+
+    queryset = TarjetaCredito.objects.all().order_by("nombre")
+    serializer_class = TarjetaCreditoSerializer
+
+class CompraCreditoViewSet(viewsets.ModelViewSet):
+
+    queryset = (
+        CompraCredito.objects
+        .select_related("tarjeta", "tipo")
+        .order_by("-fecha_compra")
+    )
+
+    serializer_class = CompraCreditoSerializer
 
 @api_view(["GET"])
 def resumen_inversiones(request):
