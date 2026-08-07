@@ -1,6 +1,7 @@
 .Investment{
-    background:#171717;
+    background: var(--bg-card);
     border:1px solid #2b2b2b;
+    height: 100%;
     border-radius:18px;
     display:flex;
     flex-direction:column;

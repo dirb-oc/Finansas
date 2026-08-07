@@ -1,12 +1,12 @@
-from ..models import Cuenta, Movimiento, Inversion
-from django.db.models.functions import TruncMonth
+from ..models import Cuenta, Movimiento, Inversion, TarjetaCredito
 from dateutil.relativedelta import relativedelta
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.utils.timezone import now
-from django.db.models import Sum, F, Min
+from django.db.models import Sum, Min
 from django.utils import timezone
 
+EXCLUDE_NAMES = ["Inicio", "Transferencia", "Inversión", "Reintegro inversión"]
 
 @api_view(["GET"])
 def StatsView(request):
@@ -14,108 +14,35 @@ def StatsView(request):
     inicio_mes = hoy.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     fin_mes = inicio_mes + relativedelta(months=1)
 
-    # 💰 Disponible
-    cuentas = Cuenta.objects.all()
-    disponible = sum([c.saldo_actual() for c in cuentas])
+    disponible = get_disponible()
+    invertido = get_invertido()
 
-    # 🔒 Invertido
-    invertido = Inversion.objects.filter(
-        estado="activa"
-    ).aggregate(total=Sum("monto_inicial"))["total"] or 0
+    return Response({
+        "disponible": disponible,
+        "invertido": invertido,
+        "total": disponible + invertido,
+        "balance_mes": get_balance_periodo(inicio_mes, fin_mes)["balance"],
+        "flujo_6_meses": get_flujo_meses(hoy),
+        "cuentas": get_cuentas(),
+        "patrimonio_6_meses": get_patrimonio6Meses(),
+        "inversiones": get_inversiones(),
+        "deuda": get_deuda(),
+        "gastos_categoria": get_gastos_categoria(inicio_mes, fin_mes),
+        "tarjetas": get_tarjetas(),
+    })
 
-    # 💎 Total
-    total = disponible + invertido
+def get_disponible():
+    return sum(c.saldo_actual() for c in Cuenta.objects.all())
 
-    EXCLUDE_NAMES = ["Inicio", "Transferencia", "Inversión", "Reintegro inversión"]
-
-    # 📈 Ingresos del mes
-    ingresos_mes = (
-        Movimiento.objects.filter(
-            tipo__tipo="ingreso",
-            fecha__gte=inicio_mes,
-            fecha__lt=fin_mes,
-        )
-        .exclude(tipo__nombre__in=EXCLUDE_NAMES)
-        .aggregate(total=Sum("monto"))["total"] or 0
+def get_invertido():
+    return (
+        Inversion.objects.filter(estado="activa")
+        .aggregate(total=Sum("monto_inicial"))["total"]
+        or 0
     )
 
-    # 📉 Gastos del mes
-    gastos_mes = Movimiento.objects.filter(
-        tipo__tipo="gasto",
-        fecha__gte=inicio_mes
-    ).exclude(
-        tipo__nombre__in=EXCLUDE_NAMES
-    ).aggregate(total=Sum("monto"))["total"] or 0
-
-    # ⚖️ Balance actual
-    balance_mes = ingresos_mes - gastos_mes
-
-    # 💹 Ganancia inversiones
-    ganancia = Inversion.objects.filter(
-        estado="finalizada",
-        monto_final__isnull=False
-    ).aggregate(
-        total=Sum(F("monto_final") - F("monto_inicial"))
-    )["total"] or 0
-
-    hace_6_meses = hoy - relativedelta(months=5)
-
-    movimientos = Movimiento.objects.filter(
-        fecha__gte=hace_6_meses
-    ).exclude(
-        tipo__nombre__in=EXCLUDE_NAMES
-    )
-
-    # 📈 Ingresos agrupados por mes
-    ingresos = (
-        movimientos
-        .filter(tipo__tipo="ingreso")
-        .annotate(mes=TruncMonth("fecha"))
-        .values("mes")
-        .annotate(total=Sum("monto"))
-    )
-
-    # 📉 Gastos agrupados por mes
-    gastos = (
-        movimientos
-        .filter(tipo__tipo="gasto")
-        .annotate(mes=TruncMonth("fecha"))
-        .values("mes")
-        .annotate(total=Sum("monto"))
-    )
-
-    data = {}
-
-    # Ingresos
-    for i in ingresos:
-        mes = i["mes"].strftime("%Y-%m")
-        data[mes] = {
-            "mes": mes,
-            "ingresos": float(i["total"]),
-            "gastos": 0
-        }
-
-    # Gastos
-    for g in gastos:
-        mes = g["mes"].strftime("%Y-%m")
-        if mes not in data:
-            data[mes] = {
-                "mes": mes,
-                "ingresos": 0,
-                "gastos": float(g["total"])
-            }
-        else:
-            data[mes]["gastos"] = float(g["total"])
-
-    # Ordenar por mes
-    resultado = sorted(data.values(), key=lambda x: x["mes"])
-
-
-    # 📆 Últimos 6 meses
-    primer_movimiento = Movimiento.objects.aggregate(
-        fecha=Min("fecha")
-    )["fecha"]
-    
+def get_patrimonio6Meses():
+    primer_movimiento = Movimiento.objects.aggregate(fecha=Min("fecha"))["fecha"]
     patrimonio_mensual = []
     
     if primer_movimiento:
@@ -155,9 +82,60 @@ def StatsView(request):
                 break
             
             mes = siguiente_mes
-        
+
+    return patrimonio_mensual
+
+def get_balance_periodo(inicio, fin):
+    ingresos = (
+        Movimiento.objects.filter(
+            tipo__tipo="ingreso",
+            fecha__gte=inicio,
+            fecha__lt=fin,
+        )
+        .exclude(tipo__nombre__in=EXCLUDE_NAMES)
+        .aggregate(total=Sum("monto"))["total"]
+        or 0
+    )
+
+    gastos = (
+        Movimiento.objects.filter(
+            tipo__tipo="gasto",
+            fecha__gte=inicio,
+            fecha__lt=fin,
+        )
+        .exclude(tipo__nombre__in=EXCLUDE_NAMES)
+        .aggregate(total=Sum("monto"))["total"]
+        or 0
+    )
+
+    return {
+        "ingresos": ingresos,
+        "gastos": gastos,
+        "balance": ingresos - gastos,
+    }
+
+def get_flujo_meses(hoy, cantidad=6):
+    flujo = []
+
+    for i in range(cantidad - 1, -1, -1):
+        inicio = (
+            hoy.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            - relativedelta(months=i)
+        )
+        fin = inicio + relativedelta(months=1)
+
+        balance = get_balance_periodo(inicio, fin)
+
+        flujo.append({
+            "mes": inicio.strftime("%Y-%m"),
+            **balance,
+        })
+
+    return flujo
+
+def get_cuentas():
     cuentas = []
-    
+        
     for cuenta in Cuenta.objects.all():
         saldo = cuenta.saldo_actual()
     
@@ -166,22 +144,73 @@ def StatsView(request):
             "nombre": cuenta.nombre,
             "saldo": saldo,
             "porcentaje": round(
-                (saldo / disponible) * 100,
-                1
-            ) if disponible else 0
+                (saldo / get_disponible()) * 100, 1
+            ) if get_disponible() else 0
         })
     
     cuentas.sort(key=lambda x: x["saldo"], reverse=True)
 
-    return Response({
-        "disponible": disponible,
-        "invertido": invertido,
-        "total": total,
-        "balance_mes": balance_mes,
-        "gastos_mes": gastos_mes,
-        "r": ingresos_mes,
-        "ganancia_inversiones": ganancia,
-        "flujo_6_meses": resultado,
-        "cuentas": cuentas,
-        "patrimonio_6_meses": patrimonio_mensual
-    })
+    return cuentas
+
+def get_inversiones():
+
+    inversiones = list(
+        Inversion.objects.filter(estado="activa")
+        .values("id", "nombre", "monto_inicial")
+    )
+
+    for inv in inversiones:
+        inv["monto"] = float(inv.pop("monto_inicial"))
+
+    return inversiones
+
+def get_deuda():
+
+    return sum(
+        tarjeta.deuda_actual
+        for tarjeta in TarjetaCredito.objects.filter(activa=True)
+    )
+
+def get_gastos_categoria(inicio_mes, fin_mes):
+
+    categorias = (
+        Movimiento.objects.filter(
+            tipo__tipo="gasto",
+            fecha__gte=inicio_mes,
+            fecha__lt=fin_mes,
+        )
+        .exclude(tipo__nombre__in=EXCLUDE_NAMES)
+        .values("tipo__nombre")
+        .annotate(total=Sum("monto"))
+        .order_by("-total")
+    )
+
+    return [
+        {
+            "nombre": c["tipo__nombre"],
+            "monto": float(c["total"]),
+        }
+        for c in categorias
+    ]
+
+def get_tarjetas():
+
+    tarjetas = []
+
+    for tarjeta in TarjetaCredito.objects.filter(activa=True):
+
+        deuda = tarjeta.deuda_actual
+
+        tarjetas.append({
+            "id": tarjeta.id,
+            "nombre": tarjeta.nombre,
+            "cupo": float(tarjeta.cupo_total),
+            "deuda": float(deuda),
+            "disponible": float(tarjeta.cupo_total - deuda),
+            "porcentaje": round((deuda / tarjeta.cupo_total) * 100,2
+            ) if tarjeta.cupo_total else 0,
+        })
+
+        tarjetas.sort(key=lambda t: t["porcentaje"],reverse=True,)
+
+    return tarjetas

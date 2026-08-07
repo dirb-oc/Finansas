@@ -1,6 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Link } from "react-router-dom";
-import formatCOP from "../Services/utils";
+import formatCOP from "../../Services/utils";
 import "./Accounts.css";
 
 const COLORS = [

@@ -1,6 +1,6 @@
-// src/Components/StatCard.jsx
-import formatCOP from "../Services/utils";
 import { Wallet,TrendingUp,Gem,ArrowUpCircle,ArrowDownCircle,BarChart3 } from "lucide-react";
+import formatCOP from "../../Services/utils";
+import "./StatCard.css";
 
 const iconMap = {
     disponible: Wallet,
@@ -10,21 +10,21 @@ const iconMap = {
     gastos: ArrowDownCircle,
 };
 
-export default function StatCard({ title, value, type }) {
-    const Icon = iconMap[type] || BarChart3;
+export default function StatCard({ card }) {
+    const Icon = iconMap[card.type] || BarChart3;
 
     return (
-        <div className={`card ${type}`}>
+        <div className={`card ${card.type}`}>
             <div className="card-header">
                 <span className="card-icon">
                     <Icon size={18} strokeWidth={2} />
                 </span>
-                <span className="card-title">{title}</span>
+                <span className="card-title">{card.title}</span>
             </div>
 
-            <p className="card-value">{formatCOP(value)}</p>
+            <p className="card-value">{formatCOP(card.value)}</p>
 
-            <div className={`card-accent ${type}`} />
+            <div className={`card-accent ${card.type}`} />
         </div>
     );
 }

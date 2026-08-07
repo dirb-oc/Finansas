@@ -1,4 +1,4 @@
-import formatCOP from "../Services/utils";
+import formatCOP from "../../Services/utils";
 import { Link } from "react-router-dom";
 import "./Investments.css";
 
@@ -23,9 +23,7 @@ export default function Investments({ inversiones }) {
 
                         <div className="empty-state">
 
-                            <div className="empty-icon">
-                                📈
-                            </div>
+                            <div className="empty-icon">📈</div>
 
                             <h4>No hay Inversiones activas</h4>
                             <p>Registra una inversiónpara visualizarla aquí. </p>
