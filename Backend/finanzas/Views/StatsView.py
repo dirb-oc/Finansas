@@ -31,6 +31,7 @@ def StatsView(request):
         "tarjetas": get_tarjetas(),
     })
 
+
 def get_disponible():
     return sum(c.saldo_actual() for c in Cuenta.objects.all())
 
@@ -135,6 +136,7 @@ def get_flujo_meses(hoy, cantidad=6):
 
 def get_cuentas():
     cuentas = []
+    disponible = get_disponible()
         
     for cuenta in Cuenta.objects.all():
         saldo = cuenta.saldo_actual()
@@ -143,9 +145,7 @@ def get_cuentas():
             "id": cuenta.id,
             "nombre": cuenta.nombre,
             "saldo": saldo,
-            "porcentaje": round(
-                (saldo / get_disponible()) * 100, 1
-            ) if get_disponible() else 0
+            "porcentaje": round((saldo / disponible) * 100, 1) if disponible else 0
         })
     
     cuentas.sort(key=lambda x: x["saldo"], reverse=True)
@@ -204,9 +204,9 @@ def get_tarjetas():
         tarjetas.append({
             "id": tarjeta.id,
             "nombre": tarjeta.nombre,
-            "cupo": float(tarjeta.cupo_total),
             "deuda": float(deuda),
-            "disponible": float(tarjeta.cupo_total - deuda),
+            "proximo_pago": get_proximo_pago(tarjeta),
+            "cupo": float(tarjeta.cupo_total),
             "porcentaje": round((deuda / tarjeta.cupo_total) * 100,2
             ) if tarjeta.cupo_total else 0,
         })
@@ -214,3 +214,60 @@ def get_tarjetas():
         tarjetas.sort(key=lambda t: t["porcentaje"],reverse=True,)
 
     return tarjetas
+
+def get_proximo_pago(tarjeta):
+    hoy = timezone.localdate()
+
+    compras = tarjeta.compras.filter(
+        estado__in=["pendiente", "pagando"]
+    )
+
+    if not compras.exists():
+        return {
+            "fecha": None,
+            "monto": 0,
+        }
+
+    # Último día de corte anterior al ciclo actual
+    ultimo_corte = hoy.replace(day=tarjeta.dia_corte)
+
+    if hoy.day <= tarjeta.dia_corte:
+        ultimo_corte -= relativedelta(months=1)
+
+    # Revisamos ciclos hasta encontrar uno con deuda
+    for _ in range(12):
+
+        inicio_ciclo = (
+            ultimo_corte - relativedelta(months=1)
+        ).replace(
+            day=tarjeta.dia_corte + 1
+        )
+
+        fin_ciclo = ultimo_corte
+
+        compras_ciclo = compras.filter(
+            fecha_compra__gte=inicio_ciclo,
+            fecha_compra__lte=fin_ciclo,
+        )
+
+        monto = sum(
+            compra.monto / compra.numero_cuotas
+            for compra in compras_ciclo
+        )
+
+        if monto > 0:
+            fecha_pago = fin_ciclo + relativedelta(months=1)
+            fecha_pago = fecha_pago.replace(day=tarjeta.dia_pago)
+
+            return {
+                "fecha": fecha_pago,
+                "monto": monto,
+            }
+
+        # No hubo deuda en este ciclo → revisar el siguiente
+        ultimo_corte += relativedelta(months=1)
+
+    return {
+        "fecha": None,
+        "monto": 0,
+    }

@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from "recharts";
 
-import formatCOP from "../Services/utils";
+import formatCOP from "../../Services/utils";
 import "./CashFlowChart.css";
 
 // 🧠 FIX MES

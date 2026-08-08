@@ -1,11 +1,11 @@
 import { getCuentaById } from "../controllers/cuentasController";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import CreateTransactionModal from "../Components/CreateTransactionModal";
 import EditTransactionModal from "../Components/EditTransactionModal";
 import Transactions from "../Components/Accounts/Transactions";
 import Totals from "../Components/Accounts/Totals";
-import { Link } from "react-router-dom";
 
 export default function AccountDetail() {
     const { id } = useParams();

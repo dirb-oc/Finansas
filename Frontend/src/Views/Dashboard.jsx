@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { getStats } from "../controllers/statsController";
-import StatCard from "../Components/Stats/StatCard";
-import BalanceChart from "../Components/BalanceChart";
-import CashFlowChart from "../Components/CashFlowChart";
-import Accounts from "../Components/Stats/Accounts"
-import Investments from "../Components/Stats/Investments"
 import ExpensesCategory from "../Components/Stats/ExpensesCategory"
-import "../Components/Dashboard.css";
+import Investments from "../Components/Stats/Investments"
+import CashFlowChart from "../Components/Stats/CashFlowChart";
+import BalanceChart from "../Components/Stats/BalanceChart";
+import StatCard from "../Components/Stats/StatCard";
+import Accounts from "../Components/Stats/Accounts";
+import CreditCards from "../Components/Stats/CreditCards"
 
 export default function Dashboard() {
     const [stats, setStats] = useState(null);
@@ -26,19 +26,16 @@ export default function Dashboard() {
     return (
         <div className="General">
             <h1 className="title">Mi Patrimonio</h1>
-            <p className="subtitle">Resumen financiero · Julio 2026</p>
+            <p className="subtitle">Resumen financiero · Agosto 2026</p>
 
-            <div className="divisor"></div>
+            <div className="divisor" />
 
             <div className="cards">
-                {cards.map((card, index) => (
-                    <StatCard
-                        key={index}
-                        card={card}
-                    />
-                ))}
+                {cards.map((card, index) => ( <StatCard key={index} card={card} /> ))}
             </div>
+
             <div className="Stats">
+
                 <div className="stats-main">
                     <BalanceChart data={stats.patrimonio_6_meses} />
                 </div>
@@ -46,9 +43,11 @@ export default function Dashboard() {
                 <div className="stats-side">
                     <Investments inversiones={stats.inversiones} />
                 </div>
+
             </div>
 
             <div className="Stats">
+
                 <div className="stats-main">
                     <CashFlowChart data={stats.flujo_6_meses} />
                 </div>
@@ -56,10 +55,14 @@ export default function Dashboard() {
                 <div className="stats-side">
                     <ExpensesCategory categorias={stats.gastos_categoria} />
                 </div>
+
             </div>
+
             <div className="Stats">
+
                 <Accounts data={stats} />
-                <Accounts data={stats} />
+                <CreditCards cards={stats.tarjetas} />
+
             </div>
         </div>
     );
