@@ -5,14 +5,16 @@ import "./CreditCard.css";
 export default function CreditCards({ cards }) {
 
     return (
-        <div className="credit-cards">
+        <div className="chart-card">
 
-            <h3>Tarjetas de Crédito</h3>
+            <div className="chart-header">
+                <h3>Tarjetas de Creditos</h3>
+                <span>Tarjetas Activas: {cards.length}</span>
+            </div>
 
             {cards.map((card) => (
                 <div className="credit-card" key={card.id}>
 
-                    {/* Header */}
                     <div className="credit-card__header">
 
                         <div className="credit-card__icon">
@@ -33,7 +35,6 @@ export default function CreditCards({ cards }) {
                             <strong>
                                 {formatCOP(card.deuda)}
                             </strong>
-
                             <span>
                                 de {formatCOP(card.cupo)}
                             </span>
@@ -64,12 +65,11 @@ export default function CreditCards({ cards }) {
                     <div className="credit-card__footer">
 
                         <div className="credit-card__payment">
-                            <CalendarDays size={17} />
+                            <CalendarDays size={18} />
 
                             <div>
-                                <span>Próximo pago</span>
+                                <span>Vence
 
-                                <strong>
                                     {card.proximo_pago?.fecha
                                         ? new Date(
                                             `${card.proximo_pago.fecha}T00:00:00`
@@ -82,16 +82,14 @@ export default function CreditCards({ cards }) {
                                         )
                                         : "Sin pagos"
                                     }
-                                </strong>
+                                </span>
                             </div>
                         </div>
 
                         <div className="credit-card__payment-amount">
-                            <span>Pago</span>
-
-                            <strong>
-                                {formatCOP(card.proximo_pago?.monto ?? 0)}
-                            </strong>
+                            <span>
+                                Pago {formatCOP(card.proximo_pago?.monto ?? 0)}
+                            </span>
                         </div>
 
                     </div>

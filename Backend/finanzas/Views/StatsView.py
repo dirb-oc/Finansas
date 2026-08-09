@@ -29,6 +29,7 @@ def StatsView(request):
         "deuda": get_deuda(),
         "gastos_categoria": get_gastos_categoria(inicio_mes, fin_mes),
         "tarjetas": get_tarjetas(),
+        "ultimos_movimientos": get_ultimos_movimientos(),
     })
 
 
@@ -271,3 +272,33 @@ def get_proximo_pago(tarjeta):
         "fecha": None,
         "monto": 0,
     }
+
+
+def get_ultimos_movimientos(cantidad=5):
+    movimientos = list(
+        Movimiento.objects
+        .select_related("tipo")
+        .order_by("-fecha")[:cantidad]
+    )
+
+    resultado = []
+
+    def procesar(index):
+        if index >= len(movimientos):
+            return
+
+        movimiento = movimientos[index]
+
+        resultado.append({
+            "id": movimiento.id,
+            "tipo": movimiento.tipo.nombre,
+            "categoria": movimiento.tipo.tipo,
+            "monto": float(movimiento.monto),
+            "fecha": movimiento.fecha,
+        })
+
+        procesar(index + 1)
+
+    procesar(0)
+
+    return resultado

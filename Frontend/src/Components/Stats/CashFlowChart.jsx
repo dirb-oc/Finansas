@@ -21,13 +21,10 @@ const formatCompactCOP = (value) => {
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
 
-    const ingresos =
-        payload.find((p) => p.dataKey === "ingresos")?.value || 0;
+    const ingresos = payload.find((p) => p.dataKey === "ingresos")?.value || 0;
 
-    const gastos =
-        payload.find((p) => p.dataKey === "gastos")?.value || 0;
+    const gastos = payload.find((p) => p.dataKey === "gastos")?.value || 0;
 
-    // ✅ OBTENER BALANCE
     const balance = ingresos - gastos;
 
     return (

@@ -90,10 +90,10 @@
     opacity: 0.06;
 }
 
-/* 🎯 COLORES POR TIPO (UNA SOLA VEZ) */
+/* 🎯 COLORES*/
 .card.disponible { --color: #3b82f6; }
-.card.invertido { --color: #f59e0b; }
-.card.patrimonio { --color: #8b5cf6; }
+.card.invertido { --color: var(--investment); }
+.card.patrimonio { --color: var(--total); }
 .card.ingresos { --color: #10b981; }
 .card.gastos { --color: #ef4444; }
 

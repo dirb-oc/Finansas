@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { getStats } from "../controllers/statsController";
 import ExpensesCategory from "../Components/Stats/ExpensesCategory"
-import Investments from "../Components/Stats/Investments"
 import CashFlowChart from "../Components/Stats/CashFlowChart";
 import BalanceChart from "../Components/Stats/BalanceChart";
+import Investments from "../Components/Stats/Investments"
+import CreditCards from "../Components/Stats/CreditCards"
 import StatCard from "../Components/Stats/StatCard";
 import Accounts from "../Components/Stats/Accounts";
-import CreditCards from "../Components/Stats/CreditCards"
+import LastTransactions from "../Components/Stats/LastTransactions";
 
 export default function Dashboard() {
     const [stats, setStats] = useState(null);
@@ -37,7 +38,7 @@ export default function Dashboard() {
             <div className="Stats">
 
                 <div className="stats-main">
-                    <BalanceChart data={stats.patrimonio_6_meses} />
+                    <BalanceChart patrimonio={stats.patrimonio_6_meses} />
                 </div>
 
                 <div className="stats-side">
@@ -62,6 +63,7 @@ export default function Dashboard() {
 
                 <Accounts data={stats} />
                 <CreditCards cards={stats.tarjetas} />
+                <LastTransactions movimientos={stats.ultimos_movimientos} />
 
             </div>
         </div>

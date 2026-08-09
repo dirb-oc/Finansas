@@ -16,8 +16,9 @@
     --accent-blue: #3b82f6;
     --accent-blue-dim: #1e40af;
     --accent-red: #ef4444;
-    --accent-yellow: #f59e0b;
-    --accent-purple: #8b5cf6;
+    
+    --investment: #f59e0b;
+    --total: #8b5cf6;
 
     --income: #00d084;
     --spent: #ff5b5b;
@@ -170,7 +171,6 @@ h2 {
         font-size: 1.4rem;
     }
 }
-
 
 /* Dashboard */
 

@@ -1,40 +1,42 @@
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, } from "recharts";
 import formatCOP from "../../Services/utils";
-import './BalanceChart.css'
+import "./BalanceChart.css";
 
-export default function BalanceChart({ data }) {
+const BalanceChart = ({ patrimonio }) => {
+    const data = patrimonio.map((item) => {
+        const [year, month] = item.mes.split("-");
 
-    const values = data.map(d => d.total);
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const padding = Math.max((max - min) * 0.2, 5000);
+        const fecha = new Date(
+            Number(year),
+            Number(month) - 1,
+            1
+        );
 
-    const formatMonth = (mes) => {
-        const [year, month] = mes.split("-");
-        const date = new Date(year, month - 1); // 👈 clave
-        return date.toLocaleString("en-US", { month: "short" });
-    };
-
-    const formatMoney = (value) => {
-        if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
-        if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
-        return `$${value}`;
-    };
+        return {
+            mes: fecha.toLocaleDateString("es-CO", {
+                month: "short",
+            }),
+            total: item.total,
+        };
+    });
 
     const CustomTooltip = ({ active, payload, label }) => {
-        if (!active || !payload || !payload.length) return null;
 
-        const [year, month] = label.split("-");
-        const date = new Date(year, month - 1);
-
-        const mes = date.toLocaleString("en-US", { month: "short" });
-
-        const value = payload[0].value;
+        if (!active || !payload?.length) {
+            return null;
+        }
 
         return (
-            <div style={styles.tooltip}>
-                <div style={styles.month}>{mes}</div>
-                <div style={styles.value}>{formatCOP(value)}</div>
+            <div className="balance-tooltip">
+
+                <span className="balance-tooltip__month">
+                    {label}
+                </span>
+
+                <strong className="balance-tooltip__value">
+                    {formatCOP(payload[0].value)}
+                </strong>
+
             </div>
         );
     };
@@ -42,69 +44,81 @@ export default function BalanceChart({ data }) {
     return (
         <div className="chart-card">
             <div className="chart-header">
-                <h3>Evolucion de Patrimonio</h3>
-                <span>Ultimos 6 meses</span>
+                <h3>Evolución de Patrimonio</h3>
+                <span>Últimos 6 meses</span>
             </div>
 
             <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
+                <AreaChart
+                    data={data}
+                    margin={{
+                        top: 10,
+                        right: 10,
+                        left: 10,
+                        bottom: 0,
+                    }}
+                >
                     <defs>
-                        <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#00c896" stopOpacity={0.4} />
-                            <stop offset="100%" stopColor="#00c896" stopOpacity={0} />
+                        <linearGradient
+                            id="patrimonioGradient"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                        >
+                            <stop
+                                offset="0%"
+                                stopColor="var(--total)"
+                                stopOpacity={0.5}
+                            />
+
+                            <stop
+                                offset="50%"
+                                stopColor="var(--total)"
+                                stopOpacity={0.2}
+                            />
+
+                            <stop
+                                offset="100%"
+                                stopColor="var(--total)"
+                                stopOpacity={0}
+                            />
                         </linearGradient>
                     </defs>
 
                     <CartesianGrid strokeDasharray="3 3" stroke="#363636" vertical={false} />
 
-                    <XAxis dataKey="mes" tickFormatter={formatMonth} stroke="#aaa" />
-
-                    <YAxis
-                        domain={[
-                            Math.max(0, min - padding), // 👈 evita negativos
-                            max + padding
-                        ]}
-                        tickFormatter={formatMoney}
-                        stroke="#aaa"
+                    <XAxis
+                        dataKey="mes"
+                        stroke="#94a3b8"
                     />
 
-                    <Tooltip content={<CustomTooltip />} />
+                    <YAxis
+                        stroke="#94a3b8"
+                        tickFormatter={(value) =>
+                            `$${(value / 1000000).toFixed(1)}M`
+                        }
+                    />
+
+                    <Tooltip
+                        content={<CustomTooltip />}
+                        cursor={{
+                            stroke: "#3a4248",
+                            strokeDasharray: "4 4",
+                        }}
+                    />
 
                     <Area
                         type="monotone"
                         dataKey="total"
-                        stroke="none"
-                        fill="url(#colorBalance)"
+                        stroke="var(--total)"
+                        fill="url(#patrimonioGradient)"
+                        strokeWidth={2}
                     />
-
-                    <Line
-                        type="monotone"
-                        dataKey="total"
-                        stroke="#00c896"
-                        strokeWidth={3}
-                        dot={{ r: 5 }}
-                    />
-                </LineChart>
+                </AreaChart>
             </ResponsiveContainer>
         </div>
     );
-}
-
-const styles = {
-    tooltip: {
-        background: "#0b0f17",
-        border: "1px solid #1f2937",
-        padding: "8px 12px",
-        borderRadius: "8px",
-    },
-    month: {
-        color: "#e5e7eb",
-        fontSize: "14px",
-        marginBottom: "4px",
-    },
-    value: {
-        color: "#00c896", // 👈 verde
-        fontSize: "16px",
-        fontWeight: "bold",
-    },
 };
+
+export default BalanceChart;

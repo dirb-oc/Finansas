@@ -1,13 +1,19 @@
-.credit-cards {
-    width: 100%;
+.distribution-header{
+    margin-bottom:15px;
 }
 
-.credit-cards > h3 {
-    margin-bottom: 1rem;
+.distribution-header h3{
+    color:white;
+    margin:0;
+    font-size:24px;
+}
+
+.distribution-header span{
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 /* Card */
-
 .credit-card {
     background: #181d20;
     border: 1px solid #30363a;
@@ -27,11 +33,11 @@
 .credit-card__icon {
     width: 46px;
     height: 46px;
-
+    
     display: flex;
     align-items: center;
     justify-content: center;
-
+    
     background: #e5e7eb;
     color: #252a2d;
 
@@ -58,10 +64,9 @@
 }
 
 /* Deuda */
-
 .credit-card__debt {
     margin-left: auto;
-
+    
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -69,13 +74,13 @@
 
 .credit-card__debt strong {
     color: #ff5b5b;
-    font-size: 1.05rem;
+    font-size: 22px;
 }
 
 .credit-card__debt span {
     color: #92989c;
-    font-size: 0.8rem;
-    margin-top: 0.15rem;
+    font-size: 0.7rem;
+    margin-top: -5px;
 }
 
 /* Usage */
@@ -133,7 +138,6 @@
     display: flex;
     align-items: center;
     gap: 0.6rem;
-
     color: #92989c;
 }
 

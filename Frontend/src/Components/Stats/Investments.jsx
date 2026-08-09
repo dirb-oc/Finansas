@@ -13,7 +13,7 @@ export default function Investments({ inversiones }) {
         <div className="chart-card Investment">
 
             <h3>Distribución de <Link to="/inversiones/">inversiones</Link></h3>
-            <span>Total invertido {formatCOP(total)}</span>
+            <span>{inversiones.length} Inversion · {formatCOP(total)}</span>
 
             <div className="investment-list">
 

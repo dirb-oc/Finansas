@@ -23,3 +23,25 @@
     color: var(--text-secondary);
     font-size: 0.9rem;
 }
+
+.balance-tooltip {
+    display: flex;
+    flex-direction: column;
+
+    padding: 0.55rem 0.75rem;
+
+    background: #0b0f17;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+}
+
+.balance-tooltip__month {
+    color: #9ca3af;
+    font-size: 0.75rem;
+    margin-bottom: 0.15rem;
+}
+
+.balance-tooltip__value {
+    color: var(--total);
+    font-size: 0.95rem;
+}

@@ -1,79 +1,163 @@
-.distribution-card{
-    background:#171717;
-    border-radius:18px;
-    padding:24px;
+.accounts-card {
+    background: #181d20;
+    border: 1px solid #30363a;
+    border-radius: 18px;
+    padding: 1.25rem;
+    color: #e5e7eb;
 }
 
-.distribution-header{
-    margin-bottom:20px;
+/* Header */
+
+.accounts-header {
+    margin-bottom: 1.25rem;
 }
 
-.distribution-header h3{
-    color:white;
-    margin:0;
-    font-size:24px;
+.accounts-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
 }
 
-.distribution-header span{
-    color: var(--text-secondary);
+.accounts-header span {
+    display: block;
+    margin-top: 0.3rem;
+
+    color: #858b8f;
+    font-size: 0.8rem;
+}
+
+/* List */
+
+.accounts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Account */
+
+.account-item {
+    width: 100%;
+}
+
+.account-top {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+/* Icon */
+
+.account-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+    background: #22272a;
+}
+
+/* Name */
+
+.account-name {
+    color: #e5e7eb;
     font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
 }
 
-.distribution-body{
-    display:flex;
-    gap:30px;
-    align-items:center;
+.account-name:hover {
+    text-decoration: underline;
 }
 
-.distribution-chart{
-    flex:1;
-    min-width:260px;
-    height:260px;
+/* Percentage */
+
+.account-percent {
+    color: #92989c;
+    font-size: 0.8rem;
 }
 
-.distribution-list{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    gap:22px;
+/* Money */
+
+.account-money {
+    margin-left: auto;
+
+    color: #e5e7eb;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
-.account-item{
-    display:flex;
-    gap:14px;
+/* Progress */
+
+.account-progress {
+    width: 100%;
+    height: 6px;
+
+    margin-top: 0.55rem;
+
+    background: #252b2f;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.account-dot{
-    width:14px;
-    height:14px;
-    border-radius:50%;
-    margin-top:8px;
-    flex-shrink:0;
+.account-progress__value {
+    height: 100%;
+    border-radius: inherit;
+
+    transition: width 0.3s ease;
 }
 
-.account-info{
-    flex:1;
+
+.account-item {
+    display: block;
+
+    padding: 0.65rem 0.7rem;
+
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+    color: inherit;
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.account-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+.account-item:hover {
+    background: #202528;
+    border-color: #30373b;
+    transform: translateY(-2px);
 }
 
-.account-name{
-    color:white;
-    font-size:18px;
-    font-weight:600;
+.accounts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
 }
 
-.account-money{
-    color:white;
-    font-size:20px;
-    font-weight:bold;
+.account-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+    background: #22272a;
+
+    transition: background 0.2s ease;
 }
 
-.account-percent{
-    color:#8b8b8b;
-    margin-top:3px;
+.account-item:hover .account-icon {
+    background: #292f32;
 }
