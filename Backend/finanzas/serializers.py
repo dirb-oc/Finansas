@@ -1,7 +1,8 @@
 from django.db import transaction
 from django.db.models import Sum
 from rest_framework import serializers
-from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito
+from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito, PagoCredito
+from .services import realizar_pago_credito
 from django.utils.timezone import localtime
 
 class CuentaSerializer(serializers.ModelSerializer):
@@ -233,7 +234,97 @@ class CompraCreditoSerializer(serializers.ModelSerializer):
 
     tarjeta_nombre = serializers.CharField(source="tarjeta.nombre",read_only=True)
     tipo_nombre = serializers.CharField(source="tipo.nombre",read_only=True)
+    estado = serializers.ReadOnlyField()
 
     class Meta:
         model = CompraCredito
         fields = "__all__"
+
+class PagoCreditoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PagoCredito
+        fields = [
+            "id",
+            "compra",
+            "cuenta",
+            "monto",
+            "fecha",
+        ]
+
+    def create(self, validated_data):
+
+        return realizar_pago_credito(
+            compra=validated_data["compra"],
+            cuenta=validated_data["cuenta"],
+            monto=validated_data["monto"],
+            fecha=validated_data["fecha"],
+        )
+
+
+class CompraCreditoDetailSerializer(serializers.ModelSerializer):
+
+    tarjeta_nombre = serializers.CharField(
+        source="tarjeta.nombre",
+        read_only=True
+    )
+
+    tipo_nombre = serializers.CharField(
+        source="tipo.nombre",
+        read_only=True
+    )
+
+    total_pagado = serializers.ReadOnlyField()
+    saldo_pendiente = serializers.ReadOnlyField()
+    valor_cuota = serializers.ReadOnlyField()
+
+    pagos = PagoCreditoSerializer(
+        many=True,
+        read_only=True
+    )
+
+    class Meta:
+        model = CompraCredito
+        fields = [
+            "id",
+            "tarjeta",
+            "tarjeta_nombre",
+            "tipo",
+            "tipo_nombre",
+            "monto",
+            "descripcion",
+            "fecha_compra",
+            "numero_cuotas",
+            "valor_cuota",
+            "total_pagado",
+            "saldo_pendiente",
+            "estado",
+            "pagos",
+        ]
+
+
+class TarjetaCreditoDetailSerializer(serializers.ModelSerializer):
+
+    deuda_actual = serializers.ReadOnlyField()
+    cupo_disponible = serializers.ReadOnlyField()
+    porcentaje_utilizado = serializers.ReadOnlyField()
+
+    compras = CompraCreditoDetailSerializer(
+        many=True,
+        read_only=True
+    )
+
+    class Meta:
+        model = TarjetaCredito
+        fields = [
+            "id",
+            "nombre",
+            "cupo_total",
+            "cupo_disponible",
+            "deuda_actual",
+            "porcentaje_utilizado",
+            "dia_corte",
+            "dia_pago",
+            "activa",
+            "compras",
+        ]

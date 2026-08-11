@@ -1,6 +1,6 @@
 import formatCOP from "../../Services/utils";
 import { Link } from "react-router-dom";
-import "./Investments.css";
+import "./ExpensesCategory.css";
 
 export default function ExpensesCategory({ categorias }) {
 
@@ -67,7 +67,7 @@ export default function ExpensesCategory({ categorias }) {
                                     <div className="progress-bar">
 
                                         <div
-                                            className="progress-fill"
+                                            className="progress-fill_investment"
                                             style={{
                                                 width: `${porcentaje}%`
                                             }}

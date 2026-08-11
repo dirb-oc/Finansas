@@ -8,6 +8,7 @@ const iconMap = {
     total: Gem,
     ingresos: ArrowUpCircle,
     gastos: ArrowDownCircle,
+    deuda: ArrowDownCircle,
 };
 
 export default function StatCard({ card }) {

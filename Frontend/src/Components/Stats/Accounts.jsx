@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import formatCOP from "../../Services/utils";
 import "./Accounts.css";
 
-const COLORS = ["#820AD1", "#22C55E", "#E6007E", "#333333", "#222222",];
+const COLORS = ["#3b82f6", "#3b82f6", "#3b82f6", "#333333", "#222222",];
 const ACCOUNT_ICONS = [Wallet, Banknote, Landmark,PiggyBank, WalletCards, Coins,];
 
 export default function Accounts({ data }) {
@@ -58,7 +58,7 @@ export default function Accounts({ data }) {
                                     className="account-progress__value"
                                     style={{
                                         width: `${cuenta.porcentaje}%`,
-                                        background: color,
+                                        background: "var(--accent-blue)",
                                     }}
                                 />
                             </div>

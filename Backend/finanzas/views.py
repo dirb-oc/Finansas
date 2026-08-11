@@ -1,9 +1,8 @@
-from .serializers import CuentaSerializer, TipoMovimientoSerializer, MovimientoSerializer, FinalizarInversionSerializer, InversionSerializer, CuentaDetailSerializer, TarjetaCreditoSerializer, CompraCreditoSerializer
-from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito
-from rest_framework.decorators import api_view
+from .serializers import CuentaSerializer, TipoMovimientoSerializer, MovimientoSerializer, FinalizarInversionSerializer, InversionSerializer, CuentaDetailSerializer, TarjetaCreditoSerializer, CompraCreditoSerializer, TarjetaCreditoDetailSerializer, PagoCreditoSerializer
+from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito, PagoCredito
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.utils.timezone import now
+from .services import realizar_pago_credito, crear_compra_credito
 from django.db.models import Sum
 from rest_framework import viewsets
 from django.db import transaction
@@ -122,7 +121,15 @@ class InversionViewSet(viewsets.ModelViewSet):
 class TarjetaCreditoViewSet(viewsets.ModelViewSet):
 
     queryset = TarjetaCredito.objects.all().order_by("nombre")
+
     serializer_class = TarjetaCreditoSerializer
+
+    def get_serializer_class(self):
+
+        if self.action == "retrieve":
+            return TarjetaCreditoDetailSerializer
+
+        return TarjetaCreditoSerializer
 
 class CompraCreditoViewSet(viewsets.ModelViewSet):
 
@@ -134,55 +141,24 @@ class CompraCreditoViewSet(viewsets.ModelViewSet):
 
     serializer_class = CompraCreditoSerializer
 
-@api_view(["GET"])
-def resumen_inversiones(request):
+    def perform_create(self, serializer):
 
-    # -------------------------
-    # TOTAL DINERO (PATRIMONIO)
-    # -------------------------
-    ingresos = Movimiento.objects.filter(
-        tipo__tipo="ingreso"
-    ).exclude(
-        tipo_id=11  # reintegro ❌
-    ).aggregate(total=Sum("monto"))["total"] or 0
+        crear_compra_credito(
+            **serializer.validated_data
+        )
 
-    gastos = Movimiento.objects.filter(
-        tipo__tipo="gasto"
-    ).exclude(
-        tipo_id=2  # inversión ❌
-    ).aggregate(total=Sum("monto"))["total"] or 0
+class PagoCreditoViewSet(viewsets.ModelViewSet):
 
-    inicial = Movimiento.objects.filter(
-        tipo_id=1
-    ).aggregate(total=Sum("monto"))["total"] or 0
+    queryset = PagoCredito.objects.select_related(
+        "compra",
+        "cuenta",
+        "compra__tarjeta"
+    ).all()
 
-    total = ingresos + inicial - gastos
+    serializer_class = PagoCreditoSerializer
 
-    # -------------------------
-    # GANANCIA INVERSIONES
-    # -------------------------
-    retornos = Movimiento.objects.filter(
-        tipo_id=3  # retorno inversión ✅
-    ).aggregate(total=Sum("monto"))["total"] or 0
+    def perform_create(self, serializer):
 
-    # -------------------------
-    # DINERO INVERTIDO ACTUAL
-    # -------------------------
-    invertido = Inversion.objects.filter(
-        estado="activa"
-    ).aggregate(total=Sum("monto_inicial"))["total"] or 0
-
-    # -------------------------
-    # PORCENTAJE
-    # -------------------------
-    if total > 0:
-        porcentaje = round((retornos / total) * 100, 1)
-    else:
-        porcentaje = 0.0
-
-    return Response({
-        "total": float(total),
-        "invertido": float(invertido),
-        "ganancia_inversiones": float(retornos),
-        "porcentaje": porcentaje
-    })
+        realizar_pago_credito(
+            **serializer.validated_data
+        )

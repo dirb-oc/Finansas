@@ -55,7 +55,7 @@
 }
 
 .dot.red {
-    background: var(--accent-red);
+    background: var(--spent);
 }
 
 .ingreso {
@@ -63,7 +63,7 @@
 }
 
 .gasto {
-    color: var(--accent-red);
+    color: var(--spent);
 }
 
 .tooltip-item.balance {

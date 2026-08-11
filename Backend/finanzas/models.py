@@ -107,14 +107,10 @@ class TarjetaCredito(models.Model):
 
     @property
     def deuda_actual(self):
-        deuda = (
-            self.compras
-            .exclude(estado="saldada")
-            .aggregate(total=Sum("monto"))["total"]
-            or 0
+        return sum(
+            compra.saldo_pendiente
+            for compra in self.compras.all()
         )
-
-        return deuda
 
     @property
     def cupo_disponible(self):
@@ -169,3 +165,42 @@ class CompraCredito(models.Model):
 
     def __str__(self):
         return f"{self.tipo.nombre} - ${self.monto}"
+
+    @property
+    def total_pagado(self):
+        return self.pagos.aggregate(
+            total=Sum("monto")
+        )["total"] or 0
+
+    @property
+    def saldo_pendiente(self):
+        return self.monto - self.total_pagado
+
+    @property
+    def valor_cuota(self):
+        return self.monto / self.numero_cuotas
+
+
+class PagoCredito(models.Model):
+
+    compra = models.ForeignKey(
+        CompraCredito,
+        on_delete=models.CASCADE,
+        related_name="pagos"
+    )
+
+    cuenta = models.ForeignKey(
+        Cuenta,
+        on_delete=models.PROTECT,
+        related_name="pagos_credito"
+    )
+
+    monto = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    fecha = models.DateField()
+
+    def __str__(self):
+        return f"Pago - ${self.monto}"

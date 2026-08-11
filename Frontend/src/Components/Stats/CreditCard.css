@@ -73,7 +73,7 @@
 }
 
 .credit-card__debt strong {
-    color: #ff5b5b;
+    color: var(--credit);
     font-size: 22px;
 }
 
@@ -115,7 +115,7 @@
 
 .credit-card__progress-value {
     height: 100%;
-    background: #42b878;
+    background: var(--credit);
     border-radius: inherit;
 
     transition: width 0.3s ease;

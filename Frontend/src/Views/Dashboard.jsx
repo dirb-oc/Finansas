@@ -20,7 +20,7 @@ export default function Dashboard() {
         { title: "Disponible", value: stats.disponible, type: "disponible" },
         { title: "Invertido", value: stats.invertido, type: "invertido" },
         { title: "Total", value: stats.total, type: "patrimonio" },
-        { title: "Deuda", value: stats.deuda, type: "gastos" },
+        { title: "Deuda", value: stats.deuda, type: "deuda" },
         { title: "Balance Mes", value: stats.balance_mes, type: stats.balance_mes >= 0 ? "ingresos" : "gastos" },
     ];
 

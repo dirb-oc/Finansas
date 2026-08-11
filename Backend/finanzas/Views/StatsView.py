@@ -32,7 +32,6 @@ def StatsView(request):
         "ultimos_movimientos": get_ultimos_movimientos(),
     })
 
-
 def get_disponible():
     return sum(c.saldo_actual() for c in Cuenta.objects.all())
 
@@ -272,7 +271,6 @@ def get_proximo_pago(tarjeta):
         "fecha": None,
         "monto": 0,
     }
-
 
 def get_ultimos_movimientos(cantidad=5):
     movimientos = list(

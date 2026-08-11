@@ -87,7 +87,7 @@
 }
 
 .toggle button.active.gasto {
-    background: var(--accent-red);
+    background: var(--spent);
     color: white;
 }
 
@@ -165,7 +165,7 @@
 }
 
 .Gasto{
-    background: var(--accent-red);
+    background: var(--spent);
 }
 
 

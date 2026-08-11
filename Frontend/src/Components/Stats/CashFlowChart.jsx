@@ -90,7 +90,7 @@ export default function CashFlowChart({ data }) {
 
                     <Bar
                         dataKey="gastos"
-                        fill="#ef4444"
+                        fill="var(--spent)"
                         radius={[6, 6, 0, 0]}
                     />
                 </BarChart>

@@ -96,6 +96,7 @@
 .card.patrimonio { --color: var(--total); }
 .card.ingresos { --color: #10b981; }
 .card.gastos { --color: #ef4444; }
+.card.deuda { --color: var(--credit); }
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
