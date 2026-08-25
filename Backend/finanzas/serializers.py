@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import Sum
 from rest_framework import serializers
 from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito, PagoCredito
-from .services import realizar_pago_credito
+from .services import realizar_pago_credito, calcular_ciclo_actual, get_proximo_pago
 from django.utils.timezone import localtime
 
 class CuentaSerializer(serializers.ModelSerializer):
@@ -261,7 +261,6 @@ class PagoCreditoSerializer(serializers.ModelSerializer):
             fecha=validated_data["fecha"],
         )
 
-
 class CompraCreditoDetailSerializer(serializers.ModelSerializer):
 
     tarjeta_nombre = serializers.CharField(
@@ -302,17 +301,36 @@ class CompraCreditoDetailSerializer(serializers.ModelSerializer):
             "pagos",
         ]
 
-
 class TarjetaCreditoDetailSerializer(serializers.ModelSerializer):
 
     deuda_actual = serializers.ReadOnlyField()
     cupo_disponible = serializers.ReadOnlyField()
     porcentaje_utilizado = serializers.ReadOnlyField()
 
+    ciclo_actual = serializers.SerializerMethodField()
+    proximo = serializers.SerializerMethodField()
+
     compras = CompraCreditoDetailSerializer(
         many=True,
         read_only=True
     )
+
+    def get_ciclo_actual(self, obj):
+        ciclo = calcular_ciclo_actual(obj)
+
+        return {
+            "inicio": ciclo["inicio"],
+            "fin": ciclo["fin"],
+            "dias_restantes": ciclo["dias_restantes"],
+        }
+
+    def get_proximo(self, obj):
+            proximo = get_proximo_pago(obj)
+    
+            return {
+                "fecha": proximo["fecha"],
+                "monto": proximo["monto"],
+            }
 
     class Meta:
         model = TarjetaCredito
@@ -326,5 +344,7 @@ class TarjetaCreditoDetailSerializer(serializers.ModelSerializer):
             "dia_corte",
             "dia_pago",
             "activa",
+            "ciclo_actual",
+            "proximo",
             "compras",
         ]

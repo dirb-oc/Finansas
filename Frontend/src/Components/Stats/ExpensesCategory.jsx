@@ -16,7 +16,7 @@ export default function ExpensesCategory({ categorias }) {
                 Distribución de <Link to="/movimientos/">gastos</Link>
             </h3>
 
-            <span>Total gastado {formatCOP(total)}</span>
+            <span>Categorias {categorias.length} · {formatCOP(total)}</span>
 
             <div className="investment-list">
 

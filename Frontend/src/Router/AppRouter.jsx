@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import CuentaDetail from "../Views/CuentaDetaild";
+import CardDetaild from "../Views/CardDetaild";
+import AccountDetaild from "../Views/AccountDetaild";
 import Inversiones from "../Views/Inversiones";
 import Dashboard from "../Views/Dashboard";
 
@@ -10,7 +10,8 @@ function AppRouter() {
             <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/inversiones" element={<Inversiones />} />
-                <Route path="/cuentas/:id" element={<CuentaDetail />} />
+                <Route path="/cuentas/:id" element={<AccountDetaild />} />
+                <Route path="/tarjeta/:id" element={<CardDetaild />} />
             </Routes>
         </BrowserRouter>
     );

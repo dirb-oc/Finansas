@@ -1,113 +1,159 @@
-
-import { Wallet, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Wallet, TrendingUp, TrendingDown, Activity, } from "lucide-react";
 import formatCOP from "../../Services/utils";
 import "./Totals.css";
 
 export default function Totals({ cuenta }) {
 
+    const ingresos = Number(cuenta.ingresos_total) || 0;
+    const gastos = Number(cuenta.gastos_total) || 0;
+    const saldo = Number(cuenta.saldo) || 0;
+
+    const balance = ingresos - gastos;
+
+    const balanceClass =
+        balance > 0
+            ? "income"
+            : balance < 0
+                ? "expense"
+                : "neutral";
+
     return (
+<section className="account-summary">
 
-        <div className="summary-card">
+    {/* =================================================
+        HEADER
+    ================================================= */}
 
-            <div className="summary-header">
-                <h2>Totales</h2>
-                <p>Resumen global de la cuenta</p>
+    <header className="account-summary__header">
+
+        <div className="account-summary__identity">
+
+            <div className="account-summary__icon">
+                <Wallet size={28} strokeWidth={1.8} />
             </div>
 
-            <div className="balance-card">
+            <div className="account-summary__identity-info">
 
-                <div className="balance-title">
+                <span className="account-summary__label">
+                    Cuenta bancaria
+                </span>
 
-                    <Wallet size={20} />
-                    <span>Balance disponible</span>
-
-                </div>
-
-                <p className="total-value">{formatCOP(cuenta.saldo)}</p>
+                <h2>{cuenta.nombre}</h2>
 
             </div>
-
-            <div className="resume-grid">
-
-                <div className="resume-box income">
-
-                    <div className="resume-top">
-
-                        <div className="resume-icon"><ArrowUpRight size={18} /></div>
-                        <span>Ingresos</span>
-
-                    </div>
-
-                    <p>{formatCOP(cuenta.ingresos_total)}</p>
-
-                </div>
-
-                <div className="resume-box expense">
-
-                    <div className="resume-top">
-
-                        <div className="resume-icon"><ArrowDownRight size={18} /></div>
-                        <span>Gastos</span>
-
-                    </div>
-
-                    <p>{formatCOP(cuenta.gastos_total)}</p>
-
-                </div>
-
-            </div>
-
-            <ImpactSection
-                titulo="Impacto de gastos"
-                color="var(--spent)"
-                data={cuenta.impacto.gastos}
-            />
-
-            <ImpactSection
-                titulo="Impacto de ingresos"
-                color="var(--income)"
-                data={cuenta.impacto.ingresos}
-            />
 
         </div>
 
-    );
-}
+        <span className="account-summary__month">
+            {cuenta.mes_resumen}
+        </span>
 
-const ImpactSection = ({ titulo, color, data }) => (
-    <div className="impact-section">
+    </header>
 
-        <h3>{titulo}</h3>
 
-        {data.map((item) => (
+    {/* =================================================
+        CONTENT
+    ================================================= */}
 
-            <div key={item.nombre} className="impact-row">
+    <div className="account-summary__content">
 
-                <span className="impact-name">
-                    {item.nombre}
+        {/* SALDO PRINCIPAL */}
+
+        <div className="account-summary__balance">
+
+            <span className="account-summary__balance-label">
+                Saldo disponible
+            </span>
+
+            <strong>
+                {formatCOP(saldo)}
+            </strong>
+
+            <div className={`account-summary__balance-status ${balanceClass}`}>
+
+                <Activity size={15} />
+
+                <span>
+                    {balance > 0
+                        ? "Balance positivo este mes"
+                        : balance < 0
+                            ? "Balance negativo este mes"
+                            : "Balance neutro este mes"
+                    }
                 </span>
 
-                <span className="impact-percent">
-                    {item.porcentaje}%
-                </span>
-
-                <div className="impact-bar">
-                    <div
-                        className="impact-fill"
-                        style={{
-                            width: `${item.porcentaje}%`,
-                            background: color
-                        }}
-                    />
-                </div>
-
-                <span className="impact-total">
-                    {formatCOP(item.total)}
-                </span>
+                <strong>
+                    {balance > 0 ? "+" : ""}
+                    {formatCOP(balance)}
+                </strong>
 
             </div>
 
-        ))}
+        </div>
+
+        <div className="account-summary__stats">
+
+            <div className="account-summary__stat">
+
+                <div className="account-summary__stat-icon income">
+                    <TrendingUp size={19} />
+                </div>
+
+                <div className="account-summary__stat-content">
+
+                    <span>Ingresos del mes</span>
+
+                    <strong className="income">
+                        +{formatCOP(ingresos)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div className="account-summary__stat">
+
+                <div className="account-summary__stat-icon expense">
+                    <TrendingDown size={19} />
+                </div>
+
+                <div className="account-summary__stat-content">
+
+                    <span>Gastos del mes</span>
+
+                    <strong className="expense">
+                        -{formatCOP(gastos)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div className="account-summary__stat">
+
+                <div className="account-summary__stat-icon balance">
+                    <Activity size={19} />
+                </div>
+
+                <div className="account-summary__stat-content">
+
+                    <span>Movimiento neto</span>
+
+                    <strong className={balanceClass}>
+                        {balance > 0 ? "+" : ""}
+                        {formatCOP(balance)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
-);
+
+</section>
+    );
+}

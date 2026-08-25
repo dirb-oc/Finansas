@@ -203,3 +203,24 @@ h2 {
         flex-direction: column;
     }
 }
+
+.card-detail__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: .2s all;
+}
+
+.card-detail__back:hover {
+    color: greenyellow;
+}
+
+.card-detail__back:active {
+    transform: scale(0.97);
+}

@@ -1,0 +1,607 @@
+/* =========================================================
+   ACTIVITY GRID
+   ========================================================= */
+
+.credit-card-activity-grid {
+    display: grid;
+
+    grid-template-columns: 1.25fr 1fr;
+
+    gap: 18px;
+
+    margin-top: 18px;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   ACTIVITY CARD
+   ========================================================= */
+
+.credit-card-activity {
+    width: 100%;
+    min-width: 0;
+    height: 440px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 26px 28px;
+
+    background: var(--bg-card);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    overflow: hidden;
+
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.credit-card-activity__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-shrink: 0;
+
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.credit-card-activity__header > svg {
+    width: 22px;
+    height: 22px;
+
+    color: var(--text-secondary);
+
+    opacity: 0.8;
+}
+
+.credit-card-activity__label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--text-secondary);
+
+    font-size: 0.75rem;
+    font-weight: 500;
+
+    letter-spacing: 0.02em;
+}
+
+.credit-card-activity h3 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: 1.2rem;
+    font-weight: 700;
+
+    letter-spacing: -0.015em;
+}
+
+
+/* =========================================================
+   LISTA
+   ========================================================= */
+
+.credit-card-activity__list {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+    margin-right: -10px;
+    padding-right: 10px;
+
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        var(--border)
+        transparent;
+}
+
+
+/* Chrome / Edge / Chromium */
+
+.credit-card-activity__list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.credit-card-activity__list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.credit-card-activity__list::-webkit-scrollbar-thumb {
+    background: var(--border);
+
+    border-radius: 999px;
+}
+
+.credit-card-activity__list::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+
+/* =========================================================
+   COMPRA
+   ========================================================= */
+
+.purchase-item {
+    display: grid;
+
+    grid-template-columns:
+        44px
+        minmax(0, 1fr)
+        auto
+        auto
+        20px;
+
+    align-items: center;
+
+    gap: 14px;
+
+    min-height: 70px;
+
+    padding: 12px 8px;
+
+    border-bottom: 1px solid color-mix(
+        in srgb,
+        var(--border) 70%,
+        transparent
+    );
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.purchase-item:first-child {
+    margin-top: 6px;
+}
+
+.purchase-item:hover {
+    background: color-mix(
+        in srgb,
+        var(--bg-secondary) 65%,
+        transparent
+    );
+
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   ICONO COMPRA
+   ========================================================= */
+
+.purchase-item__icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #60a5fa;
+
+    background: color-mix(
+        in srgb,
+        #60a5fa 10%,
+        var(--bg-secondary)
+    );
+
+    border: 1px solid color-mix(
+        in srgb,
+        #60a5fa 16%,
+        transparent
+    );
+}
+
+
+/* =========================================================
+   INFORMACIÓN COMPRA
+   ========================================================= */
+
+.purchase-item__info {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 5px;
+}
+
+.purchase-item__info strong {
+    overflow: hidden;
+
+    color: var(--text-primary);
+
+    font-size: 0.9rem;
+    font-weight: 650;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.purchase-item__info span {
+    color: var(--text-secondary);
+
+    font-size: 0.74rem;
+}
+
+
+/* =========================================================
+   DETALLES COMPRA
+   ========================================================= */
+
+.purchase-item__details {
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 4px;
+}
+
+.purchase-item__details strong {
+    color: var(--text-primary);
+
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.purchase-item__details span {
+    color: var(--text-secondary);
+
+    font-size: 0.7rem;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+
+.purchase-item__status {
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    font-size: 0.68rem;
+    font-weight: 650;
+
+    white-space: nowrap;
+}
+
+
+/* Pendiente */
+
+.purchase-item__status.pendiente {
+    color: #fbbf24;
+
+    background: color-mix(
+        in srgb,
+        #fbbf24 10%,
+        transparent
+    );
+
+    border: 1px solid color-mix(
+        in srgb,
+        #fbbf24 15%,
+        transparent
+    );
+}
+
+
+/* Pagando */
+
+.purchase-item__status.pagando {
+    color: #60a5fa;
+
+    background: color-mix(
+        in srgb,
+        #60a5fa 10%,
+        transparent
+    );
+
+    border: 1px solid color-mix(
+        in srgb,
+        #60a5fa 15%,
+        transparent
+    );
+}
+
+
+/* Saldada */
+
+.purchase-item__status.saldada {
+    color: #4ade80;
+
+    background: color-mix(
+        in srgb,
+        #4ade80 10%,
+        transparent
+    );
+
+    border: 1px solid color-mix(
+        in srgb,
+        #4ade80 15%,
+        transparent
+    );
+}
+
+
+/* =========================================================
+   FLECHA
+   ========================================================= */
+
+.purchase-item__arrow {
+    color: var(--text-secondary);
+
+    opacity: 0.55;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.purchase-item:hover .purchase-item__arrow {
+    transform: translateX(3px);
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   PAGOS
+   ========================================================= */
+
+.payment-item-row {
+    display: grid;
+
+    grid-template-columns:
+        44px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 14px;
+
+    min-height: 70px;
+
+    padding: 12px 8px;
+
+    border-bottom: 1px solid color-mix(
+        in srgb,
+        var(--border) 70%,
+        transparent
+    );
+}
+
+
+/* =========================================================
+   ICONO PAGO
+   ========================================================= */
+
+.payment-item-row__icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #4ade80;
+
+    background: color-mix(
+        in srgb,
+        #4ade80 10%,
+        var(--bg-secondary)
+    );
+
+    border: 1px solid color-mix(
+        in srgb,
+        #4ade80 16%,
+        transparent
+    );
+}
+
+
+/* =========================================================
+   INFORMACIÓN PAGO
+   ========================================================= */
+
+.payment-item-row__info {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 5px;
+}
+
+.payment-item-row__info strong {
+    overflow: hidden;
+
+    color: var(--text-primary);
+
+    font-size: 0.9rem;
+    font-weight: 650;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.payment-item-row__info span {
+    color: var(--text-secondary);
+
+    font-size: 0.74rem;
+}
+
+
+/* =========================================================
+   MONTO PAGO
+   ========================================================= */
+
+.payment-item-row__amount {
+    color: var(--spent);
+
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.credit-card-activity__empty {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    min-height: 180px;
+
+    color: var(--text-secondary);
+
+    font-size: 0.82rem;
+}
+
+.credit-card-activity__empty svg {
+    width: 28px;
+    height: 28px;
+
+    opacity: 0.45;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .credit-card-activity {
+        height: 420px;
+
+        padding: 24px;
+    }
+
+    .credit-card-activity-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .credit-card-activity {
+        height: 400px;
+
+        padding: 20px;
+    }
+
+    .purchase-item {
+        grid-template-columns:
+            42px
+            minmax(0, 1fr)
+            auto
+            18px;
+
+        gap: 11px;
+    }
+
+    .purchase-item__status {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .credit-card-activity {
+        height: 380px;
+
+        padding: 18px;
+    }
+
+    .credit-card-activity h3 {
+        font-size: 1.1rem;
+    }
+
+    .purchase-item {
+        grid-template-columns:
+            40px
+            minmax(0, 1fr)
+            auto;
+    }
+
+    .purchase-item__arrow {
+        display: none;
+    }
+
+    .purchase-item__details span {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 380px) {
+
+    .credit-card-activity {
+        height: 360px;
+
+        padding: 16px;
+    }
+
+    .purchase-item__icon,
+    .payment-item-row__icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .purchase-item,
+    .payment-item-row {
+        grid-template-columns:
+            38px
+            minmax(0, 1fr)
+            auto;
+
+        gap: 9px;
+    }
+
+}

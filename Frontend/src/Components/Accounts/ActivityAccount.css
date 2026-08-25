@@ -1,0 +1,553 @@
+/* =========================================================
+   COLORS
+   ========================================================= */
+
+.income {
+    color: var(--income) !important;
+}
+
+.expense {
+    color: var(--spent) !important;
+}
+
+.neutral {
+    color: var(--text-primary) !important;
+}
+
+
+/* =========================================================
+   ACTIVITY GRID
+   ========================================================= */
+
+.account-activity-grid {
+    display: grid;
+
+    grid-template-columns: 1.3fr 1fr;
+
+    gap: 18px;
+
+    margin-top: 18px;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   COMMON CARD
+   ========================================================= */
+
+.account-activity,
+.account-distribution {
+    width: 100%;
+    min-width: 0;
+
+    height: 440px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 26px 28px;
+
+    background: var(--bg-card);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   ACTIVITY HEADER
+   ========================================================= */
+
+.account-activity__header,
+.account-distribution__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-shrink: 0;
+
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.account-activity__label,
+.account-distribution__label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--text-secondary);
+
+    font-size: 0.72rem;
+}
+
+
+.account-activity h3,
+.account-distribution h3 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+
+.account-activity__header > svg {
+    color: var(--text-secondary);
+}
+
+
+.account-distribution__header > span {
+    color: var(--text-secondary);
+
+    font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   MOVEMENTS LIST
+   ========================================================= */
+
+.account-activity__list {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+    margin-right: -10px;
+    padding-right: 10px;
+
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+
+.account-activity__list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.account-activity__list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.account-activity__list::-webkit-scrollbar-thumb {
+    background: var(--border);
+
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   MOVEMENT
+   ========================================================= */
+
+.account-movement {
+    display: grid;
+
+    grid-template-columns:
+        42px
+        minmax(0, 1fr)
+        auto
+        auto;
+
+    align-items: center;
+
+    gap: 13px;
+
+    min-height: 70px;
+
+    padding: 11px 7px;
+
+    border-bottom: 1px solid color-mix(
+        in srgb,
+        var(--border) 70%,
+        transparent
+    );
+}
+
+
+/* =========================================================
+   MOVEMENT ICON
+   ========================================================= */
+
+.account-movement__icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+}
+
+
+.account-movement__icon.income {
+    color: #4ade80;
+
+    background: color-mix(
+        in srgb,
+        #4ade80 10%,
+        var(--bg-secondary)
+    );
+}
+
+
+.account-movement__icon.expense {
+    color: #fb7185;
+
+    background: color-mix(
+        in srgb,
+        #fb7185 10%,
+        var(--bg-secondary)
+    );
+}
+
+
+/* =========================================================
+   MOVEMENT INFO
+   ========================================================= */
+
+.account-movement__info {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 4px;
+}
+
+
+.account-movement__info strong {
+    overflow: hidden;
+
+    color: var(--text-primary);
+
+    font-size: 0.88rem;
+    font-weight: 650;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.account-movement__info span {
+    overflow: hidden;
+
+    color: var(--text-secondary);
+
+    font-size: 0.7rem;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.account-movement__date {
+    color: var(--text-secondary);
+
+    font-size: 0.7rem;
+
+    white-space: nowrap;
+}
+
+
+.account-movement__amount {
+    font-size: 0.88rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.account-activity__empty {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    color: var(--text-secondary);
+
+    font-size: 0.8rem;
+}
+
+
+.account-activity__empty svg {
+    opacity: 0.45;
+}
+
+
+/* =========================================================
+   DISTRIBUTION
+   ========================================================= */
+
+.account-distribution {
+    overflow: hidden;
+}
+
+
+.distribution-section {
+    padding: 20px 0;
+
+    border-bottom: 1px solid color-mix(
+        in srgb,
+        var(--border) 70%,
+        transparent
+    );
+
+    overflow-y: auto;
+}
+
+
+.distribution-section:last-child {
+    border-bottom: none;
+}
+
+
+.distribution-section__title {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-bottom: 15px;
+
+    color: var(--text-primary);
+
+    font-size: 0.82rem;
+    font-weight: 650;
+}
+
+
+.distribution-section__title svg {
+    color: var(--text-secondary);
+}
+
+
+/* =========================================================
+   DISTRIBUTION ITEM
+   ========================================================= */
+
+.distribution-item {
+    position: relative;
+
+    margin-bottom: 15px;
+}
+
+
+.distribution-item:last-child {
+    margin-bottom: 0;
+}
+
+
+.distribution-item__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 7px;
+}
+
+
+.distribution-item__header span {
+    overflow: hidden;
+
+    color: var(--text-secondary);
+
+    font-size: 0.76rem;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.distribution-item__header strong {
+    color: var(--text-primary);
+
+    font-size: 0.76rem;
+    font-weight: 650;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   BAR
+   ========================================================= */
+
+.distribution-bar {
+    width: 100%;
+    height: 7px;
+
+    overflow: hidden;
+
+    background: var(--bg-secondary);
+
+    border-radius: 999px;
+}
+
+
+.distribution-bar__fill {
+    height: 100%;
+
+    border-radius: inherit;
+
+    transition: width 0.35s ease;
+}
+
+
+.distribution-bar__fill.income {
+    background: #4ade80;
+}
+
+
+.distribution-bar__fill.expense {
+    background: #fb7185;
+}
+
+
+.distribution-item__percentage {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--text-secondary);
+
+    font-size: 0.65rem;
+
+    text-align: right;
+}
+
+
+.distribution-empty {
+    display: block;
+
+    color: var(--text-secondary);
+
+    font-size: 0.75rem;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 950px) {
+
+    .account-activity-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .account-summary {
+        padding: 22px;
+    }
+
+    .account-summary__stats {
+        grid-template-columns: 1fr;
+    }
+
+    .account-summary__balance strong {
+        font-size: 1.75rem;
+    }
+
+    .account-activity,
+    .account-distribution {
+        height: 420px;
+
+        padding: 22px;
+    }
+
+    .account-movement {
+        grid-template-columns:
+            40px
+            minmax(0, 1fr)
+            auto;
+    }
+
+    .account-movement__date {
+        display: none;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .account-summary {
+        padding: 18px;
+    }
+
+    .account-summary__top {
+        align-items: flex-start;
+    }
+
+    .account-summary__month {
+        display: none;
+    }
+
+    .account-summary__icon {
+        width: 46px;
+        height: 46px;
+    }
+
+    .account-summary h2 {
+        font-size: 1.15rem;
+    }
+
+    .account-summary__balance {
+        margin-top: 22px;
+    }
+
+    .account-summary__balance strong {
+        font-size: 1.6rem;
+    }
+
+    .account-activity,
+    .account-distribution {
+        height: 390px;
+
+        padding: 18px;
+    }
+
+    .account-movement {
+        grid-template-columns:
+            38px
+            minmax(0, 1fr)
+            auto;
+
+        gap: 10px;
+    }
+
+    .account-movement__icon {
+        width: 37px;
+        height: 37px;
+    }
+
+}

@@ -1,18 +1,3 @@
-.distribution-header{
-    margin-bottom:15px;
-}
-
-.distribution-header h3{
-    color:white;
-    margin:0;
-    font-size:24px;
-}
-
-.distribution-header span{
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
 /* Card */
 .credit-card {
     background: #181d20;
@@ -20,6 +5,12 @@
     border-radius: 20px;
     padding: 1rem;
     color: #e5e7eb;
+    transition: .5s all;
+}
+
+.credit-card:hover{
+    background: #202528;
+    border-color: #30373b;
 }
 
 /* Header */
