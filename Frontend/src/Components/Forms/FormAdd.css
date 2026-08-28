@@ -1,0 +1,583 @@
+/* ================================
+   HEADER
+================================ */
+
+.purchase-form__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 24px 28px 20px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.purchase-form__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.purchase-form__header h2 {
+    margin: 0;
+
+    color: var(--text-primary);
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+.purchase-form__header p {
+    margin: 6px 0 0;
+
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.purchase-form__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: transparent;
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.purchase-form__close:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+/* ================================
+   BODY
+================================ */
+
+.purchase-form__body {
+    padding: 24px 28px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ================================
+   INPUTS
+================================ */
+
+.form-input {
+    display: flex;
+    align-items: center;
+
+    min-height: 46px;
+
+    padding: 0 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--bg-card);
+
+    color: var(--text-secondary);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.form-input svg {
+    flex-shrink: 0;
+    margin-right: 10px;
+
+    color: var(--text-secondary);
+
+    transition: color 0.2s ease;
+}
+
+.form-input input,
+.form-input select {
+    width: 100%;
+    height: 44px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: var(--text-primary);
+
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.form-input input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.form-input:focus-within {
+    border-color: var(--text-secondary);
+
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+}
+
+.form-input:focus-within svg {
+    color: var(--text-primary);
+}
+
+/* ================================
+   MONTO
+================================ */
+
+.form-group--amount {
+    margin-bottom: 22px;
+}
+
+.form-group--amount label {
+    font-size: 0.9rem;
+}
+
+.form-input--amount {
+    min-height: 58px;
+
+    border-radius: 12px;
+}
+
+.form-input--amount svg {
+    width: 22px;
+    height: 22px;
+}
+
+.form-input--amount input {
+    height: 56px;
+
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+.form-input--amount input::placeholder {
+    opacity: 0.35;
+}
+
+/* ================================
+   GRID
+================================ */
+
+.purchase-form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    column-gap: 16px;
+}
+
+/* El tipo ocupa todo el ancho */
+.purchase-form__grid .form-group:last-child {
+    grid-column: 1 / -1;
+}
+
+/* ================================
+   SELECT
+================================ */
+
+.form-input select {
+    cursor: pointer;
+}
+
+.form-input select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+/* ================================
+   ERROR
+================================ */
+
+.purchase-form__error {
+    margin-top: 4px;
+    padding: 11px 13px;
+
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 9px;
+
+    background: rgba(239, 68, 68, 0.08);
+
+    color: #ef4444;
+
+    font-size: 0.85rem;
+}
+
+/* ================================
+   FOOTER
+================================ */
+
+.purchase-form__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    padding: 18px 28px 24px;
+
+    border-top: 1px solid var(--border);
+}
+
+.purchase-form__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 42px;
+
+    padding: 0 18px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.purchase-form__button:active {
+    transform: scale(0.98);
+}
+
+.purchase-form__button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.purchase-form__button--secondary {
+    border: 1px solid var(--border);
+
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.purchase-form__button--secondary:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.purchase-form__button--primary {
+    border: 1px solid var(--text-primary);
+
+    background: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+.purchase-form__button--primary:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+/* ================================
+   LOADING
+================================ */
+
+.purchase-form__spinner {
+    animation: purchase-spin 0.8s linear infinite;
+}
+
+@keyframes purchase-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 600px) {
+
+    .purchase-form__header {
+        padding: 20px;
+    }
+
+    .purchase-form__body {
+        padding: 20px;
+    }
+
+    .purchase-form__footer {
+        padding: 16px 20px 20px;
+    }
+
+    .purchase-form__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .purchase-form__grid .form-group:last-child {
+        grid-column: auto;
+    }
+
+    .purchase-form__footer {
+        flex-direction: column-reverse;
+    }
+
+    .purchase-form__button {
+        width: 100%;
+    }
+}
+
+
+
+
+.movement-type {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.movement-type__option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    padding: 0.85rem 1rem;
+
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.movement-type__option input {
+    display: none;
+}
+
+.movement-type__option--active {
+    border-color: var(--accent-color);
+    background: var(--accent-color-soft);
+}
+
+
+.movement-type {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+
+/* -------------------------------- */
+/* Opción */
+/* -------------------------------- */
+
+.movement-type__option {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+
+    padding: 1rem;
+
+    border: 1.5px solid var(--border);
+    border-radius: 0.85rem;
+
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* Ocultar radio */
+
+.movement-type__option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* Hover */
+
+.movement-type__option:hover {
+    transform: translateY(-1px);
+}
+
+
+/* -------------------------------- */
+/* Icono */
+/* -------------------------------- */
+
+.movement-type__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    border-radius: 0.7rem;
+}
+
+
+/* -------------------------------- */
+/* Contenido */
+/* -------------------------------- */
+
+.movement-type__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.movement-type__title {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.movement-type__description {
+    font-size: 0.78rem;
+    opacity: 0.65;
+}
+
+
+/* -------------------------------- */
+/* Check */
+/* -------------------------------- */
+
+.movement-type__check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 20px;
+    height: 20px;
+
+    margin-left: auto;
+
+    border-radius: 50%;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+
+    opacity: 0;
+    transform: scale(0.7);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* -------------------------------- */
+/* GASTO */
+/* -------------------------------- */
+
+.movement-type__option--expense {
+    color: #dc2626;
+}
+
+.movement-type__option--expense .movement-type__icon {
+    background: #fee2e2;
+}
+
+
+/* Gasto seleccionado */
+
+.movement-type__option--expense.movement-type__option--active {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
+}
+
+.movement-type__option--expense.movement-type__option--active
+.movement-type__check {
+    opacity: 1;
+    transform: scale(1);
+
+    background: #ef4444;
+    color: white;
+}
+
+
+/* -------------------------------- */
+/* INGRESO */
+/* -------------------------------- */
+
+.movement-type__option--income {
+    color: #16a34a;
+}
+
+.movement-type__option--income .movement-type__icon {
+    background: #dcfce7;
+}
+
+
+/* Ingreso seleccionado */
+
+.movement-type__option--income.movement-type__option--active {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
+}
+
+.movement-type__option--income.movement-type__option--active
+.movement-type__check {
+    opacity: 1;
+    transform: scale(1);
+
+    background: #22c55e;
+    color: white;
+}
+
+
+/* -------------------------------- */
+/* Responsive */
+/* -------------------------------- */
+
+@media (max-width: 500px) {
+
+    .movement-type {
+        grid-template-columns: 1fr;
+    }
+
+}

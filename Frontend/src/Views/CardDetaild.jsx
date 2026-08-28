@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
 import { getCardById } from "../controllers/cardController";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 import CreditCardSummary from "../Components/CreditCard/CreditCardSummary"
 import CreditCardPurchases from "../Components/CreditCard/CreditCardPurchases"
 import CreditCardPayments from "../Components/CreditCard/CreditCardPayments"
+import FormAddCompra from "../Components/Forms/FormAddCompra"
+import FormAddPagoCredito from "../Components/Forms/FormAddPagoCredito"
+import Modal from "../Components/Modal"
 
 export default function CardDetaild() {
     const { id } = useParams();
     const [tarjeta, setTarjeta] = useState(null);
+    const [openCreate, setOpenCreate] = useState(false);
+    const [openPago, setOpenPago] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        getCardById(id).then(setTarjeta);
-    }, [id]);
+    const refreshCard = () => { getCardById(id).then(setTarjeta); };
+
+    useEffect(() => { refreshCard(); }, [id]);
 
     if (!tarjeta) {
         return <p className="loading">Cargando...</p>;
@@ -38,15 +42,30 @@ export default function CardDetaild() {
 
                 <CreditCardPurchases
                     compras={tarjeta.compras}
-                // onSelectCompra={handleSelectCompra}
+                    onCreta={() => setOpenCreate(true)}
                 />
 
                 <CreditCardPayments
                     compras={tarjeta.compras}
+                    onCreta={() => setOpenPago(true)}
                 />
 
             </div>
 
+            <Modal isOpen={openCreate} onClose={() => setOpenCreate(false)} className={"modal-FormGame"}>
+                <FormAddCompra
+                    tarjeta={id}
+                    onClose={() => setOpenCreate(false)}
+                    onSuccess={() => { refreshCard(); setOpenCreate(false); }}
+                />
+            </Modal>
+
+            <Modal isOpen={openPago} onClose={() => setOpenPago(false)} className={"modal-FormGame"}>
+                <FormAddPagoCredito
+                    onClose={() => setOpenPago(false)}
+                    onSuccess={() => { refreshCard(); setOpenPago(false); }}
+                />
+            </Modal>
 
         </div>
     );

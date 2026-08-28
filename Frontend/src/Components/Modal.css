@@ -1,0 +1,82 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    animation: fadeIn .2s ease;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border-radius: 20px;
+    overflow: hidden;
+    animation: scaleIn .2s ease;
+}
+
+.modal-FormGame {
+    width: 90%;
+    max-width: 790px;
+    max-height: 90%;
+}
+
+.modal-FormAdd{
+    width: 90%;
+    max-width: 480px;
+    padding: 20px 25px;
+}
+
+.modal-Month{
+    width: 90%;
+    max-width: 650px;
+    padding: 25px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: var(--bg-secondary);
+}
+
+.modal-Month::-webkit-scrollbar {
+    width: 7px;
+}
+
+.modal-Month::-webkit-scrollbar-track {
+    background: #0c0c14;
+}
+
+.modal-Month::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+    border-radius: 4px;
+}
+
+.modal-Month::-webkit-scrollbar-thumb:hover {
+    background: #52525b;
+}
+
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+@keyframes scaleIn {
+
+    from {
+        opacity: 0;
+        transform: scale(.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+}

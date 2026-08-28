@@ -151,7 +151,8 @@ class PagoCreditoViewSet(viewsets.ModelViewSet):
 
     queryset = PagoCredito.objects.select_related(
         "compra",
-        "cuenta",
+        "movimiento",
+        "movimiento__cuenta",
         "compra__tarjeta"
     ).all()
 

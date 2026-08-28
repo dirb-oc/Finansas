@@ -1,28 +1,10 @@
-import {
-    CircleCheck,
-    WalletCards
-} from "lucide-react";
+import { CircleCheck, WalletCards } from "lucide-react";
 
-import formatCOP from "../../Services/utils";
+import formatCOP, { formatDate }  from "../../Services/utils";
 import "./CreditCardActivity.css";
 
-export default function CreditCardPayments({
-    compras = []
-}) {
+export default function CreditCardPayments({ compras = [], onCreta }) {
 
-    const formatDate = (date) => {
-        if (!date) return "--";
-
-        return new Date(date).toLocaleDateString("es-CO", {
-            day: "2-digit",
-            month: "short",
-        });
-    };
-
-    /*
-     * Los pagos están dentro de cada compra.
-     * Los convertimos en una sola lista.
-     */
     const pagos = compras
         .flatMap((compra) =>
             (compra.pagos || []).map((pago) => ({
@@ -46,12 +28,10 @@ export default function CreditCardPayments({
                         Actividad
                     </span>
 
-                    <h3>
-                        Pagos
-                    </h3>
+                    <h3>Pagos</h3>
                 </div>
 
-                <WalletCards size={20} />
+                <WalletCards size={20} onClick={(onCreta)} />
 
             </div>
 
@@ -63,10 +43,7 @@ export default function CreditCardPayments({
                     <div className="credit-card-activity__empty">
 
                         <WalletCards size={22} />
-
-                        <span>
-                            No hay pagos registrados
-                        </span>
+                        <span>No hay pagos registrados</span>
 
                     </div>
 

@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.db.models import Sum
 
@@ -48,7 +49,7 @@ class Movimiento(models.Model):
     tipo = models.ForeignKey(TipoMovimiento,on_delete=models.CASCADE)
     monto = models.DecimalField(max_digits=10,decimal_places=2)
     descripcion = models.TextField(blank=True)
-    fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.tipo.nombre} - {self.monto}"
@@ -180,7 +181,6 @@ class CompraCredito(models.Model):
     def valor_cuota(self):
         return self.monto / self.numero_cuotas
 
-
 class PagoCredito(models.Model):
 
     compra = models.ForeignKey(
@@ -189,10 +189,12 @@ class PagoCredito(models.Model):
         related_name="pagos"
     )
 
-    cuenta = models.ForeignKey(
-        Cuenta,
+    movimiento = models.OneToOneField(
+        Movimiento,
         on_delete=models.PROTECT,
-        related_name="pagos_credito"
+        related_name="pago_credito",
+        null=True,
+        blank=True
     )
 
     monto = models.DecimalField(

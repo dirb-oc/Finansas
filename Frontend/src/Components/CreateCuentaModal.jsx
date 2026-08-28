@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createCuenta } from "../controllers/cuentasController";
+import { createCuenta } from "../controllers/AccountController";
 import "./CreateCuentaModal.css";
 
 export default function CreateCuentaModal({ open, onClose, onCreated }) {

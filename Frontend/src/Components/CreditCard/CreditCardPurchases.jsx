@@ -1,24 +1,8 @@
-import {
-    ShoppingCart,
-    ChevronRight
-} from "lucide-react";
-
-import formatCOP from "../../Services/utils";
+import { ShoppingCart, ChevronRight } from "lucide-react";
+import formatCOP, { formatDate } from "../../Services/utils";
 import "./CreditCardActivity.css";
 
-export default function CreditCardPurchases({
-    compras = [],
-    // onSelectCompra
-}) {
-
-    const formatDate = (date) => {
-        if (!date) return "--";
-
-        return new Date(date).toLocaleDateString("es-CO", {
-            day: "2-digit",
-            month: "short",
-        });
-    };
+export default function CreditCardPurchases({compras = [],onCreta}) {
 
     const getEstado = (estado) => {
         switch (estado) {
@@ -46,12 +30,10 @@ export default function CreditCardPurchases({
                         Actividad
                     </span>
 
-                    <h3>
-                        Compras
-                    </h3>
+                    <h3>Compras</h3>
                 </div>
 
-                <ShoppingCart size={20} />
+                <ShoppingCart onClick={(onCreta)} size={20} />
 
             </div>
 

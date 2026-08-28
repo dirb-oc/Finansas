@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createInversion } from "../controllers/inversionesController";
-import { getCuentas } from "../controllers/cuentasController";
+import { getCuentas } from "../controllers/AccountController";
 import CustomSelect from "./CustomSelect"
 import formatCOP from "../Services/utils";
 import "./CreateInversion.css";

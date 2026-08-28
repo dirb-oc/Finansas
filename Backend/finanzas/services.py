@@ -66,14 +66,7 @@ def realizar_pago_credito(compra, cuenta, monto, fecha):
             "La cuenta no tiene saldo suficiente."
         )
 
-    pago = PagoCredito.objects.create(
-        compra=compra,
-        cuenta=cuenta,
-        monto=monto,
-        fecha=fecha
-    )
-
-    Movimiento.objects.create(
+    movimiento = Movimiento.objects.create(
         cuenta=cuenta,
         tipo=compra.tipo,
         monto=monto,
@@ -81,7 +74,14 @@ def realizar_pago_credito(compra, cuenta, monto, fecha):
         fecha=fecha
     )
 
-    if pago.compra.saldo_pendiente <= 0:
+    pago = PagoCredito.objects.create(
+        compra=compra,
+        movimiento=movimiento,
+        monto=monto,
+        fecha=fecha
+    )
+
+    if compra.saldo_pendiente <= 0:
         compra.estado = "saldada"
     else:
         compra.estado = "pagando"

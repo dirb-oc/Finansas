@@ -242,24 +242,26 @@ class CompraCreditoSerializer(serializers.ModelSerializer):
 
 class PagoCreditoSerializer(serializers.ModelSerializer):
 
+    cuenta = serializers.PrimaryKeyRelatedField(
+        queryset=Cuenta.objects.all(),
+        write_only=True
+    )
+
     class Meta:
         model = PagoCredito
         fields = [
             "id",
             "compra",
             "cuenta",
+            "movimiento",
             "monto",
             "fecha",
         ]
 
-    def create(self, validated_data):
-
-        return realizar_pago_credito(
-            compra=validated_data["compra"],
-            cuenta=validated_data["cuenta"],
-            monto=validated_data["monto"],
-            fecha=validated_data["fecha"],
-        )
+        read_only_fields = [
+            "id",
+            "movimiento",
+        ]
 
 class CompraCreditoDetailSerializer(serializers.ModelSerializer):
 
