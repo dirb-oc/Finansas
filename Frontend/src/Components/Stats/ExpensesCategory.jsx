@@ -1,21 +1,15 @@
-import formatCOP from "../../Services/utils";
+import formatCOP, {formatPercentage} from "../../Services/utils";
 import { Link } from "react-router-dom";
 import "./ExpensesCategory.css";
 
 export default function ExpensesCategory({ categorias }) {
 
-    const total = categorias.reduce(
-        (sum, categoria) => sum + categoria.monto,
-        0
-    );
+    const total = categorias.reduce( (sum, categoria) => sum + categoria.monto, 0 );
 
     return (
         <div className="chart-card Investment">
 
-            <h3>
-                Distribución de <Link to="/movimientos/">gastos</Link>
-            </h3>
-
+            <h3>Distribución de <Link to="/movimientos/">gastos</Link></h3>
             <span>Categorias {categorias.length} · {formatCOP(total)}</span>
 
             <div className="investment-list">
@@ -27,10 +21,7 @@ export default function ExpensesCategory({ categorias }) {
                         <div className="empty-icon">💸</div>
 
                         <h4>No hay gastos este mes</h4>
-
-                        <p>
-                            Cuando registres gastos aparecerán aquí.
-                        </p>
+                        <p>Cuando registres gastos aparecerán aquí.</p>
 
                     </div>
 
@@ -45,20 +36,12 @@ export default function ExpensesCategory({ categorias }) {
 
                         return (
 
-                            <div
-                                key={categoria.nombre}
-                                className="investment-item"
-                            >
+                            <div key={categoria.nombre} className="investment-item" >
 
                                 <div className="investment-info">
 
-                                    <span className="investment-name">
-                                        {categoria.nombre}
-                                    </span>
-
-                                    <span className="investment-money">
-                                        {formatCOP(categoria.monto)}
-                                    </span>
+                                    <span className="investment-name">{categoria.nombre}</span>
+                                    <span className="investment-money">{formatCOP(categoria.monto)}</span>
 
                                 </div>
 
@@ -68,16 +51,12 @@ export default function ExpensesCategory({ categorias }) {
 
                                         <div
                                             className="progress-fill_investment"
-                                            style={{
-                                                width: `${porcentaje}%`
-                                            }}
+                                            style={{ width: `${porcentaje}%` }}
                                         />
 
                                     </div>
 
-                                    <span className="investment-percent">
-                                        {porcentaje.toFixed(1)}%
-                                    </span>
+                                    <span className="investment-percent">{formatPercentage(porcentaje)}</span>
 
                                 </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createInversion } from "../controllers/inversionesController";
+import { createInversion } from "../controllers/investmentsController";
 import { getCuentas } from "../controllers/AccountController";
 import CustomSelect from "./CustomSelect"
 import formatCOP from "../Services/utils";

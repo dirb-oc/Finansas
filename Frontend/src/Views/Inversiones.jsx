@@ -1,4 +1,4 @@
-import { getInversiones, getResumenInversiones } from "../controllers/inversionesController";
+import { getInversiones, getResumenInversiones } from "../controllers/investmentsController";
 import { Landmark, TrendingUp, PiggyBank, Percent } from "lucide-react";
 import { useEffect, useState } from "react";
 import FinalizarInversion from "../Components/FinalizarInversion";

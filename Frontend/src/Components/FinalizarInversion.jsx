@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { finalizarInversion } from "../controllers/inversionesController";
+import { finalizarInversion } from "../controllers/investmentsController";
 import formatCOP from "../Services/utils";
 import "./CreateInversion.css";
 

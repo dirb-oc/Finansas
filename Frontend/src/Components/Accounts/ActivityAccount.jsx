@@ -1,8 +1,8 @@
-import { ArrowUpRight, ArrowDownRight, TrendingUp, TrendingDown, Activity, } from "lucide-react";
-import formatCOP from "../../Services/utils";
+import { ArrowUpRight, ArrowDownRight, TrendingUp, TrendingDown, Activity } from "lucide-react";
+import formatCOP, {formatDate} from "../../Services/utils";
 import "./ActivityAccount.css";
 
-export default function ActivityAccount({ cuenta, onEditMovimiento }) {
+export default function ActivityAccount({ cuenta, onEditMovimiento, onCreateMovimiento }) {
 
     const groupByMonth = (movimientos) => {
         return movimientos.reduce((acc, mov) => {
@@ -32,17 +32,13 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
                 <div className="account-activity__header">
 
                     <div>
-                        <span className="account-activity__label">
-                            Actividad
-                        </span>
-
+                        <span className="account-activity__label">Actividad</span>
                         <h3>Movimientos</h3>
                     </div>
 
-                    <Activity size={21} />
+                    <Activity size={21} onClick={() => onCreateMovimiento()} />
 
                 </div>
-
 
                 <div className="account-activity__list">
 
@@ -50,61 +46,33 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
 
                         cuenta.movimientos.map((mov) => {
 
-                            const ingreso =
-                                mov.tipo_base === "ingreso";
-
+                            const ingreso = mov.tipo_base === "ingreso";
                             const monto = Number(mov.monto);
-
-                            const fecha = new Date(
-                                mov.fecha
-                            ).toLocaleDateString("es-CO", {
-                                day: "2-digit",
-                                month: "short",
-                            });
+                            const fecha = formatDate(mov.fecha);
 
                             return (
                                 <div
                                     key={mov.id}
                                     className="account-movement"
+                                    onClick={() => onEditMovimiento?.(mov) }
                                 >
 
-                                    <div
-                                        className={`account-movement__icon ${ingreso
-                                            ? "income"
-                                            : "expense"
-                                            }`}
-                                    >
-                                        {ingreso
-                                            ? <ArrowUpRight size={21} />
-                                            : <ArrowDownRight size={21} />
-                                        }
+                                    <div className={`account-movement__icon ${ ingreso ? "income" : "expense" }`} >
+                                        {ingreso ? <ArrowUpRight size={21} /> : <ArrowDownRight size={21} /> }
                                     </div>
-
 
                                     <div className="account-movement__info">
 
-                                        <strong>
-                                            {mov.tipo_nombre}
-                                        </strong>
-
-                                        <span>
-                                            {mov.descripcion || fecha}
-                                        </span>
+                                        <strong>{mov.tipo_nombre}</strong>
+                                        <span>{mov.descripcion || fecha}</span>
 
                                     </div>
 
 
-                                    <div className="account-movement__date">
-                                        {fecha}
-                                    </div>
+                                    <div className="account-movement__date">{fecha}</div>
 
 
-                                    <strong
-                                        className={`account-movement__amount ${ingreso
-                                            ? "income"
-                                            : "expense"
-                                            }`}
-                                    >
+                                    <strong className={`account-movement__amount ${ ingreso ? "income" : "expense"}`} >
                                         {ingreso ? "+" : "-"}
                                         {formatCOP(monto)}
                                     </strong>
@@ -117,9 +85,8 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
 
                         <div className="account-activity__empty">
                             <Activity size={28} />
-                            <span>
-                                No hay movimientos registrados
-                            </span>
+
+                            <span>No hay movimientos registrados</span>
                         </div>
 
                     )}
@@ -127,6 +94,8 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
                 </div>
 
             </div>
+
+            {/* DISTRIBUCIÓN */}
 
             <div className="account-distribution">
 
@@ -140,11 +109,10 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
                         <h3>Distribución</h3>
                     </div>
 
-                    <span>
-                        {cuenta.mes_resumen}
-                    </span>
+                    <span>{cuenta.mes_resumen}</span>
 
                 </div>
+
 
                 <div className="distribution-section">
 
@@ -160,20 +128,13 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
 
                             cuenta.impacto.gastos.map((item) => (
 
-                                <div
-                                    key={item.nombre}
-                                    className="distribution-item"
-                                >
+                                <div key={item.nombre} className="distribution-item" >
 
                                     <div className="distribution-item__header">
 
-                                        <span>
-                                            {item.nombre}
-                                        </span>
+                                        <span>{item.nombre}</span>
 
-                                        <strong>
-                                            {formatCOP(item.total)}
-                                        </strong>
+                                        <strong>{formatCOP(item.total)}</strong>
 
                                     </div>
 
@@ -182,9 +143,7 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
 
                                         <div
                                             className="distribution-bar__fill expense"
-                                            style={{
-                                                width: `${item.porcentaje}%`
-                                            }}
+                                            style={{ width: `${item.porcentaje}%` }}
                                         />
 
                                     </div>
@@ -200,15 +159,14 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
 
                         ) : (
 
-                            <span className="distribution-empty">
-                                Sin gastos registrados
-                            </span>
+                            <span className="distribution-empty">Sin gastos registrados</span>
 
                         )}
 
                     </div>
 
                 </div>
+
 
                 <div className="distribution-section">
 
@@ -224,20 +182,12 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
 
                             cuenta.impacto.ingresos.map((item) => (
 
-                                <div
-                                    key={item.nombre}
-                                    className="distribution-item"
-                                >
+                                <div key={item.nombre} className="distribution-item" >
 
                                     <div className="distribution-item__header">
 
-                                        <span>
-                                            {item.nombre}
-                                        </span>
-
-                                        <strong>
-                                            {formatCOP(item.total)}
-                                        </strong>
+                                        <span>{item.nombre}</span>
+                                        <strong>{formatCOP(item.total)}</strong>
 
                                     </div>
 
@@ -246,9 +196,7 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
 
                                         <div
                                             className="distribution-bar__fill income"
-                                            style={{
-                                                width: `${item.porcentaje}%`
-                                            }}
+                                            style={{ width: `${item.porcentaje}%` }}
                                         />
 
                                     </div>
@@ -264,9 +212,7 @@ export default function ActivityAccount({ cuenta, onEditMovimiento }) {
 
                         ) : (
 
-                            <span className="distribution-empty">
-                                Sin ingresos registrados
-                            </span>
+                            <span className="distribution-empty">Sin ingresos registrados</span>
 
                         )}
 

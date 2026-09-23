@@ -1,12 +1,24 @@
-from ..models import Cuenta, Movimiento, Inversion, TarjetaCredito
 from dateutil.relativedelta import relativedelta
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.utils.timezone import now
-from django.db.models import Sum, Min
+from django.db.models import Sum
 from django.utils import timezone
+from datetime import timedelta
+from decimal import Decimal
 
-EXCLUDE_NAMES = ["Inicio", "Transferencia", "Inversión", "Reintegro inversión"]
+from ..models import Cuenta, Movimiento, TarjetaCredito
+from inversiones.Services.estadisticas_service import patrimonio_historico, inversiones_actuales, cantidad_invertida
+
+ZERO = Decimal("0")
+
+EXCLUDE_NAMES = [
+    "Inicio",
+    "Transferencia",
+    "Inversión",
+    "Reintegro de inversión",
+    "Venta de activo",
+]
 
 @api_view(["GET"])
 def StatsView(request):
@@ -15,7 +27,7 @@ def StatsView(request):
     fin_mes = inicio_mes + relativedelta(months=1)
 
     disponible = get_disponible()
-    invertido = get_invertido()
+    invertido = cantidad_invertida()
 
     return Response({
         "disponible": disponible,
@@ -24,8 +36,8 @@ def StatsView(request):
         "balance_mes": get_balance_periodo(inicio_mes, fin_mes)["balance"],
         "flujo_6_meses": get_flujo_meses(hoy),
         "cuentas": get_cuentas(),
-        "patrimonio_6_meses": get_patrimonio6Meses(),
-        "inversiones": get_inversiones(),
+        "patrimonio_6_meses": patrimonio_ultimos_6_meses(),
+        "inversiones": inversiones_actuales(),
         "deuda": get_deuda(),
         "gastos_categoria": get_gastos_categoria(inicio_mes, fin_mes),
         "tarjetas": get_tarjetas(),
@@ -35,78 +47,49 @@ def StatsView(request):
 def get_disponible():
     return sum(c.saldo_actual() for c in Cuenta.objects.all())
 
-def get_invertido():
-    return (
-        Inversion.objects.filter(estado="activa")
-        .aggregate(total=Sum("monto_inicial"))["total"]
-        or 0
-    )
+def patrimonio_ultimos_6_meses():
+    hoy = now().date()
 
-def get_patrimonio6Meses():
-    primer_movimiento = Movimiento.objects.aggregate(fecha=Min("fecha"))["fecha"]
+    primer_mes = hoy.replace(day=1) - relativedelta(months=5)
+
     patrimonio_mensual = []
-    
-    if primer_movimiento:
-    
-        mes = primer_movimiento.replace(day=1)
-        ultimo_mes = now().replace(day=1)
 
-        while True:
+    for i in range(6):
+        mes = primer_mes + relativedelta(months=i)
+        siguiente_mes = mes + relativedelta(months=1)
 
-            siguiente_mes = mes + relativedelta(months=1)
-        
-            ingresos = Movimiento.objects.filter(
-                fecha__lt=siguiente_mes,
-                tipo__tipo="ingreso"
-            ).exclude(
-                tipo_id=11
-            ).aggregate(total=Sum("monto"))["total"] or 0
-        
-            gastos = Movimiento.objects.filter(
-                fecha__lt=siguiente_mes,
-                tipo__tipo="gasto"
-            ).exclude(
-                tipo_id=2
-            ).aggregate(total=Sum("monto"))["total"] or 0
-        
-            inicial = Movimiento.objects.filter(
-                fecha__lt=siguiente_mes,
-                tipo_id=1
-            ).aggregate(total=Sum("monto"))["total"] or 0
-        
-            patrimonio_mensual.append({
-                "mes": mes.strftime("%Y-%m"),
-                "total": float(ingresos + inicial - gastos)
-            })
-        
-            if mes.year == ultimo_mes.year and mes.month == ultimo_mes.month:
-                break
-            
-            mes = siguiente_mes
+        fecha_cierre = siguiente_mes - timedelta(days=1)
+
+        patrimonio_mensual.append({
+            "mes": mes.strftime("%Y-%m"),
+            "total": patrimonio_historico(fecha_cierre),
+        })
 
     return patrimonio_mensual
 
 def get_balance_periodo(inicio, fin):
-    ingresos = (
-        Movimiento.objects.filter(
-            tipo__tipo="ingreso",
+
+    movimientos = (
+        Movimiento.objects
+        .filter(
             fecha__gte=inicio,
             fecha__lt=fin,
         )
         .exclude(tipo__nombre__in=EXCLUDE_NAMES)
+    )
+
+    ingresos = (
+        movimientos
+        .filter(tipo__tipo="ingreso")
         .aggregate(total=Sum("monto"))["total"]
-        or 0
+        or ZERO
     )
 
     gastos = (
-        Movimiento.objects.filter(
-            tipo__tipo="gasto",
-            fecha__gte=inicio,
-            fecha__lt=fin,
-        )
-        .exclude(tipo__nombre__in=EXCLUDE_NAMES)
+        movimientos
+        .filter(tipo__tipo="gasto")
         .aggregate(total=Sum("monto"))["total"]
-        or 0
+        or ZERO
     )
 
     return {
@@ -151,18 +134,6 @@ def get_cuentas():
     cuentas.sort(key=lambda x: x["saldo"], reverse=True)
 
     return cuentas
-
-def get_inversiones():
-
-    inversiones = list(
-        Inversion.objects.filter(estado="activa")
-        .values("id", "nombre", "monto_inicial")
-    )
-
-    for inv in inversiones:
-        inv["monto"] = float(inv.pop("monto_inicial"))
-
-    return inversiones
 
 def get_deuda():
 

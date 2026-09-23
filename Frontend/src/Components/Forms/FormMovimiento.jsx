@@ -1,42 +1,51 @@
-import {
-    CalendarDays,
-    DollarSign,
-    FileText,
-    Loader2,
-    ArrowDownCircle,
-    ArrowUpCircle
-} from "lucide-react";
-
+import { CalendarDays, FileText, Loader2, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { createMovimiento, updateMovimiento } from "../../controllers/movimientosController";
+import { getTipos } from "../../controllers/tiposController";
+import { handleFormattedPriceChange, getToday} from "../../Services/utils";
 import { useEffect, useState } from "react";
-
-import {
-    createMovimiento
-} from "../../controllers/movimientosController";
-
-import {
-    getTipos
-} from "../../controllers/tiposController";
-
 import "./FormAdd.css";
 
-
-function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
+function FormMovimiento({ cuenta, movimiento = null, onSuccess, onClose }) {
 
     const [tipos, setTipos] = useState([]);
-
     const [tipoMovimiento, setTipoMovimiento] = useState("gasto");
-
     const [loading, setLoading] = useState(false);
     const [loadingTipos, setLoadingTipos] = useState(true);
 
     const [error, setError] = useState(null);
 
-    const [form, setForm] = useState({
-        tipo: "",
-        monto: "",
-        descripcion: "",
-        fecha: "",
-    });
+    const [form, setForm] = useState({ tipo: "", monto: "", montoFormatted: "", descripcion: "", fecha: getToday(), });
+
+
+    useEffect(() => {
+        if (!movimiento) {
+
+            setTipoMovimiento("gasto");
+            setForm({ tipo: "", monto: "", montoFormatted: "", descripcion: "", fecha: getToday(), });
+
+            return;
+        }
+
+        const monto = movimiento.monto || "";
+
+        setTipoMovimiento(movimiento.tipo_base);
+
+        setForm({
+            tipo: String(movimiento.tipo),
+            monto: String(monto),
+            montoFormatted: monto
+                ? Number(monto).toLocaleString("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                    minimumFractionDigits: 0,
+                })
+                : "",
+            descripcion: movimiento.descripcion || "",
+            fecha: movimiento.fecha
+                ? movimiento.fecha.split("T")[0]
+                : "",
+        });
+    }, [movimiento]);
 
     useEffect(() => {
 
@@ -69,51 +78,20 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
 
     }, []);
 
+    const tiposFiltrados = tipos.filter(tipo => tipo.tipo === tipoMovimiento);
 
-    /*
-     * Cuando cambia entre gasto / ingreso,
-     * limpiamos el tipo seleccionado.
-     */
-
-    useEffect(() => {
-
-        setForm(prev => ({
-            ...prev,
-            tipo: "",
-        }));
-
-    }, [tipoMovimiento]);
-
-
-    /*
-     * Tipos filtrados
-     */
-
-    const tiposFiltrados = tipos.filter(
-        tipo => tipo.tipo === tipoMovimiento
-    );
-
-
-    /*
-     * Cambios del formulario
-     */
-
+    // Cambios del formulario
     const handleChange = (e) => {
-
         const { name, value } = e.target;
-
-        setForm(prev => ({
-            ...prev,
-            [name]: value,
-        }));
-
+        setForm(prev => ({ ...prev, [name]: value, }));
     };
 
+    const handleTipoMovimientoChange = (tipo) => {
+        setTipoMovimiento(tipo);
+        setForm(prev => ({ ...prev, tipo: "" }));
+    };
 
-    /*
-     * Guardar movimiento
-     */
-
+    // Guardar movimiento
     const handleSave = async () => {
 
         try {
@@ -121,52 +99,54 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
             setLoading(true);
             setError(null);
 
-            await createMovimiento({
-
+            const data = {
                 cuenta: Number(cuenta),
-
                 tipo: Number(form.tipo),
-
                 monto: Number(form.monto),
-
                 descripcion: form.descripcion,
-
                 fecha: form.fecha,
+            };
 
-            });
+            if (movimiento) {
+                await updateMovimiento(movimiento.id, data);
+            } else {
+                await createMovimiento(data);
+            }
 
             onSuccess?.();
 
         } catch (err) {
 
             setError(
-                err.message || "Error al registrar el movimiento"
+                err.message ||
+                "Error al guardar el movimiento"
             );
 
         } finally {
 
             setLoading(false);
-
         }
     };
-
 
     return (
 
         <>
-
             <div className="purchase-form__header">
-
                 <div>
+                    <span className="purchase-form__eyebrow">Movimiento</span>
 
-                    <span className="purchase-form__eyebrow">
-                        Movimiento
-                    </span>
-
-                    <h2>Nuevo movimiento</h2>
+                    <h2>
+                        {movimiento
+                            ? "Editar movimiento"
+                            : "Nuevo movimiento"
+                        }
+                    </h2>
 
                     <p>
-                        Registra un ingreso o gasto en esta cuenta.
+                        {movimiento
+                            ? "Modifica los datos de este movimiento."
+                            : "Registra un ingreso o gasto en esta cuenta."
+                        }
                     </p>
 
                 </div>
@@ -192,31 +172,23 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
                 ) : (
 
                     <>
-
                         {/* Tipo de movimiento */}
-
                         <div className="form-group">
 
-                            <label>
-                                Tipo de movimiento
-                            </label>
-
+                            <label>Tipo de movimiento</label>
                             <div className="movement-type">
 
                                 <label
                                     className={`movement-type__option movement-type__option--expense ${tipoMovimiento === "gasto"
-                                            ? "movement-type__option--active"
-                                            : ""
+                                        ? "movement-type__option--active"
+                                        : ""
                                         }`}
                                 >
                                     <input
                                         type="radio"
-                                        name="tipoMovimiento"
                                         value="gasto"
                                         checked={tipoMovimiento === "gasto"}
-                                        onChange={(e) =>
-                                            setTipoMovimiento(e.target.value)
-                                        }
+                                        onChange={() => handleTipoMovimientoChange("gasto")}
                                     />
 
                                     <div className="movement-type__icon">
@@ -241,18 +213,15 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
 
                                 <label
                                     className={`movement-type__option movement-type__option--income ${tipoMovimiento === "ingreso"
-                                            ? "movement-type__option--active"
-                                            : ""
+                                        ? "movement-type__option--active"
+                                        : ""
                                         }`}
                                 >
                                     <input
                                         type="radio"
-                                        name="tipoMovimiento"
                                         value="ingreso"
                                         checked={tipoMovimiento === "ingreso"}
-                                        onChange={(e) =>
-                                            setTipoMovimiento(e.target.value)
-                                        }
+                                        onChange={() => handleTipoMovimientoChange("ingreso")}
                                     />
 
                                     <div className="movement-type__icon">
@@ -260,13 +229,9 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
                                     </div>
 
                                     <div className="movement-type__content">
-                                        <span className="movement-type__title">
-                                            Ingreso
-                                        </span>
+                                        <span className="movement-type__title">Ingreso</span>
 
-                                        <span className="movement-type__description">
-                                            Dinero que entra
-                                        </span>
+                                        <span className="movement-type__description">Dinero que entra</span>
                                     </div>
 
                                     <div className="movement-type__check">
@@ -284,36 +249,26 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
 
                         <div className="form-group">
 
-                            <label htmlFor="tipo">
-                                Categoría
-                            </label>
+                            <label htmlFor="tipo">Categoría</label>
 
                             <div className="form-input">
 
                                 <FileText size={18} />
 
                                 <select
-                                    id="tipo"
                                     name="tipo"
                                     value={form.tipo}
                                     onChange={handleChange}
                                 >
-
                                     <option value="">
                                         Selecciona una categoría
                                     </option>
 
-                                    {tiposFiltrados.map(tipo => (
-
-                                        <option
-                                            key={tipo.id}
-                                            value={tipo.id}
-                                        >
+                                    {tiposFiltrados.map((tipo) => (
+                                        <option key={tipo.id} value={String(tipo.id)}>
                                             {tipo.nombre}
                                         </option>
-
                                     ))}
-
                                 </select>
 
                             </div>
@@ -327,24 +282,20 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
 
                             <div className="form-group form-group--amount">
 
-                                <label htmlFor="monto">
-                                    Monto
-                                </label>
+                                <label htmlFor="monto">Monto</label>
 
                                 <div className="form-input form-input--amount">
-
-                                    <DollarSign size={20} />
 
                                     <input
                                         id="monto"
                                         name="monto"
-                                        type="number"
-                                        min="0"
-                                        step="0.01"
-                                        value={form.monto}
-                                        onChange={handleChange}
-                                        placeholder="0.00"
-                                        autoFocus
+                                        type="text"
+                                        inputMode="numeric"
+                                        value={form.montoFormatted || ""}
+                                        onChange={(e) =>
+                                            handleFormattedPriceChange(e, setForm, "monto")
+                                        }
+                                        placeholder="$10.000"
                                     />
 
                                 </div>
@@ -356,9 +307,7 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
 
                             <div className="form-group">
 
-                                <label htmlFor="fecha">
-                                    Fecha
-                                </label>
+                                <label htmlFor="fecha">Fecha</label>
 
                                 <div className="form-input">
 
@@ -446,22 +395,15 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
                 >
 
                     {loading ? (
-
                         <>
-
                             <Loader2
                                 size={18}
                                 className="purchase-form__spinner"
                             />
-
                             Guardando...
-
                         </>
-
                     ) : (
-
-                        "Registrar movimiento"
-
+                        movimiento ? "Guardar cambios" : "Registrar movimiento"
                     )}
 
                 </button>
@@ -474,5 +416,4 @@ function FormAddMovimiento({ cuenta, onSuccess, onClose }) {
 
 }
 
-
-export default FormAddMovimiento;
+export default FormMovimiento;

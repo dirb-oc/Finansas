@@ -1,35 +1,64 @@
+import { getCardById, CreateCompra, EditCompra, CreatePago, EditPago} from "../controllers/cardController";
 import { useEffect, useState } from "react";
-import { getCardById } from "../controllers/cardController";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
-import CreditCardSummary from "../Components/CreditCard/CreditCardSummary"
-import CreditCardPurchases from "../Components/CreditCard/CreditCardPurchases"
-import CreditCardPayments from "../Components/CreditCard/CreditCardPayments"
-import FormAddCompra from "../Components/Forms/FormAddCompra"
-import FormAddPagoCredito from "../Components/Forms/FormAddPagoCredito"
-import Modal from "../Components/Modal"
+import CreditCardSummary from "../Components/CreditCard/CreditCardSummary";
+import CreditCardPurchases from "../Components/CreditCard/CreditCardPurchases";
+import CreditCardPayments from "../Components/CreditCard/CreditCardPayments";
+
+import FormPagoCredito from "../Components/Forms/FormPagoCredito";
+import FormCompra from "../Components/Forms/FormCompra";
+import Modal from "../Components/Modal";
 
 export default function CardDetaild() {
     const { id } = useParams();
+    const navigate = useNavigate();
+
     const [tarjeta, setTarjeta] = useState(null);
     const [openCreate, setOpenCreate] = useState(false);
     const [openPago, setOpenPago] = useState(false);
-    const navigate = useNavigate();
-
+    
     const refreshCard = () => { getCardById(id).then(setTarjeta); };
-
+    
     useEffect(() => { refreshCard(); }, [id]);
 
-    if (!tarjeta) {
-        return <p className="loading">Cargando...</p>;
-    }
+    const [compraSeleccionada, setCompraSeleccionada] = useState(null);
+    
+    const handleCreateCompra = () => { setCompraSeleccionada(null); setOpenCreate(true); };
+    const handleEditCompra = (compra) => { setCompraSeleccionada(compra); setOpenCreate(true); };
+    const handleCloseCompra = () => { setOpenCreate(false); setCompraSeleccionada(null); };
+
+    const handleSubmitCompra = async (data) => {
+        if (compraSeleccionada) {
+            await EditCompra(compraSeleccionada.id, data);
+        } else {
+            await CreateCompra(data);
+        }
+    };
+
+    const [pagoSeleccionado, setPagoSeleccionado] = useState(null);
+
+    const handleCreatePago = () => { setPagoSeleccionado(null); setOpenPago(true); };
+    const handleEditPago = (pago) => { setPagoSeleccionado(pago); setOpenPago(true); };
+    const handleClosePago = () => { setOpenPago(false); setPagoSeleccionado(null); };
+
+    const handleSubmitPago = async (data) => {
+        if (pagoSeleccionado) {
+            await EditPago( pagoSeleccionado.id, data );
+        } else {
+            await CreatePago(data);
+        }
+    };
+
+    if (!tarjeta) { return <p className="loading">Cargando...</p>; }
 
     return (
         <div className="General">
 
-            <h1 className="title">Mi Tarjeta de Credito</h1>
-            <p className="subtitle card-detail__back" onClick={() => navigate(-1)}>
+            <h1 className="title" > Mi Tarjeta de Crédito </h1>
+
+            <p className="subtitle card-detail__back" onClick={() => navigate(-1)} >
                 <ArrowLeft size={18} />
                 <span>Volver</span>
             </p>
@@ -42,28 +71,40 @@ export default function CardDetaild() {
 
                 <CreditCardPurchases
                     compras={tarjeta.compras}
-                    onCreta={() => setOpenCreate(true)}
+                    onCreate={handleCreateCompra}
+                    onEditCompra={handleEditCompra}
                 />
 
                 <CreditCardPayments
                     compras={tarjeta.compras}
-                    onCreta={() => setOpenPago(true)}
+                    onCreta={handleCreatePago}
+                    onEditPago={handleEditPago}
                 />
 
             </div>
 
-            <Modal isOpen={openCreate} onClose={() => setOpenCreate(false)} className={"modal-FormGame"}>
-                <FormAddCompra
+            <Modal isOpen={openCreate} onClose={handleCloseCompra} className="modal-FormGame" >
+                <FormCompra
                     tarjeta={id}
-                    onClose={() => setOpenCreate(false)}
-                    onSuccess={() => { refreshCard(); setOpenCreate(false); }}
+                    compra={compraSeleccionada}
+                    onSubmit={handleSubmitCompra}
+                    onClose={handleCloseCompra}
+                    onSuccess={() => {
+                        refreshCard();
+                        handleCloseCompra();
+                    }}
                 />
             </Modal>
 
-            <Modal isOpen={openPago} onClose={() => setOpenPago(false)} className={"modal-FormGame"}>
-                <FormAddPagoCredito
-                    onClose={() => setOpenPago(false)}
-                    onSuccess={() => { refreshCard(); setOpenPago(false); }}
+            <Modal isOpen={openPago} onClose={handleClosePago} className="modal-FormGame" >
+                <FormPagoCredito
+                    pago={pagoSeleccionado}
+                    onSubmit={handleSubmitPago}
+                    onClose={handleClosePago}
+                    onSuccess={() => {
+                        refreshCard();
+                        handleClosePago();
+                    }}
                 />
             </Modal>
 

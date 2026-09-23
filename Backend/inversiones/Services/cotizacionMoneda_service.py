@@ -1,0 +1,41 @@
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from decimal import Decimal
+
+from ..models import CotizacionMoneda
+
+
+def crear_cotizacion_moneda(*, moneda, fecha, valor):
+
+    if fecha > timezone.localdate():
+        raise ValidationError({
+            "fecha": "No puedes registrar una cotización futura."
+        })
+
+    if valor <= 0:
+        raise ValidationError({
+            "valor": "El valor debe ser mayor a 0."
+        })
+
+    return CotizacionMoneda.objects.create(
+        moneda=moneda,
+        fecha=fecha,
+        valor=valor
+    )
+
+
+def obtener_cotizacion_moneda_historica(moneda, fecha):
+    if moneda.codigo == "COP":
+        return Decimal("1")
+
+    cotizacion = (
+        CotizacionMoneda.objects
+        .filter( moneda=moneda, fecha__lte=fecha, )
+        .order_by("-fecha")
+        .first()
+    )
+
+    if cotizacion is None:
+        return None
+
+    return cotizacion.valor

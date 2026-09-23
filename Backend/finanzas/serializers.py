@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import Sum
 from rest_framework import serializers
 from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito, PagoCredito
-from .services import realizar_pago_credito, calcular_ciclo_actual, get_proximo_pago
+from .Services.card_service import calcular_ciclo_actual, get_proximo_pago
 from django.utils.timezone import localtime
 
 class CuentaSerializer(serializers.ModelSerializer):
@@ -246,6 +246,8 @@ class PagoCreditoSerializer(serializers.ModelSerializer):
         queryset=Cuenta.objects.all(),
         write_only=True
     )
+
+    movimiento = MovimientoSerializer(read_only=True)
 
     class Meta:
         model = PagoCredito

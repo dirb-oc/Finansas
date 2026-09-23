@@ -1,119 +1,196 @@
-import { CalendarDays, CreditCard, DollarSign, FileText, Layers3, Loader2 } from "lucide-react";
+import { CalendarDays, CreditCard, FileText, Layers3, Loader2 } from "lucide-react";
 import { getTiposGasto } from "../../controllers/tiposController";
-import { CreateCompra } from "../../controllers/cardController";
 import { useEffect, useState } from "react";
+import { handleFormattedPriceChange, getToday} from "../../Services/utils";
+
 import "./FormAdd.css";
 
-function FormAddCompra({ tarjeta, onSuccess, onClose }) {
+function FormCompra({ tarjeta, compra = null, onSubmit, onSuccess, onClose }) {
 
     const [tipos, setTipos] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingTipos, setLoadingTipos] = useState(true);
     const [error, setError] = useState(null);
 
     const [form, setForm] = useState({
         monto: "",
+        montoFormatted: "",
         descripcion: "",
-        fecha_compra: "",
+        fecha_compra: getToday(),
         numero_cuotas: 1,
         tipo: "",
     });
 
+    // Cargar tipos de gasto
     useEffect(() => {
+
         const loadTipos = async () => {
+
             try {
+
+                setLoadingTipos(true);
+
                 const data = await getTiposGasto();
+
                 setTipos(data);
+
             } catch (err) {
+
                 setError(
-                    err.message || "Error al cargar los tipos de gasto"
+                    err.message ||
+                    "Error al cargar los tipos de gasto"
                 );
+
+            } finally {
+
+                setLoadingTipos(false);
+
             }
         };
 
         loadTipos();
+
     }, []);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
 
-        setForm(prev => ({
-            ...prev,
-            [name]: value,
-        }));
+    /*
+     * Cargar datos cuando estamos editando
+     */
+    useEffect(() => {
+        if (!compra) {
+            setForm({
+                monto: "",
+                montoFormatted: "",
+                descripcion: "",
+                fecha_compra: getToday(),
+                numero_cuotas: 1,
+                tipo: "",
+            });
+            return;
+        }
+
+        const monto = compra.monto || "";
+
+        setForm({
+            monto: String(monto),
+            montoFormatted: monto
+                ? Number(monto).toLocaleString("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                    minimumFractionDigits: 0,
+                })
+                : "",
+            descripcion: compra.descripcion || "",
+            fecha_compra: compra.fecha_compra
+                ? compra.fecha_compra.split("T")[0]
+                : "",
+            numero_cuotas: compra.numero_cuotas || 1,
+            tipo: compra.tipo ? String(compra.tipo) : "",
+        });
+    }, [compra]);
+
+    const handleChange = (e) => {
+
+        const { name, value } = e.target;
+        setForm(prev => ({ ...prev, [name]: value, }));
+
     };
 
     const handleSave = async () => {
+
         try {
+
             setLoading(true);
             setError(null);
 
-            await CreateCompra({
+            const data = {
                 monto: Number(form.monto),
                 descripcion: form.descripcion,
                 fecha_compra: form.fecha_compra,
                 numero_cuotas: Number(form.numero_cuotas),
-                tarjeta,
+                tarjeta: Number(tarjeta),
                 tipo: Number(form.tipo),
-            });
+            };
+
+            await onSubmit(data);
 
             onSuccess?.();
 
         } catch (err) {
+
             setError(
-                err.message || "Error al registrar la compra"
+                err.message ||
+                "Error al guardar la compra"
             );
+
         } finally {
+
             setLoading(false);
+
         }
     };
 
+    const isEditing = Boolean(compra);
+
+
     return (
         <>
+
             <div className="purchase-form__header">
+
                 <div>
-                    <span className="purchase-form__eyebrow">
-                        Tarjeta de crédito
-                    </span>
 
-                    <h2>Nueva compra</h2>
+                    <span className="purchase-form__eyebrow">Tarjeta de crédito</span>
 
-                    <p>Registra una compra realizada con esta tarjeta.</p>
+                    <h2>{isEditing ? "Editar compra" : "Nueva compra"}</h2>
+
+                    <p>
+                        {isEditing
+                            ? "Modifica los datos de esta compra."
+                            : "Registra una compra realizada con esta tarjeta."
+                        }
+                    </p>
+
                 </div>
 
             </div>
 
+
             <div className="purchase-form__body">
 
                 {/* Monto */}
+
                 <div className="form-group form-group--amount">
-                    <label htmlFor="monto">
-                        Monto
-                    </label>
+
+                    <label htmlFor="monto">Monto</label>
 
                     <div className="form-input form-input--amount">
-                        <DollarSign size={20} />
 
                         <input
                             id="monto"
                             name="monto"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={form.monto}
-                            onChange={handleChange}
-                            placeholder="0.00"
-                            autoFocus
+                            type="text"
+                            inputMode="numeric"
+                            value={form.montoFormatted || ""}
+                            onChange={(e) =>
+                                handleFormattedPriceChange(e, setForm, "monto")
+                            }
+                            placeholder="$10.000"
                         />
+
                     </div>
+
                 </div>
 
+
                 {/* Descripción */}
+
                 <div className="form-group">
-                    <label htmlFor="descripcion">
-                        Descripción
-                    </label>
+
+                    <label htmlFor="descripcion">Descripción</label>
 
                     <div className="form-input">
+
                         <FileText size={18} />
 
                         <input
@@ -124,18 +201,22 @@ function FormAddCompra({ tarjeta, onSuccess, onClose }) {
                             onChange={handleChange}
                             placeholder="Ej. Compra supermercado"
                         />
+
                     </div>
+
                 </div>
+
 
                 <div className="purchase-form__grid">
 
                     {/* Fecha */}
+
                     <div className="form-group">
-                        <label htmlFor="fecha_compra">
-                            Fecha de compra
-                        </label>
+
+                        <label htmlFor="fecha_compra">Fecha de compra</label>
 
                         <div className="form-input">
+
                             <CalendarDays size={18} />
 
                             <input
@@ -145,16 +226,20 @@ function FormAddCompra({ tarjeta, onSuccess, onClose }) {
                                 value={form.fecha_compra}
                                 onChange={handleChange}
                             />
+
                         </div>
+
                     </div>
 
+
                     {/* Cuotas */}
+
                     <div className="form-group">
-                        <label htmlFor="numero_cuotas">
-                            Número de cuotas
-                        </label>
+
+                        <label htmlFor="numero_cuotas">Número de cuotas</label>
 
                         <div className="form-input">
+
                             <Layers3 size={18} />
 
                             <input
@@ -165,16 +250,20 @@ function FormAddCompra({ tarjeta, onSuccess, onClose }) {
                                 value={form.numero_cuotas}
                                 onChange={handleChange}
                             />
+
                         </div>
+
                     </div>
 
+
                     {/* Tipo */}
+
                     <div className="form-group">
-                        <label htmlFor="tipo">
-                            Tipo de gasto
-                        </label>
+
+                        <label htmlFor="tipo">Tipo de gasto</label>
 
                         <div className="form-input">
+
                             <CreditCard size={18} />
 
                             <select
@@ -182,32 +271,39 @@ function FormAddCompra({ tarjeta, onSuccess, onClose }) {
                                 name="tipo"
                                 value={form.tipo}
                                 onChange={handleChange}
+                                disabled={loadingTipos}
                             >
-                                <option value="">
-                                    Selecciona un tipo
-                                </option>
+
+                                <option value="">Selecciona un tipo</option>
 
                                 {tipos.map(tipo => (
+
                                     <option
                                         key={tipo.id}
-                                        value={tipo.id}
+                                        value={String(tipo.id)}
                                     >
                                         {tipo.nombre}
                                     </option>
+
                                 ))}
+
                             </select>
+
                         </div>
+
                     </div>
 
                 </div>
 
+
                 {error && (
-                    <div className="purchase-form__error">
-                        {error}
-                    </div>
+
+                    <div className="purchase-form__error">{error}</div>
+
                 )}
 
             </div>
+
 
             <div className="purchase-form__footer">
 
@@ -220,25 +316,31 @@ function FormAddCompra({ tarjeta, onSuccess, onClose }) {
                     Cancelar
                 </button>
 
+
                 <button
                     type="button"
                     className="purchase-form__button purchase-form__button--primary"
                     onClick={handleSave}
-                    disabled={loading}
+                    disabled={loading || loadingTipos}
                 >
+
                     {loading ? (
+
                         <>
                             <Loader2
                                 size={18}
                                 className="purchase-form__spinner"
                             />
+
                             Guardando...
                         </>
+
                     ) : (
-                        <>
-                            Registrar compra
-                        </>
+
+                        isEditing ? "Guardar cambios" : "Registrar compra"
+
                     )}
+
                 </button>
 
             </div>
@@ -247,4 +349,5 @@ function FormAddCompra({ tarjeta, onSuccess, onClose }) {
     );
 }
 
-export default FormAddCompra;
+
+export default FormCompra;

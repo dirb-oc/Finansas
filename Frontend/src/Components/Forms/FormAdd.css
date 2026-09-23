@@ -228,7 +228,7 @@
     margin-top: 4px;
     padding: 11px 13px;
 
-    border: 1px solid rgba(239, 68, 68, 0.25);
+    border: 1px solid rgba(68, 94, 72, 0.25);
     border-radius: 9px;
 
     background: rgba(239, 68, 68, 0.08);
@@ -519,7 +519,8 @@
 }
 
 .movement-type__option--expense .movement-type__icon {
-    background: #fee2e2;
+    background: #281c2a;
+    color: #dd4142;
 }
 
 
@@ -549,7 +550,8 @@
 }
 
 .movement-type__option--income .movement-type__icon {
-    background: #dcfce7;
+    background: #17272a;
+    color: #00cd82;
 }
 
 

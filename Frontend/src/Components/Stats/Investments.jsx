@@ -1,13 +1,10 @@
-import formatCOP from "../../Services/utils";
+import formatCOP, {formatPercentage} from "../../Services/utils";
 import { Link } from "react-router-dom";
 import "./Investments.css";
 
 export default function Investments({ inversiones }) {
 
-    const total = inversiones.reduce(
-        (sum, inv) => sum + inv.monto,
-        0
-    );
+    const total = inversiones.reduce( (sum, inv) => sum + inv.monto, 0 );
 
     return (
         <div className="chart-card Investment">
@@ -43,7 +40,6 @@ export default function Investments({ inversiones }) {
                                     <div className="investment-info">
 
                                         <span className="investment-name"> {inv.nombre} </span>
-
                                         <span className="investment-money">{formatCOP(inv.monto)}</span>
 
                                     </div>
@@ -56,7 +52,7 @@ export default function Investments({ inversiones }) {
 
                                         </div>
 
-                                        <span className="investment-percent">{porcentaje.toFixed(1)}%</span>
+                                        <span className="investment-percent">{formatPercentage(porcentaje)}</span>
 
                                     </div>
 
@@ -68,8 +64,6 @@ export default function Investments({ inversiones }) {
                     )}
 
                 </div>
-
-
 
             </div>
 

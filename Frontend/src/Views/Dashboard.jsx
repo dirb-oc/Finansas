@@ -24,15 +24,20 @@ export default function Dashboard() {
         { title: "Balance Mes", value: stats.balance_mes, type: stats.balance_mes >= 0 ? "ingresos" : "gastos" },
     ];
 
+    const fechaActual = new Date();
+
+    const mes = fechaActual.toLocaleString("es-CO", { month: "long" });
+    const year = fechaActual.getFullYear();
+
     return (
         <div className="General">
             <h1 className="title">Mi Patrimonio</h1>
-            <p className="subtitle">Resumen financiero · Agosto 2026</p>
+            <p className="subtitle">Resumen financiero · {mes.charAt(0).toUpperCase() + mes.slice(1)} {year}</p>
 
             <div className="divisor" />
 
             <div className="cards">
-                {cards.map((card, index) => ( <StatCard key={index} card={card} /> ))}
+                {cards.map((card, index) => (<StatCard key={index} card={card} />))}
             </div>
 
             <div className="Stats">

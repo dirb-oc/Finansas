@@ -420,12 +420,12 @@
 
 
 .distribution-bar__fill.income {
-    background: #4ade80;
+    background: var(--income);
 }
 
 
 .distribution-bar__fill.expense {
-    background: #fb7185;
+    background: var(--spent);
 }
 
 
@@ -551,3 +551,5 @@
     }
 
 }
+
+

@@ -1,22 +1,16 @@
-import { ShoppingCart, ChevronRight } from "lucide-react";
 import formatCOP, { formatDate } from "../../Services/utils";
+import { ShoppingCart } from "lucide-react";
 import "./CreditCardActivity.css";
 
-export default function CreditCardPurchases({compras = [],onCreta}) {
+export default function CreditCardPurchases({compras = [],onCreate, onEditCompra}) {
 
     const getEstado = (estado) => {
         switch (estado) {
-            case "pendiente":
-                return "Pendiente";
+            case "pendiente": return "Pendiente";
+            case "pagando": return "Pagando";
+            case "saldada": return "Saldada";
 
-            case "pagando":
-                return "Pagando";
-
-            case "saldada":
-                return "Saldada";
-
-            default:
-                return estado;
+            default: return estado;
         }
     };
 
@@ -26,14 +20,11 @@ export default function CreditCardPurchases({compras = [],onCreta}) {
             <div className="credit-card-activity__header">
 
                 <div>
-                    <span className="credit-card-activity__label">
-                        Actividad
-                    </span>
-
+                    <span className="credit-card-activity__label">Actividad</span>
                     <h3>Compras</h3>
                 </div>
 
-                <ShoppingCart onClick={(onCreta)} size={20} />
+                <ShoppingCart onClick={onCreate} size={20} />
 
             </div>
 
@@ -51,37 +42,21 @@ export default function CreditCardPurchases({compras = [],onCreta}) {
 
                     compras.map((compra) => (
 
-                        <div
-                            key={compra.id}
-                            className="purchase-item"
-                            onClick={() =>
-                                onSelectCompra?.(compra)
-                            }
-                        >
+                        <div key={compra.id} className="purchase-item" onClick={() => onEditCompra?.(compra)} >
 
-                            <div className="purchase-item__icon">
-                                <ShoppingCart size={18} />
-                            </div>
-
+                            <div className="purchase-item__icon"><ShoppingCart size={18} /></div>
 
                             <div className="purchase-item__info">
 
-                                <strong>
-                                    {compra.descripcion}
-                                </strong>
-
-                                <span>
-                                    {formatDate(compra.fecha_compra)}
-                                </span>
+                                <strong>{compra.descripcion}</strong>
+                                <span>{formatDate(compra.fecha_compra)}</span>
 
                             </div>
 
 
                             <div className="purchase-item__details">
 
-                                <strong>
-                                    {formatCOP(compra.monto)}
-                                </strong>
+                                <strong>{formatCOP(compra.monto)}</strong>
 
                                 <span>
                                     {compra.numero_cuotas > 1
@@ -92,17 +67,9 @@ export default function CreditCardPurchases({compras = [],onCreta}) {
                             </div>
 
 
-                            <div
-                                className={`purchase-item__status ${compra.estado}`}
-                            >
+                            <div className={`purchase-item__status ${compra.estado}`} >
                                 {getEstado(compra.estado)}
                             </div>
-
-
-                            <ChevronRight
-                                className="purchase-item__arrow"
-                                size={18}
-                            />
 
                         </div>
 

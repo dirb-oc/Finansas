@@ -2,7 +2,9 @@ from .serializers import CuentaSerializer, TipoMovimientoSerializer, MovimientoS
 from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito, PagoCredito
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .services import realizar_pago_credito, crear_compra_credito
+from .Services.pago_service import realizar_pago_credito, editar_pago_credito
+from .Services.movimiento_service import crear_movimiento, actualizar_movimiento
+from .Services.compra_service import crear_compra_credito, editar_compra_credito
 from django.db.models import Sum
 from rest_framework import viewsets
 from django.db import transaction
@@ -57,8 +59,30 @@ class TipoMovimientoViewSet(viewsets.ModelViewSet):
 
 class MovimientoViewSet(viewsets.ModelViewSet):
 
-    queryset = Movimiento.objects.all()
+    queryset = Movimiento.objects.select_related("cuenta","tipo").all()
+
     serializer_class = MovimientoSerializer
+
+    def perform_create(self, serializer):
+
+        crear_movimiento(
+            cuenta=serializer.validated_data["cuenta"],
+            tipo=serializer.validated_data["tipo"],
+            monto=serializer.validated_data["monto"],
+            descripcion=serializer.validated_data.get("descripcion", ""),
+            fecha=serializer.validated_data.get("fecha")
+        )
+
+    def perform_update(self, serializer):
+
+        actualizar_movimiento(
+            movimiento=self.get_object(),
+            cuenta=serializer.validated_data["cuenta"],
+            tipo=serializer.validated_data["tipo"],
+            monto=serializer.validated_data["monto"],
+            descripcion=serializer.validated_data.get("descripcion",""),
+            fecha=serializer.validated_data.get("fecha")
+        )
 
 class InversionViewSet(viewsets.ModelViewSet):
 
@@ -147,6 +171,13 @@ class CompraCreditoViewSet(viewsets.ModelViewSet):
             **serializer.validated_data
         )
 
+    def perform_update(self, serializer): 
+
+        editar_compra_credito( 
+            compra=self.get_object(), 
+            **serializer.validated_data
+        )
+
 class PagoCreditoViewSet(viewsets.ModelViewSet):
 
     queryset = PagoCredito.objects.select_related(
@@ -154,7 +185,7 @@ class PagoCreditoViewSet(viewsets.ModelViewSet):
         "movimiento",
         "movimiento__cuenta",
         "compra__tarjeta"
-    ).all()
+    )
 
     serializer_class = PagoCreditoSerializer
 
@@ -162,4 +193,15 @@ class PagoCreditoViewSet(viewsets.ModelViewSet):
 
         realizar_pago_credito(
             **serializer.validated_data
+        )
+
+    def perform_update(self, serializer):
+
+        pago = self.get_object()
+
+        editar_pago_credito(
+            pago=pago,
+            cuenta=pago.movimiento.cuenta,
+            monto=serializer.validated_data["monto"],
+            fecha=serializer.validated_data["fecha"],
         )
