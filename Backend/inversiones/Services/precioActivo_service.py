@@ -41,3 +41,20 @@ def obtener_precio_activo_historico(activo, fecha):
 
 
     return precio
+
+
+def obtener_precio_activo(activo, fecha):
+    """
+    Obtiene el precio histórico exacto del activo.
+    """
+    precio = PrecioActivo.objects.filter(
+        activo=activo,
+        fecha=fecha,
+    ).first()
+
+    if not precio:
+        raise ValidationError(
+            f"No existe precio de {activo.ticker} para {fecha}."
+        )
+
+    return precio.precio

@@ -14,6 +14,7 @@ from .Services.operacionActivo_service import crear_operacion_activo
 from .Services.dividendoActivo_service import crear_dividendo_activo
 from .Services.cotizacionMoneda_service import crear_cotizacion_moneda
 from .Services.rendimientoCuenta_service import crear_rendimiento_cuenta
+from .Services.movimientoBroker_service import crear_movimiento_broker
 
 
 class CDTViewSet(ModelViewSet):
@@ -70,11 +71,52 @@ class CotizacionMonedaViewSet(ModelViewSet):
         )
 
 
+# Broker
+class BrokerViewSet(ModelViewSet):
+
+    queryset = (
+        Broker.objects
+        .prefetch_related("monedas")
+        .all()
+        .order_by("nombre")
+    )
+
+    serializer_class = BrokerSerializer
+
+class MovimientoBrokerViewSet(ModelViewSet):
+
+    queryset = (
+        MovimientoBroker.objects
+        .select_related(
+            "broker",
+            "moneda",
+            "movimiento",
+            "movimiento__cuenta",
+        )
+        .all()
+        .order_by("-movimiento__fecha")
+    )
+
+    serializer_class = MovimientoBrokerSerializer
+
+    def perform_create(self, serializer):
+
+        crear_movimiento_broker(
+            broker=serializer.validated_data["broker"],
+            cuenta=serializer.validated_data["cuenta"],
+            moneda=serializer.validated_data["moneda"],
+            monto=serializer.validated_data["monto"],
+            costo=serializer.validated_data.get("costo", 0),
+            tipo=serializer.validated_data["tipo"],
+            fecha=serializer.validated_data["fecha"],
+        )
+
+
+# Activos
 class ActivoViewSet(ModelViewSet):
 
     queryset = Activo.objects.all().order_by("ticker")
     serializer_class = ActivoSerializer
-
 
 class PrecioActivoViewSet(ModelViewSet):
 
@@ -89,30 +131,32 @@ class PrecioActivoViewSet(ModelViewSet):
             precio=serializer.validated_data["precio"],
         )
 
-
 class OperacionActivoViewSet(ModelViewSet):
 
     queryset = (
         OperacionActivo.objects
-        .select_related("activo", "movimiento")
+        .select_related("activo", "broker")
         .all()
-        .order_by("-movimiento__fecha")
+        .order_by("-fecha", "-id")
     )
 
     serializer_class = OperacionActivoSerializer
 
     def perform_create(self, serializer):
 
-        crear_operacion_activo(
+        operacion = crear_operacion_activo(
             activo=serializer.validated_data["activo"],
-            cuenta=serializer.validated_data["cuenta"],
+            broker=serializer.validated_data["broker"],
             tipo=serializer.validated_data["tipo"],
             cantidad=serializer.validated_data["cantidad"],
-            comision=serializer.validated_data.get("comision",0),
-            fecha=serializer.validated_data.get("fecha"),
+            fecha=serializer.validated_data["fecha"],
+            comision=serializer.validated_data["comision"],
         )
 
+        serializer.instance = operacion
 
+
+# Dividendos
 class DividendoActivoViewSet(ModelViewSet):
 
     queryset = (
@@ -134,6 +178,7 @@ class DividendoActivoViewSet(ModelViewSet):
         )
 
 
+# Rendimientos
 class RendimientoCuentaViewSet(ModelViewSet):
 
     queryset = (
@@ -157,6 +202,7 @@ class RendimientoCuentaViewSet(ModelViewSet):
         )
 
 
+# Estadisticas
 class EstadisticasView(APIView):
 
     def get(self, request):

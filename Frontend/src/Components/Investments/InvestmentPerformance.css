@@ -1,0 +1,202 @@
+/* =========================================================
+   INVESTMENTS — RENDIMIENTO
+   ========================================================= */
+
+.invest-performance {
+    margin-top: 24px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    overflow: hidden;
+
+    min-width: 0;
+}
+
+/* HEADER */
+
+.invest-performance__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 24px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.invest-performance__label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--text-secondary);
+
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.invest-performance h3 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+}
+
+/* MÉTRICAS */
+
+.invest-performance__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+
+    padding: 20px 24px;
+}
+
+.invest-metric {
+    --metric-color: var(--income);
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 14px;
+
+    padding: 18px;
+
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.invest-metric--total { --metric-color: var(--total); }
+.invest-metric--realizada { --metric-color: var(--income); }
+.invest-metric--no-realizada { --metric-color: var(--accent-blue); }
+
+.invest-metric.is-negative { --metric-color: var(--spent); }
+
+.invest-metric__icon {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: var(--metric-color);
+
+    background: color-mix(
+        in srgb,
+        var(--metric-color) 12%,
+        transparent
+    );
+}
+
+.invest-metric__content {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 0;
+}
+
+.invest-metric__content span {
+    color: var(--text-secondary);
+
+    font-size: 0.78rem;
+}
+
+.invest-metric__content strong {
+    color: var(--metric-color);
+
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* RENTABILIDADES */
+
+.invest-performance__yields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+
+    padding: 0 24px 20px;
+}
+
+.invest-performance__yield {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    background: color-mix(in srgb, var(--bg-secondary) 55%, transparent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.invest-performance__yield span {
+    color: var(--text-secondary);
+
+    font-size: 0.8rem;
+}
+
+.invest-performance__yield strong {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.invest-performance__yield.is-positive strong {
+    color: var(--income);
+}
+
+.invest-performance__yield.is-negative strong {
+    color: var(--spent);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+    .invest-performance__metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .invest-performance__yields {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .invest-performance__header {
+        padding: 16px 18px;
+    }
+
+    .invest-performance__metrics {
+        padding: 14px 18px;
+    }
+
+    .invest-performance__yields {
+        padding: 0 18px 18px;
+    }
+
+    .invest-metric {
+        padding: 15px;
+    }
+
+}

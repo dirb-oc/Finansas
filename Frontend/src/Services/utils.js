@@ -27,6 +27,12 @@ export const formatPercentage = (value) => {
     })}%`;
 };
 
+export const formatNumber = (value) => {
+    return new Intl.NumberFormat("es-CO", {
+        maximumFractionDigits: 2,
+    }).format(value ?? 0);
+};
+
 export const handleFormattedPriceChange = (
     e,
     setForm,

@@ -39,3 +39,26 @@ def obtener_cotizacion_moneda_historica(moneda, fecha):
         return None
 
     return cotizacion.valor
+
+
+
+def obtener_cotizacion(moneda, fecha):
+    """
+    Obtiene la cotización exacta de una moneda en una fecha.
+    No utiliza cotizaciones de días anteriores.
+    """
+
+    if moneda.codigo == "COP":
+        return Decimal("1")
+    
+    cotizacion = CotizacionMoneda.objects.filter(
+        moneda=moneda,
+        fecha=fecha,
+    ).first()
+
+    if not cotizacion:
+        raise ValidationError(
+            f"No existe cotización de {moneda.codigo} para {fecha}."
+        )
+
+    return cotizacion.valor

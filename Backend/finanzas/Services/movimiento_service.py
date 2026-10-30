@@ -1,7 +1,12 @@
-from ..models import ( Movimiento )
+from decimal import Decimal
+
 from django.db.models import Sum, Q
 from django.db import transaction
+
+from ..models import ( Movimiento, Cuenta )
 from rest_framework.exceptions import ValidationError
+
+ZERO = Decimal("0")
 
 @transaction.atomic
 def crear_movimiento( *, cuenta, tipo, monto, descripcion="", fecha=None ):
@@ -40,6 +45,7 @@ def crear_movimiento( *, cuenta, tipo, monto, descripcion="", fecha=None ):
     )
 
     return movimiento
+
 
 @transaction.atomic
 def actualizar_movimiento( *, movimiento, cuenta, tipo, monto, descripcion="", fecha=None ):
@@ -97,3 +103,43 @@ def actualizar_movimiento( *, movimiento, cuenta, tipo, monto, descripcion="", f
     movimiento.save()
 
     return movimiento
+
+def saldo_total_cuentas_hasta(fecha):
+    return sum((saldo_cuenta_hasta(cuenta, fecha)for cuenta in Cuenta.objects.all()),ZERO)
+
+
+def saldo_cuenta_hasta(cuenta, fecha):
+    ingresos = (
+        Movimiento.objects
+        .filter(
+            cuenta=cuenta,
+            fecha__lte=fecha,
+            tipo__tipo="ingreso"
+        )
+        .aggregate(total=Sum("monto"))["total"]
+        or ZERO
+    )
+
+    gastos = (
+        Movimiento.objects
+        .filter(
+            cuenta=cuenta,
+            fecha__lte=fecha,
+            tipo__tipo="gasto"
+        )
+        .aggregate(total=Sum("monto"))["total"]
+        or ZERO
+    )
+
+    inicial = (
+        Movimiento.objects
+        .filter(
+            cuenta=cuenta,
+            fecha__lte=fecha,
+            tipo__tipo="inicial"
+        )
+        .aggregate(total=Sum("monto"))["total"]
+        or ZERO
+    )
+
+    return inicial + ingresos - gastos

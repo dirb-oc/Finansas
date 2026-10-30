@@ -9,6 +9,9 @@ from decimal import Decimal
 
 from ..models import Cuenta, Movimiento, TarjetaCredito
 from inversiones.Services.estadisticas_service import patrimonio_historico, inversiones_actuales, cantidad_invertida
+from inversiones.Services.broker_service import estadisticas_rentabilidad_brokers
+from inversiones.Services.CDT_service import resultado_cdts_periodo
+
 
 ZERO = Decimal("0")
 
@@ -47,6 +50,7 @@ def StatsView(request):
 def get_disponible():
     return sum(c.saldo_actual() for c in Cuenta.objects.all())
 
+
 def patrimonio_ultimos_6_meses():
     hoy = now().date()
 
@@ -68,7 +72,6 @@ def patrimonio_ultimos_6_meses():
     return patrimonio_mensual
 
 def get_balance_periodo(inicio, fin):
-
     movimientos = (
         Movimiento.objects
         .filter(
@@ -92,9 +95,27 @@ def get_balance_periodo(inicio, fin):
         or ZERO
     )
 
+    estadisticas = estadisticas_rentabilidad_brokers(
+        fecha_inicio=inicio,
+        fecha_fin=fin,
+    )
+
+    costos_broker = estadisticas["costos_entrada_cop"]
+
+    resultado_cdt = resultado_cdts_periodo(inicio, fin)
+
+    # Evitar doble conteo: los resultados positivos son ingresos
+    # y los negativos son gastos.
+    ingresos += max(resultado_cdt, ZERO)
+    gastos += abs(min(resultado_cdt, ZERO))
+
+    gastos += costos_broker
+
     return {
         "ingresos": ingresos,
         "gastos": gastos,
+        "gastos_broker": costos_broker,
+        "resultado_cdts": resultado_cdt,
         "balance": ingresos - gastos,
     }
 

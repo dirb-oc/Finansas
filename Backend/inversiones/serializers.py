@@ -4,6 +4,7 @@ from finanzas.models import Cuenta
 from .models import *
 
 from .Services.operacionActivo_service import cantidad_disponible_activo
+from .Services.broker_service import obtener_saldo_broker
 
 # ─────────────────────────────
 # Renta fija
@@ -42,17 +43,11 @@ class CDTSerializer(serializers.ModelSerializer):
             "movimiento_reintegro",
         ]
 
-
 class FinalizarCDTSerializer(serializers.Serializer):
 
-    monto_recibido = serializers.DecimalField(
-        max_digits=15,
-        decimal_places=2
-    )
+    monto_recibido = serializers.DecimalField( max_digits=15, decimal_places=2 )
+    fecha_cierre = serializers.DateField( required=False )
 
-    fecha_cierre = serializers.DateField(
-        required=False
-    )
 
 # ─────────────────────────────
 # Monedas
@@ -72,7 +67,6 @@ class MonedaSerializer(serializers.ModelSerializer):
             "id",
         ]
 
-
 class CotizacionMonedaSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -87,6 +81,56 @@ class CotizacionMonedaSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
         ]
+
+
+# ─────────────────────────────
+# Broker
+
+class BrokerSerializer(serializers.ModelSerializer):
+
+    saldos = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Broker
+        fields = [
+            "id",
+            "nombre",
+            "monedas",
+            "activo",
+            "saldos",
+        ]
+
+    def get_saldos(self, obj):
+        return [
+            {
+                "moneda": moneda.codigo,
+                "saldo": obtener_saldo_broker(
+                    broker=obj,
+                    moneda=moneda,
+                ),
+            }
+            for moneda in obj.monedas.all()
+        ]
+
+class MovimientoBrokerSerializer(serializers.ModelSerializer):
+
+    cuenta = serializers.PrimaryKeyRelatedField( queryset=Cuenta.objects.all(), write_only=True )
+    fecha = serializers.DateField( write_only=True )
+
+    class Meta:
+        model = MovimientoBroker
+        fields = [
+            "id",
+            "broker",
+            "moneda",
+            "tipo",
+            "monto",
+            "costo",
+            "movimiento",
+            "cuenta",
+            "fecha"
+        ]
+        read_only_fields = ["id", "movimiento"]
 
 
 # ─────────────────────────────
@@ -115,7 +159,6 @@ class ActivoSerializer(serializers.ModelSerializer):
     def get_cantidad(self, obj):
         return cantidad_disponible_activo(obj)
 
-
 class PrecioActivoSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -137,26 +180,32 @@ class PrecioActivoSerializer(serializers.ModelSerializer):
 
 class OperacionActivoSerializer(serializers.ModelSerializer):
 
-    cuenta = serializers.PrimaryKeyRelatedField( queryset=Cuenta.objects.all(), write_only=True )
-    fecha = serializers.DateField( write_only=True )
-
     class Meta:
         model = OperacionActivo
         fields = [
             "id",
             "activo",
-            "cuenta",
+            "broker",
             "tipo",
             "cantidad",
             "comision",
             "fecha",
-            "movimiento",
         ]
+        read_only_fields = ["id"]
 
-        read_only_fields = [
-            "id",
-            "movimiento",
-        ]
+    def validate_cantidad(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "La cantidad debe ser mayor a 0."
+            )
+        return value
+
+    def validate_comision(self, value):
+        if value < 0:
+            raise serializers.ValidationError(
+                "La comisión no puede ser negativa."
+            )
+        return value
 
 
 # ─────────────────────────────

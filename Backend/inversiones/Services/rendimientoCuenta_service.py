@@ -1,9 +1,14 @@
-from django.core.exceptions import ValidationError
+from decimal import Decimal
+from django.db.models import Sum
 from django.db import transaction
+from django.core.exceptions import ValidationError
 
 from ..models import RendimientoCuenta
 from finanzas.models import TipoMovimiento
 from finanzas.Services.movimiento_service import crear_movimiento
+
+
+ZERO = Decimal("0")
 
 
 @transaction.atomic
@@ -38,22 +43,15 @@ def crear_rendimiento_cuenta( *, cuenta, fecha, monto, ):
 
 
 def obtener_rendimientos_estadisticas():
-    rendimientos = (
+    total = (
         RendimientoCuenta.objects
-        .select_related(
-            "movimiento",
-            "movimiento__cuenta",
-        )
-        .order_by("-movimiento__fecha")
+        .aggregate(total=Sum("movimiento__monto"))["total"]
+        or ZERO
     )
 
-    return [
-        {
-            "id": rendimiento.id,
-            "cuenta": rendimiento.movimiento.cuenta.nombre,
-            "monto": rendimiento.movimiento.monto,
-            "saldo_cuenta": rendimiento.saldo_cuenta,
-            "fecha": rendimiento.movimiento.fecha,
-        }
-        for rendimiento in rendimientos
-    ]
+    cantidad = RendimientoCuenta.objects.count()
+
+    return {
+        "cantidad": cantidad,
+        "total": total,
+    }

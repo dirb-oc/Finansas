@@ -1,0 +1,181 @@
+/* =========================================================
+   INVESTMENTS — RESUMEN
+   ========================================================= */
+
+.invest-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 22px;
+}
+
+/* CARD */
+
+.invest-card {
+    --card-color: var(--accent-blue);
+
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+
+    padding: 26px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+
+    transition: var(--transition);
+}
+
+.invest-card:hover {
+    transform: translateY(-2px);
+
+    border-color: color-mix(in srgb,
+            var(--card-color) 45%,
+            var(--border));
+
+    box-shadow: var(--shadow-md);
+}
+
+/* COLORES */
+
+.invest-card--patrimonio {
+    --card-color: #3b82f6;
+}
+
+.invest-card--invertido {
+    --card-color: var(--investment);
+}
+
+.invest-card--rentabilidad {
+    --card-color: var(--total);
+}
+
+.invest-card--negative {
+    --card-color: var(--spent);
+}
+
+.invest-card--ganancia {
+    --card-color: var(--income);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
+}
+
+/* HEADER */
+
+.invest-card__header {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+}
+
+.invest-card__icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    color: var(--card-color);
+
+    background: color-mix(in srgb,
+            var(--card-color) 12%,
+            transparent);
+    border: 1px solid color-mix(in srgb,
+            var(--card-color) 20%,
+            transparent);
+}
+
+.invest-card__label {
+    overflow: hidden;
+
+    color: var(--text-secondary);
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* BLOQUE PRINCIPAL */
+
+.invest-card__main {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.invest-card__value {
+    color: var(--card-color);
+
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+
+    font-variant-numeric: tabular-nums;
+}
+
+/* DETALLE SECUNDARIO */
+
+.invest-card__sub {
+    color: var(--text-muted);
+
+    font-size: 0.74rem;
+    line-height: 1.6;
+}
+
+/* DECORACIÓN */
+
+.invest-card__accent {
+    position: absolute;
+    bottom: -28px;
+    right: -28px;
+
+    width: 120px;
+    height: 120px;
+
+    border-radius: 50%;
+
+    background: var(--card-color);
+
+    opacity: 0.06;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .invest-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .invest-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .invest-card {
+        padding: 22px;
+    }
+
+    .invest-card__value {
+        font-size: 1.55rem;
+    }
+
+}

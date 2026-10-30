@@ -1,19 +1,13 @@
-from decimal import Decimal
-
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from ..models import OperacionActivo, PrecioActivo, CotizacionMoneda
-from finanzas.models import TipoMovimiento
-from finanzas.Services.movimiento_service import crear_movimiento
+from ..models import OperacionActivo, PrecioActivo
 from .activo_service import cantidad_disponible_activo
+from .broker_service import obtener_saldo_broker
 
 
 @transaction.atomic
-def crear_operacion_activo( *, activo, cuenta, tipo, cantidad, fecha, comision=Decimal("0"), ):
-    # -------------------------
-    # Validaciones básicas
-    # -------------------------
+def crear_operacion_activo( *, activo, broker, tipo, cantidad, fecha, comision=0, ):
 
     if cantidad <= 0:
         raise ValidationError({
@@ -30,12 +24,38 @@ def crear_operacion_activo( *, activo, cuenta, tipo, cantidad, fecha, comision=D
             "tipo": "El tipo de operación no es válido."
         })
 
-    # -------------------------
-    # Validar cantidad disponible
-    # -------------------------
+    precio = PrecioActivo.objects.filter( activo=activo, fecha=fecha, ).first()
 
-    if tipo == "venta":
-        disponible = cantidad_disponible_activo(activo)
+    if not precio:
+        raise ValidationError({
+            "fecha": (
+                "No existe un precio registrado para el activo "
+                "en la fecha de la operación."
+            )
+        })
+
+    monto = cantidad * precio.precio
+
+    if tipo == "compra":
+
+        costo = monto + comision
+
+        saldo = obtener_saldo_broker( broker=broker, moneda=activo.moneda, )
+
+        if costo > saldo:
+            raise ValidationError({
+                "cantidad": (
+                    f"Saldo insuficiente en {activo.moneda.codigo}. "
+                    f"Disponible: {saldo}."
+                )
+            })
+
+    else:
+
+        disponible = cantidad_disponible_activo( 
+            # broker=broker, 
+            activo=activo, 
+        )
 
         if cantidad > disponible:
             raise ValidationError({
@@ -46,94 +66,13 @@ def crear_operacion_activo( *, activo, cuenta, tipo, cantidad, fecha, comision=D
                 )
             })
 
-    # -------------------------
-    # Obtener precio del activo
-    # -------------------------
+        costo = monto - comision
 
-    try:
-        precio = PrecioActivo.objects.get(
-            activo=activo,
-            fecha=fecha
-        )
-    except PrecioActivo.DoesNotExist:
-        raise ValidationError({
-            "fecha": (
-                "No existe un precio registrado para el activo "
-                "en la fecha de la operación."
-            )
-        })
-
-    # -------------------------
-    # Obtener tasa de cambio
-    # -------------------------
-
-    try:
-        cotizacion = CotizacionMoneda.objects.get(
-            moneda=activo.moneda,
-            fecha=fecha
-        )
-    except CotizacionMoneda.DoesNotExist:
-        raise ValidationError({
-            "fecha": (
-                "No existe una cotización registrada para la moneda "
-                "del activo en la fecha de la operación."
-            )
-        })
-
-    # -------------------------
-    # Calcular valor
-    # -------------------------
-
-    monto_activo = cantidad * precio.precio
-
-    if tipo == "compra":
-        monto_total = monto_activo + comision
-        nombre_tipo = "Inversión"
-        tipo_movimiento = "gasto"
-
-    else:
-        monto_total = monto_activo - comision
-        nombre_tipo = "Venta de activo"
-        tipo_movimiento = "ingreso"
-
-    monto_cop = monto_total * cotizacion.valor
-
-    # -------------------------
-    # Obtener tipo de movimiento
-    # -------------------------
-
-    tipo_movimiento_obj, _ = TipoMovimiento.objects.get_or_create(
-        nombre=nombre_tipo,
-        tipo=tipo_movimiento,
-    )
-
-    # -------------------------
-    # Crear movimiento financiero
-    # -------------------------
-
-    cantidad_texto = format(cantidad.normalize(), "f")
-
-    movimiento = crear_movimiento(
-        cuenta=cuenta,
-        tipo=tipo_movimiento_obj,
-        monto=monto_cop,
-        fecha=fecha,
-        descripcion=(
-            f"{tipo.capitalize()} de "
-            f"{cantidad_texto} {activo.ticker}"
-        ),
-    )
-
-    # -------------------------
-    # Crear operación
-    # -------------------------
-
-    operacion = OperacionActivo.objects.create(
+    return OperacionActivo.objects.create(
         activo=activo,
-        movimiento=movimiento,
+        broker=broker,
         tipo=tipo,
         cantidad=cantidad,
         comision=comision,
+        fecha=fecha,
     )
-
-    return operacion

@@ -2,116 +2,67 @@ from decimal import Decimal
 
 from django.db.models import Sum
 from django.utils import timezone
+from rest_framework.exceptions import ValidationError
+
 # from datetime import timedelta
-from finanzas.models import Cuenta, Movimiento
-from .CDT_service import valor_cdt_historico, obtener_cdts_estadisticas
-from .activo_service import costo_invertido_activo, cantidad_disponible_activo, obtener_activos_estadisticas, costo_invertido_activos, costo_invertido_activo_hasta
+from finanzas.models import Cuenta
+from .CDT_service import valor_cdt_historico, obtener_cdts_actuales, obtener_cdts_estadisticas
+from .activo_service import obtener_activos_actuales, cantidad_disponible_activo, obtener_activos_estadisticas, valor_activos_historico
 from .dividendoActivo_service import obtener_dividendos_estadisticas
 from .rendimientoCuenta_service import obtener_rendimientos_estadisticas
+
+
+from finanzas.Services.movimiento_service import saldo_total_cuentas_hasta
+from .broker_service import calcular_estadisticas_broker, valor_efectivo_brokers_historico
+from .CDT_service import valor_cdt_no_finalizados, ganancias_cdt
 
 from ..models import *
 
 
 ZERO = Decimal("0")
 
+def cantidad_invertida():
+    fecha_corte = date.today()
+
+    capital_total = ZERO
+
+    brokers = Broker.objects.filter(activo=True)
+
+    for broker in brokers:
+        estadisticas = calcular_estadisticas_broker(
+            broker=broker,
+            fecha_corte=fecha_corte,
+        )
+
+        capital_total += estadisticas["capital_historico_activos_cop"]
+
+    capital_total += valor_cdt_no_finalizados()
+
+    return capital_total
+
+
+def inversiones_actuales():
+    fecha_corte = timezone.localdate()
+
+    inversiones = obtener_cdts_actuales(fecha_corte)
+    inversiones.extend(obtener_activos_actuales(fecha_corte))
+
+    return inversiones
+
 
 def patrimonio_historico(fecha):
     return (
         saldo_total_cuentas_hasta(fecha)
         + valor_activos_historico(fecha)
+        + valor_efectivo_brokers_historico(fecha)
         + valor_cdt_historico(fecha)
     )
 
 
-def saldo_total_cuentas_hasta(fecha):
-    return sum((saldo_cuenta_hasta(cuenta, fecha)for cuenta in Cuenta.objects.all()),ZERO)
 
 
-def saldo_cuenta_hasta(cuenta, fecha):
-    ingresos = (
-        Movimiento.objects
-        .filter(
-            cuenta=cuenta,
-            fecha__date__lte=fecha,
-            tipo__tipo="ingreso"
-        )
-        .aggregate(total=Sum("monto"))["total"]
-        or ZERO
-    )
-
-    gastos = (
-        Movimiento.objects
-        .filter(
-            cuenta=cuenta,
-            fecha__date__lte=fecha,
-            tipo__tipo="gasto"
-        )
-        .aggregate(total=Sum("monto"))["total"]
-        or ZERO
-    )
-
-    inicial = (
-        Movimiento.objects
-        .filter(
-            cuenta=cuenta,
-            fecha__date__lte=fecha,
-            tipo__tipo="inicial"
-        )
-        .aggregate(total=Sum("monto"))["total"]
-        or ZERO
-    )
-
-    return inicial + ingresos - gastos
 
 
-def valor_activos_historico(fecha):
-    """
-    Valor de mercado de todos los activos
-    hasta una fecha determinada.
-    """
-    return sum(
-        (
-            costo_invertido_activo_hasta(activo, fecha)
-            for activo in Activo.objects.filter(activo=True)
-        ),
-        ZERO,
-    )
-
-
-def inversiones_actuales():
-    inversiones = []
-
-    # CDT
-    cdts = (
-        CDT.objects
-        .filter(movimiento_reintegro__isnull=True)
-        .select_related("movimiento_inversion")
-    )
-
-    for cdt in cdts:
-        inversiones.append({
-            "tipo": "cdt",
-            "nombre": f"CDT {cdt.entidad}",
-            "monto": cdt.movimiento_inversion.monto,
-        })
-
-    # Activos
-    activos = Activo.objects.filter(activo=True)
-
-    for activo in activos:
-        costo = costo_invertido_activo(activo)
-
-        if costo <= 0:
-            continue
-
-        inversiones.append({
-            "tipo": activo.tipo,
-            "nombre": activo.nombre,
-            "ticker": activo.ticker,
-            "monto": costo,
-        })
-
-    return inversiones
 
 
 def saldo_total_cuentas():
@@ -169,49 +120,25 @@ def valor_actual_activos(fecha=None):
     )
 
 
-def valor_cdt_no_finalizados():
-
-    cdt = CDT.objects.filter(
-        movimiento_reintegro__isnull=True
-    ).select_related(
-        "movimiento_inversion"
-    )
-
-    return sum(
-        (
-            item.movimiento_inversion.monto
-            for item in cdt
-        ),
-        ZERO
-    )
-
-
 def cantidad_inversion():
     return (valor_actual_activos()+ valor_cdt_no_finalizados())
 
 
-def cantidad_invertida():
-
-    return (
-        costo_invertido_activos()
-        + valor_cdt_no_finalizados()
-    )
-
-
-def ganancia_ventas_activo(activo):
+def ganancia_ventas_activo(activo, broker=None):
     """
-    Calcula la ganancia o pérdida realizada por ventas
+    Calcula la ganancia o pérdida realizada por las ventas
     utilizando costo promedio ponderado.
+
+    El resultado está expresado en la moneda del activo.
     """
 
     operaciones = (
         OperacionActivo.objects
-        .filter(activo=activo)
-        .select_related("movimiento")
-        .order_by(
-            "movimiento__fecha",
-            "id",
+        .filter(
+            activo=activo,
+            broker=broker,
         )
+        .order_by("fecha", "id")
     )
 
     cantidad = ZERO
@@ -220,25 +147,35 @@ def ganancia_ventas_activo(activo):
 
     for operacion in operaciones:
 
+        precio = PrecioActivo.objects.get(
+            activo=activo,
+            fecha=operacion.fecha,
+        )
+
+        valor = operacion.cantidad * precio.precio
+
         if operacion.tipo == "compra":
+
+            costo += valor + operacion.comision
             cantidad += operacion.cantidad
-            costo += operacion.movimiento.monto
 
         elif operacion.tipo == "venta":
 
-            if cantidad <= 0:
+            if cantidad <= ZERO:
                 continue
 
             costo_promedio = costo / cantidad
 
             costo_vendido = (
-                operacion.cantidad
-                * costo_promedio
+                operacion.cantidad * costo_promedio
+            )
+
+            ingreso_venta = (
+                valor - operacion.comision
             )
 
             ganancia += (
-                operacion.movimiento.monto
-                - costo_vendido
+                ingreso_venta - costo_vendido
             )
 
             costo -= costo_vendido
@@ -248,43 +185,11 @@ def ganancia_ventas_activo(activo):
 
 
 def ganancia_ventas():
-    """
-    Retorna la ganancia o pérdida realizada
-    por todas las ventas de activos.
-    """
 
     return sum(
         (
             ganancia_ventas_activo(activo)
             for activo in Activo.objects.filter(activo=True)
-        ),
-        ZERO
-    )
-
-
-def ganancia_cdt():
-    """
-    Ganancia realizada de CDT que ya fueron reintegrados.
-
-    Ganancia = dinero recibido - capital invertido.
-    """
-
-    cdts = (
-        CDT.objects
-        .filter(
-            movimiento_reintegro__isnull=False
-        )
-        .select_related(
-            "movimiento_inversion",
-            "movimiento_reintegro",
-        )
-    )
-
-    return sum(
-        (
-            cdt.movimiento_reintegro.monto
-            - cdt.movimiento_inversion.monto
-            for cdt in cdts
         ),
         ZERO
     )
@@ -320,26 +225,63 @@ def total_rendimientos_cuenta():
     )
 
 
-def ganancia_no_realizada():
-    """
-    Valorización actual de los activos que todavía se poseen.
+def ganancia_no_realizada(fecha):
+    ganancia_total = ZERO
 
-    No incluye dividendos ni rendimientos.
-    """
+    for broker in Broker.objects.filter(activo=True):
+        estadisticas = calcular_estadisticas_broker(
+            broker=broker,
+            fecha_corte=fecha,
+        )
 
-    return (
-        valor_actual_activos()
-        - costo_invertido_activos()
-    )
+        for posicion in estadisticas["activos"]:
+            cantidad = posicion["cantidad"]
+
+            if cantidad <= ZERO:
+                continue
+
+            activo_id = posicion["activo_id"]
+            moneda_codigo = posicion["moneda"]
+
+            precio = PrecioActivo.objects.filter(
+                activo_id=activo_id,
+            ).first()
+
+            if precio is None:
+                raise ValidationError(
+                    f"No existe precio del activo {posicion['ticker']} "
+                    f"para {fecha}."
+                )
+
+            cotizacion = CotizacionMoneda.objects.filter(
+                moneda__codigo=moneda_codigo,
+            ).first()
+
+            if cotizacion is None:
+                raise ValidationError(
+                    f"No existe cotización de {moneda_codigo} "
+                    f"para {fecha}."
+                )
+
+            valor_mercado_cop = (
+                cantidad
+                * precio.precio
+                * cotizacion.valor
+            )
+
+            costo_historico_cop = posicion["capital_invertido_cop"]
+
+            ganancia_total += (
+                valor_mercado_cop - costo_historico_cop
+            )
+
+    return ganancia_total
 
 
 def ganancia_realizada():
-    """
-    Total de ganancias realizadas.
-    """
 
-    return (
-        ganancia_cdt()
+    return ( 
+        ganancias_cdt()
         + total_dividendos()
         + total_rendimientos_cuenta()
         + ganancia_ventas()
@@ -347,13 +289,9 @@ def ganancia_realizada():
 
 
 def ganancia_total():
-    """
-    Ganancia total acumulada.
-    """
 
     return (
-        ganancia_realizada()
-        + ganancia_no_realizada()
+        ganancia_realizada() + ganancia_no_realizada()
     )
 
 
@@ -375,8 +313,10 @@ def rentabilidad_total():
     return (ganancia_total() / capital_invertido) * Decimal("100")
 
 def obtener_estadisticas():
+    hoy = timezone.localtime()
+
     realizada = ganancia_realizada()
-    no_realizada = ganancia_no_realizada()
+    no_realizada = ganancia_no_realizada(hoy)
     total = realizada + no_realizada
 
     patrimonio_actual = saldo_total_cuentas() + cantidad_inversion()
@@ -412,4 +352,3 @@ def obtener_estadisticas():
         "dividendos": obtener_dividendos_estadisticas(),
         "rendimientos": obtener_rendimientos_estadisticas(),
     }
-

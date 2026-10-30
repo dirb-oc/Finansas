@@ -1,5 +1,7 @@
 from django.db import transaction
 from django.core.exceptions import ValidationError
+from django.db.models import F, Sum, DecimalField, ExpressionWrapper
+from datetime import datetime
 from decimal import Decimal
 
 from finanzas.Services.movimiento_service import crear_movimiento
@@ -84,7 +86,7 @@ def finalizar_cdt(*, cdt, monto_recibido, fecha_cierre=None):
 
 def valor_cdt_historico(fecha):
     cdts = CDT.objects.filter(
-        movimiento_inversion__fecha__date__lte=fecha
+        movimiento_inversion__fecha__lte=fecha
     ).select_related(
         "movimiento_inversion",
         "movimiento_reintegro"
@@ -95,39 +97,124 @@ def valor_cdt_historico(fecha):
     for cdt in cdts:
 
         if cdt.movimiento_reintegro:
-            if cdt.movimiento_reintegro.fecha.date() <= fecha:
+            if cdt.movimiento_reintegro.fecha <= fecha:
                 continue
-
+            
         total += cdt.movimiento_inversion.monto
 
     return total
 
 
-def obtener_cdts_activos():
+def obtener_cdts_estadisticas():
     cdts = (
         CDT.objects
-        .filter(movimiento_reintegro__isnull=True)
+        # .filter(movimiento_reintegro__isnull=True)
         .select_related("movimiento_inversion")
-        .order_by("entidad")
+        .order_by("fecha_vencimiento")
+    )
+
+    cantidad = cdts.count()
+
+    capital = sum(
+        (cdt.movimiento_inversion.monto for cdt in cdts),
+        ZERO
+    )
+
+    proximo_vencimiento = cdts.first()
+
+    return {
+        "cantidad": cantidad,
+        "capital": capital,
+        "proximo_vencimiento": (
+            proximo_vencimiento.fecha_vencimiento
+            if proximo_vencimiento
+            else None
+        ),
+    }
+
+
+def obtener_cdts_actuales(fecha_corte):
+    cdts = (
+        CDT.objects
+        .filter(
+            movimiento_reintegro__isnull=True,
+            movimiento_inversion__fecha__lte=fecha_corte,
+        )
+        .select_related("movimiento_inversion")
     )
 
     return [
         {
-            "id": cdt.id,
-            "nombre": cdt.entidad,
+            "tipo": "cdt",
+            "nombre": f"CDT {cdt.entidad}",
             "monto": cdt.movimiento_inversion.monto,
-            "fecha_inicio": cdt.fecha_inicio,
-            "fecha_vencimiento": cdt.fecha_vencimiento,
+            "moneda": "COP",
+            "porcentaje_broker": None,
         }
         for cdt in cdts
     ]
 
-def get_ganancia_cdt_periodo(inicio, fin):
+
+def valor_cdt_no_finalizados():
+
+    cdt = CDT.objects.filter(
+        movimiento_reintegro__isnull=True
+    ).select_related(
+        "movimiento_inversion"
+    )
+
+    return sum(
+        (
+            item.movimiento_inversion.monto
+            for item in cdt
+        ),
+        ZERO
+    )
+
+
+def normalizar_fecha(fecha):
+    if isinstance(fecha, datetime):
+        return fecha.date()
+
+    return fecha
+
+
+def resultado_cdts_periodo(inicio, fin):
+    inicio = normalizar_fecha(inicio)
+    fin = normalizar_fecha(fin)
+
+    cdts = CDT.objects.filter(
+        movimiento_reintegro__isnull=False,
+        movimiento_reintegro__fecha__gte=inicio,
+        movimiento_reintegro__fecha__lt=fin,
+    )
+
+    resultado = cdts.aggregate(
+        total=Sum(
+            ExpressionWrapper(
+                F("movimiento_reintegro__monto")
+                - F("movimiento_inversion__monto"),
+                output_field=DecimalField(
+                    max_digits=18,
+                    decimal_places=2,
+                ),
+            )
+        )
+    )["total"]
+
+    return resultado or ZERO
+
+def ganancias_cdt():
+    """
+    Ganancia realizada de CDT que ya fueron reintegrados.
+
+    Ganancia = dinero recibido - capital invertido.
+    """
+
     cdts = (
         CDT.objects
         .filter(
-            movimiento_reintegro__fecha__gte=inicio,
-            movimiento_reintegro__fecha__lt=fin,
+            movimiento_reintegro__isnull=False
         )
         .select_related(
             "movimiento_inversion",
@@ -141,26 +228,5 @@ def get_ganancia_cdt_periodo(inicio, fin):
             - cdt.movimiento_inversion.monto
             for cdt in cdts
         ),
-        ZERO,
+        ZERO
     )
-
-
-def obtener_cdts_estadisticas():
-    cdts = (
-        CDT.objects
-        .filter(movimiento_reintegro__isnull=True)
-        .select_related("movimiento_inversion")
-        .order_by("fecha_vencimiento")
-    )
-
-    return [
-        {
-            "id": cdt.id,
-            "entidad": cdt.entidad,
-            "capital": cdt.movimiento_inversion.monto,
-            "fecha_inicio": cdt.fecha_inicio,
-            "fecha_vencimiento": cdt.fecha_vencimiento,
-            "estado": cdt.estado,
-        }
-        for cdt in cdts
-    ]

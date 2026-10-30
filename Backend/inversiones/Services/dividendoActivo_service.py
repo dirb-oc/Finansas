@@ -1,10 +1,14 @@
-from django.core.exceptions import ValidationError
+from decimal import Decimal
+from django.db.models import Sum
 from django.db import transaction
+from django.core.exceptions import ValidationError
 
 from ..models import DividendoActivo, CotizacionMoneda
-from finanzas.models import TipoMovimiento
-from finanzas.Services.movimiento_service import crear_movimiento
 
+from finanzas.Services.movimiento_service import crear_movimiento
+from finanzas.models import TipoMovimiento
+
+ZERO = Decimal("0")
 
 @transaction.atomic
 def crear_dividendo_activo( *, activo, cuenta, fecha, monto, ):
@@ -52,22 +56,15 @@ def crear_dividendo_activo( *, activo, cuenta, fecha, monto, ):
 
 
 def obtener_dividendos_estadisticas():
-    dividendos = (
+    total = (
         DividendoActivo.objects
-        .select_related(
-            "activo",
-            "movimiento",
-        )
-        .order_by("-movimiento__fecha")
+        .aggregate(total=Sum("movimiento__monto"))["total"]
+        or ZERO
     )
 
-    return [
-        {
-            "id": dividendo.id,
-            "ticker": dividendo.activo.ticker,
-            "nombre": dividendo.activo.nombre,
-            "monto": dividendo.movimiento.monto,
-            "fecha": dividendo.movimiento.fecha,
-        }
-        for dividendo in dividendos
-    ]
+    cantidad = DividendoActivo.objects.count()
+
+    return {
+        "cantidad": cantidad,
+        "total": total,
+    }

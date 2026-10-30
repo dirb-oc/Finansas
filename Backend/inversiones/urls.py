@@ -14,6 +14,9 @@ router.register(r"operaciones", OperacionActivoViewSet, basename="operacion-acti
 router.register(r"dividendos", DividendoActivoViewSet, basename="dividendo")
 router.register(r"rendimientos", RendimientoCuentaViewSet, basename="rendimiento-cuenta")
 
+router.register(r"broker", BrokerViewSet, basename="broker")
+router.register(r"movimientosbroker", MovimientoBrokerViewSet, basename="movimiento-broker")
+
 
 urlpatterns = [
     path("", include(router.urls)),

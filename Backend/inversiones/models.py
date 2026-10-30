@@ -1,5 +1,6 @@
 from django.db import models
 from finanzas.models import Movimiento
+from datetime import date
 
 # Renta Fija
 class CDT(models.Model):
@@ -37,6 +38,8 @@ class CDT(models.Model):
     
 
 # Renta Variable
+
+# Monedas
 class Moneda(models.Model):
 
     codigo = models.CharField( max_length=5, unique=True )
@@ -45,7 +48,6 @@ class Moneda(models.Model):
 
     def __str__(self):
         return f"{self.codigo} - {self.nombre}"
-
 
 class CotizacionMoneda(models.Model):
 
@@ -66,6 +68,30 @@ class CotizacionMoneda(models.Model):
         return f"{self.moneda.codigo} - {self.fecha}: {self.valor}"
 
 
+# Brokers
+class Broker(models.Model):
+    nombre = models.CharField(max_length=100)
+    monedas = models.ManyToManyField( Moneda, related_name="brokers" )
+    activo = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.nombre
+
+class MovimientoBroker(models.Model):
+
+    TIPO_CHOICES = [
+        ("entrada", "Entrada"),
+        ("salida", "Salida"),
+    ]
+
+    broker = models.ForeignKey( Broker, on_delete=models.PROTECT, related_name="movimientos" )
+    moneda = models.ForeignKey( Moneda, on_delete=models.PROTECT, related_name="movimientos_broker" )
+    tipo = models.CharField(max_length=10,choices=TIPO_CHOICES)
+    costo = models.DecimalField( max_digits=18, decimal_places=6, null=True, blank=True )
+    monto = models.DecimalField( max_digits=18, decimal_places=6 )
+    movimiento = models.OneToOneField( Movimiento, on_delete=models.PROTECT, related_name="movimiento_broker" )
+
+# Activos
 class Activo(models.Model):
 
     TIPO_CHOICES = [
@@ -81,7 +107,6 @@ class Activo(models.Model):
 
     def __str__(self):
         return f"{self.ticker} - {self.nombre}"
-
 
 class PrecioActivo(models.Model):
 
@@ -101,7 +126,6 @@ class PrecioActivo(models.Model):
     def __str__(self):
         return f"{self.activo.ticker} - {self.fecha}: {self.precio}"
 
-
 class OperacionActivo(models.Model):
 
     TIPO_CHOICES = [
@@ -110,15 +134,17 @@ class OperacionActivo(models.Model):
     ]
 
     activo = models.ForeignKey( Activo, on_delete=models.PROTECT, related_name="operaciones" )
-    movimiento = models.OneToOneField( Movimiento, on_delete=models.PROTECT, related_name="operacion_activo", )
+    broker = models.ForeignKey( Broker, on_delete=models.PROTECT, related_name="operaciones", default=1,)
     tipo = models.CharField( max_length=10, choices=TIPO_CHOICES )
     cantidad = models.DecimalField( max_digits=18, decimal_places=8 )
     comision = models.DecimalField( max_digits=15, decimal_places=2, default=0 )
+    fecha = models.DateField()
 
     def __str__(self):
         return f"{self.tipo} - {self.activo.ticker} - {self.cantidad}"
 
 
+# Dividendo
 class DividendoActivo(models.Model):
     activo = models.ForeignKey( Activo, on_delete=models.PROTECT, related_name="dividendos" )
     movimiento = models.OneToOneField( Movimiento, on_delete=models.PROTECT, related_name="dividendo_activo", )
@@ -129,6 +155,7 @@ class DividendoActivo(models.Model):
             return f"Dividendo - {self.activo.ticker} - {self.fecha}"
 
 
+# Rendimiento
 class RendimientoCuenta(models.Model):
 
     movimiento = models.OneToOneField( Movimiento, on_delete=models.PROTECT, related_name="rendimiento_cuenta" )

@@ -69,11 +69,12 @@ class CuentaDetailSerializer(serializers.ModelSerializer):
 
     def _get_ultimo_mes(self, obj):
         ultimo_movimiento = obj.movimientos.order_by("-fecha").first()
-
+    
         if not ultimo_movimiento:
             return None, None
-
-        fecha = localtime(ultimo_movimiento.fecha)
+    
+        fecha = ultimo_movimiento.fecha
+    
         return fecha.year, fecha.month
 
     def get_mes_resumen(self, obj):

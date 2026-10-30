@@ -49,7 +49,7 @@ class Movimiento(models.Model):
     tipo = models.ForeignKey(TipoMovimiento,on_delete=models.CASCADE)
     monto = models.DecimalField(max_digits=10,decimal_places=2)
     descripcion = models.TextField(blank=True)
-    fecha = models.DateTimeField(default=timezone.now)
+    fecha = models.DateField(default=timezone.localdate)
 
     def __str__(self):
         return f"{self.tipo.nombre} - {self.monto}"
