@@ -24,24 +24,6 @@ def crear_cotizacion_moneda(*, moneda, fecha, valor):
     )
 
 
-def obtener_cotizacion_moneda_historica(moneda, fecha):
-    if moneda.codigo == "COP":
-        return Decimal("1")
-
-    cotizacion = (
-        CotizacionMoneda.objects
-        .filter( moneda=moneda, fecha__lte=fecha, )
-        .order_by("-fecha")
-        .first()
-    )
-
-    if cotizacion is None:
-        return None
-
-    return cotizacion.valor
-
-
-
 def obtener_cotizacion(moneda, fecha):
     """
     Obtiene la cotización exacta de una moneda en una fecha.
@@ -62,3 +44,11 @@ def obtener_cotizacion(moneda, fecha):
         )
 
     return cotizacion.valor
+
+def obtener_ultima_cotizacion(moneda):
+    return (
+        CotizacionMoneda.objects
+        .filter(moneda=moneda)
+        .order_by("-fecha", "-id")
+        .first()
+    )

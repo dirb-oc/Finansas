@@ -7,7 +7,7 @@ from rest_framework.viewsets import ModelViewSet
 from .models import *
 from .serializers import *
 
-from .Services.CDT_service import crear_cdt, finalizar_cdt
+from .Services.CDT_service import crear_cdt, finalizar_cdt, obtener_dashboard_cdt
 from .Services.precioActivo_service import crear_precio_activo
 from .Services.estadisticas_service import obtener_estadisticas
 from .Services.operacionActivo_service import crear_operacion_activo
@@ -16,7 +16,7 @@ from .Services.cotizacionMoneda_service import crear_cotizacion_moneda
 from .Services.rendimientoCuenta_service import crear_rendimiento_cuenta
 from .Services.movimientoBroker_service import crear_movimiento_broker
 
-
+# CDT
 class CDTViewSet(ModelViewSet):
 
     queryset = CDT.objects.all().order_by("-fecha_inicio")
@@ -51,7 +51,17 @@ class CDTViewSet(ModelViewSet):
             status=status.HTTP_200_OK
         )
 
+class DashboardCDTView(APIView):
+    
+    def get(self, request):
+        data = obtener_dashboard_cdt()
 
+        return Response({
+            "estadisticas": data["estadisticas"],
+            "activos": CDTSerializer(data["activos"], many=True).data,
+            "finalizados": CDTSerializer(data["finalizados"], many=True).data,
+        })
+# Moneda
 class MonedaViewSet(ModelViewSet):
     queryset = Moneda.objects.all().order_by("codigo")
     serializer_class = MonedaSerializer

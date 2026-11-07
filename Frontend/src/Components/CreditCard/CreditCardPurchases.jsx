@@ -2,7 +2,25 @@ import formatCOP, { formatDate } from "../../Services/utils";
 import { ShoppingCart } from "lucide-react";
 import "./CreditCardActivity.css";
 
-export default function CreditCardPurchases({compras = [],onCreate, onEditCompra}) {
+export default function CreditCardPurchases({ compras = [], onCreate, onEditCompra }) {
+
+    const ordenarCompras = (compras) => {
+        const prioridad = {
+            pendiente: 0,
+            pagando: 1,
+            saldada: 2,
+        };
+
+        return [...compras].sort((a, b) => {
+            const ordenEstado =
+                (prioridad[a.estado] ?? 3) -
+                (prioridad[b.estado] ?? 3);
+
+            if (ordenEstado !== 0) return ordenEstado;
+
+            return new Date(b.fecha_compra) - new Date(a.fecha_compra);
+        });
+    };
 
     const getEstado = (estado) => {
         switch (estado) {
@@ -13,6 +31,8 @@ export default function CreditCardPurchases({compras = [],onCreate, onEditCompra
             default: return estado;
         }
     };
+
+    const comprasOrdenadas = ordenarCompras(compras);
 
     return (
         <section className="credit-card-activity">
@@ -31,7 +51,7 @@ export default function CreditCardPurchases({compras = [],onCreate, onEditCompra
 
             <div className="credit-card-activity__list">
 
-                {compras.length === 0 ? (
+                {comprasOrdenadas.length === 0 ? (
 
                     <div className="credit-card-activity__empty">
                         <ShoppingCart size={22} />
@@ -40,7 +60,7 @@ export default function CreditCardPurchases({compras = [],onCreate, onEditCompra
 
                 ) : (
 
-                    compras.map((compra) => (
+                    comprasOrdenadas.map((compra) => (
 
                         <div key={compra.id} className="purchase-item" onClick={() => onEditCompra?.(compra)} >
 

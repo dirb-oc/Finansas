@@ -5,6 +5,7 @@ from .models import *
 
 from .Services.operacionActivo_service import cantidad_disponible_activo
 from .Services.broker_service import obtener_saldo_broker
+from .Services.CDT_service import obtener_progreso_cdt
 
 # ─────────────────────────────
 # Renta fija
@@ -22,6 +23,31 @@ class CDTSerializer(serializers.ModelSerializer):
         write_only=True
     )
 
+    capital = serializers.DecimalField(
+        source="movimiento_inversion.monto",
+        max_digits=12,
+        decimal_places=2,
+        read_only=True
+    )
+
+    valor_reintegro = serializers.DecimalField(
+        source="movimiento_reintegro.monto",
+        max_digits=12,
+        decimal_places=2,
+        read_only=True,
+        allow_null=True
+    )
+
+    dias_restantes = serializers.SerializerMethodField()
+    progreso = serializers.SerializerMethodField()
+
+    def get_dias_restantes(self, obj):
+        return obtener_progreso_cdt(obj)["dias_restantes"]
+
+    def get_progreso(self, obj):
+        return obtener_progreso_cdt(obj)["progreso"]
+
+
     class Meta:
         model = CDT
         fields = [
@@ -35,6 +61,10 @@ class CDTSerializer(serializers.ModelSerializer):
             "fecha_inicio",
             "fecha_vencimiento",
             "fecha_cierre",
+            "capital",
+            "valor_reintegro",
+            "progreso",
+            "dias_restantes"
         ]
 
         read_only_fields = [

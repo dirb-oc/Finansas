@@ -1,6 +1,8 @@
 import { Building2 } from "lucide-react";
-import formatCOP from "../../Services/utils";
+import { Link } from "react-router-dom";
+
 import InvestmentsSection from "./InvestmentsSection";
+import formatCOP from "../../Services/utils";
 
 const formatVencimiento = (date) => {
     if (!date) return "Sin vencimientos próximos";
@@ -24,6 +26,7 @@ export default function CDTList({ cdts }) {
 
     return (
         <InvestmentsSection label="Renta fija" title="CDT" tone="cdt" icon={<Building2 size={18} />} count={count}>
+        <Link to={`/CDT/`}>
             <div className="invest-recap">
                 <div className="invest-recap__stat">
                     <span>Capital</span>
@@ -36,6 +39,7 @@ export default function CDTList({ cdts }) {
                 </div>
                 
             </div>
+        </Link>
         </InvestmentsSection>
     );
 }

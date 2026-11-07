@@ -1,8 +1,10 @@
 from django.db import transaction
 from django.core.exceptions import ValidationError
-from django.db.models import F, Sum, DecimalField, ExpressionWrapper
+from django.db.models import F, Sum, Count, DecimalField, ExpressionWrapper
 from datetime import datetime
 from decimal import Decimal
+from datetime import date
+
 
 from finanzas.Services.movimiento_service import crear_movimiento
 from finanzas.models import TipoMovimiento
@@ -108,28 +110,28 @@ def valor_cdt_historico(fecha):
 def obtener_cdts_estadisticas():
     cdts = (
         CDT.objects
-        # .filter(movimiento_reintegro__isnull=True)
+        .filter(movimiento_reintegro__isnull=True)
         .select_related("movimiento_inversion")
         .order_by("fecha_vencimiento")
     )
 
-    cantidad = cdts.count()
-
-    capital = sum(
-        (cdt.movimiento_inversion.monto for cdt in cdts),
-        ZERO
+    estadisticas = cdts.aggregate(
+        cantidad=Count("id"),
+        capital=Sum("movimiento_inversion__monto"),
     )
 
     proximo_vencimiento = cdts.first()
 
+    dato = ganancias_cdt()
+
     return {
-        "cantidad": cantidad,
-        "capital": capital,
+        "cantidad": estadisticas["cantidad"] or 0,
+        "capital": estadisticas["capital"] or ZERO,
         "proximo_vencimiento": (
             proximo_vencimiento.fecha_vencimiento
-            if proximo_vencimiento
-            else None
+            if proximo_vencimiento else None
         ),
+        "ganancias": dato,
     }
 
 
@@ -204,18 +206,12 @@ def resultado_cdts_periodo(inicio, fin):
 
     return resultado or ZERO
 
-def ganancias_cdt():
-    """
-    Ganancia realizada de CDT que ya fueron reintegrados.
 
-    Ganancia = dinero recibido - capital invertido.
-    """
+def ganancias_cdt():
 
     cdts = (
         CDT.objects
-        .filter(
-            movimiento_reintegro__isnull=False
-        )
+        .filter( movimiento_reintegro__isnull=False )
         .select_related(
             "movimiento_inversion",
             "movimiento_reintegro",
@@ -230,3 +226,43 @@ def ganancias_cdt():
         ),
         ZERO
     )
+
+
+def obtener_progreso_cdt(cdt, fecha_actual=None):
+    fecha_actual = fecha_actual or date.today()
+
+    duracion = (cdt.fecha_vencimiento - cdt.fecha_inicio).days
+    dias_transcurridos = (fecha_actual - cdt.fecha_inicio).days
+    dias_restantes = (cdt.fecha_vencimiento - fecha_actual).days
+
+    if duracion <= 0:
+        progreso = Decimal("100") if fecha_actual >= cdt.fecha_vencimiento else Decimal("0")
+    else:
+        progreso = Decimal(dias_transcurridos) / Decimal(duracion) * 100
+        progreso = max(Decimal("0"), min(progreso, Decimal("100")))
+
+    return {
+        "dias_restantes": max(dias_restantes, 0),
+        "progreso": round(progreso, 2),
+    }
+
+
+def obtener_dashboard_cdt():
+    cdts = CDT.objects.select_related(
+        "movimiento_inversion",
+        "movimiento_reintegro"
+    )
+
+    activos = cdts.filter(
+        movimiento_reintegro__isnull=True
+    ).order_by("fecha_vencimiento")
+
+    finalizados = cdts.filter(
+        movimiento_reintegro__isnull=False
+    ).order_by("-fecha_cierre")
+
+    return {
+        "estadisticas": obtener_cdts_estadisticas(),
+        "activos": activos,
+        "finalizados": finalizados,
+    }

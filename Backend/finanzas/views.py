@@ -1,5 +1,5 @@
-from .serializers import CuentaSerializer, TipoMovimientoSerializer, MovimientoSerializer, FinalizarInversionSerializer, InversionSerializer, CuentaDetailSerializer, TarjetaCreditoSerializer, CompraCreditoSerializer, TarjetaCreditoDetailSerializer, PagoCreditoSerializer
-from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito, PagoCredito
+from .serializers import *
+from .models import *
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .Services.pago_service import realizar_pago_credito, editar_pago_credito

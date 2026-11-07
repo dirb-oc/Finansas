@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from decimal import Decimal
-from datetime import datetime
 
 from ..models import PrecioActivo
 
@@ -27,22 +26,6 @@ def crear_precio_activo(*, activo, fecha, precio):
     )
 
 
-def obtener_precio_activo_historico(activo, fecha):
-
-    precio = (
-        PrecioActivo.objects
-        .filter(
-            activo=activo,
-            fecha__lte=fecha,
-        )
-        .order_by("-fecha")
-        .first()
-    )
-
-
-    return precio
-
-
 def obtener_precio_activo(activo, fecha):
     """
     Obtiene el precio histórico exacto del activo.
@@ -58,3 +41,11 @@ def obtener_precio_activo(activo, fecha):
         )
 
     return precio.precio
+
+def obtener_ultimo_precio(activo):
+    return (
+        PrecioActivo.objects
+        .filter(activo=activo)
+        .order_by("-fecha", "-id")
+        .first()
+    )

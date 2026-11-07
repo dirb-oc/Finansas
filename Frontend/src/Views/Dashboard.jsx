@@ -1,13 +1,18 @@
+import { Wallet, PiggyBank, CreditCard, TrendingUp, } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getStats } from "../controllers/statsController";
+
 import ExpensesCategory from "../Components/Stats/ExpensesCategory"
 import CashFlowChart from "../Components/Stats/CashFlowChart";
 import BalanceChart from "../Components/Stats/BalanceChart";
 import Investments from "../Components/Stats/Investments"
 import CreditCards from "../Components/Stats/CreditCards"
-import StatCard from "../Components/Stats/StatCard";
 import Accounts from "../Components/Stats/Accounts";
+import { getStats } from "../controllers/statsController";
+
+import formatCOP from "../Services/utils";
 import LastTransactions from "../Components/Stats/LastTransactions";
+
+import SummaryCards from "../Components/SummaryCards";
 
 export default function Dashboard() {
     const [stats, setStats] = useState(null);
@@ -17,11 +22,31 @@ export default function Dashboard() {
     if (!stats) return <p className="loading">Cargando...</p>;
 
     const cards = [
-        { title: "Disponible", value: stats.disponible, type: "disponible" },
-        { title: "Invertido", value: stats.invertido, type: "invertido" },
-        { title: "Total", value: stats.total, type: "patrimonio" },
-        { title: "Deuda", value: stats.deuda, type: "deuda" },
-        { title: "Balance Mes", value: stats.balance_mes, type: stats.balance_mes >= 0 ? "ingresos" : "gastos" },
+        {
+            key: "disponible",
+            title: "Disponible",
+            icon: <Wallet size={20} />,
+            value: formatCOP(stats.disponible),
+        },
+        {
+            key: "invertido",
+            title: "Invertido",
+            icon: <PiggyBank size={20} />,
+            value: formatCOP(stats.invertido),
+        },
+        {
+            key: "deuda",
+            title: "Deuda",
+            icon: <CreditCard size={20} />,
+            value: formatCOP(stats.deuda),
+        },
+        {
+            key: stats.balance_mes >= 0 ? "income" : "expense",
+            title: "Balance del mes",
+            icon: <TrendingUp size={20} />,
+            value: `${stats.balance_mes >= 0 ? "+" : "-"}${formatCOP(Math.abs(Number(stats.balance_mes) || 0))}`,
+            negative: stats.balance_mes < 0,
+        },
     ];
 
     const fechaActual = new Date();
@@ -36,9 +61,10 @@ export default function Dashboard() {
 
             <div className="divisor" />
 
-            <div className="cards">
-                {cards.map((card, index) => (<StatCard key={index} card={card} />))}
-            </div>
+            <SummaryCards
+                cards={cards}
+                ariaLabel="Resumen financiero"
+            />
 
             <div className="Stats">
 

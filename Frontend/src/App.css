@@ -1,21 +1,22 @@
 :root {
-    --bg-primary: #0c1013;
+    --bg-primary: #030509;
     --bg-secondary: #111320;
-    --bg-card: #14191c;
+    --bg-card: #080c11;
     --bg-card-hover: #1a1f2e;
     
-    --border: #2e3030;
+    --border: #222222;
     --border-light: #2a3244;
+    --progress-bar: #252b2f;
     
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
     
     --accent-green: #059669;
-    --accent-blue: #3b82f6;
+    --accent-blue: #4db4ff;
     
-    --investment: #f59e0b;
-    --total: #8b5cf6;
+    --investment: #f8ac3d;
+    --total: #b06bff;
     --credit: #DB2777;
 
     --income: #00d084;
@@ -100,7 +101,7 @@ input, select {
 
 /* TITLE */
 .title {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 700;
     color: #e5e7eb;
     margin: 0;
@@ -108,8 +109,9 @@ input, select {
 
 .subtitle{
     margin: 0;
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-secondary);
 }
 
 .divisor {

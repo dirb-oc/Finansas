@@ -100,7 +100,7 @@
 
     margin-top: 0.55rem;
 
-    background: #252b2f;
+    background: var(--progress-bar);
     border-radius: 10px;
     overflow: hidden;
 }

@@ -1,0 +1,91 @@
+/* SECCIONES */
+
+.cdt-section {
+    margin-top: 35px;
+}
+
+.cdt-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.cdt-section-heading h2 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.cdt-section-heading p {
+    margin: 5px 0 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.cdt-section-count {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.cdt-card-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+}
+
+/* ACTIVOS */
+
+.cdt-active-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 600px));
+    gap: 16px;
+    align-items: start;
+}
+
+.cdt-active-card {
+    width: 100%;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--investment);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.cdt-active-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.cdt-active-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.cdt-active-header {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.cdt-badge-active,
+.cdt-badge-finished {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.cdt-badge-active {
+    color: var(--investment);
+    background: color-mix(in srgb, var(--investment) 12%, transparent);
+}
+
+.cdt-badge-finished {
+    color: var(--text-secondary);
+    background: var(--bg-hover);
+}

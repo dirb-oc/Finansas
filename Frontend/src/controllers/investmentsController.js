@@ -1,11 +1,17 @@
 import { apiGet, apiPost } from "../Services/api";
 
-export async function getInversiones() {
-  return await apiGet("/inversiones/");
-}
-
 export async function getStatsInversiones() {
   return await apiGet("/pruebas/stats");
+}
+
+export async function getCDTs() {
+  return await apiGet("/pruebas/CDTstats");
+}
+
+
+
+export async function getInversiones() {
+  return await apiGet("/inversiones/");
 }
 
 export async function getResumenInversiones() {

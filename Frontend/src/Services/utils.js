@@ -17,6 +17,19 @@ export function formatDate(date) {
     return localDate.toLocaleDateString("es-CO", { day: "2-digit", month: "short", });
 }
 
+export function formatExpiration(date) {
+    if (!date) return "Sin fecha";
+
+    const [year, month, day] = date.split("-").map(Number);
+
+    const nombreMes = new Intl.DateTimeFormat("es-CO", {
+        month: "short",
+        timeZone: "UTC",
+    }).format(new Date(Date.UTC(year, month - 1, day)));
+
+    return `${day} ${nombreMes.replace(".", "")} ${String(year).slice(-2)}`;
+}
+
 export const formatPercentage = (value) => {
     if (value === null || value === undefined || value === "") {
         return "";
@@ -33,11 +46,7 @@ export const formatNumber = (value) => {
     }).format(value ?? 0);
 };
 
-export const handleFormattedPriceChange = (
-    e,
-    setForm,
-    fieldName
-) => {
+export const handleFormattedPriceChange = (e,setForm,fieldName) => {
     const raw = e.target.value.replace(/\D/g, "");
 
     const formatted = Number(raw).toLocaleString("es-CO", {

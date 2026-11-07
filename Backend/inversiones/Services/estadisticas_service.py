@@ -3,14 +3,13 @@ from decimal import Decimal
 from django.db.models import Sum
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
+from django.utils.timezone import now
 
 # from datetime import timedelta
-from finanzas.models import Cuenta
 from .CDT_service import valor_cdt_historico, obtener_cdts_actuales, obtener_cdts_estadisticas
-from .activo_service import obtener_activos_actuales, cantidad_disponible_activo, obtener_activos_estadisticas, valor_activos_historico
+from .activo_service import obtener_activos_actuales, obtener_activos_estadisticas, valor_activos_historico
 from .dividendoActivo_service import obtener_dividendos_estadisticas
 from .rendimientoCuenta_service import obtener_rendimientos_estadisticas
-
 
 from finanzas.Services.movimiento_service import saldo_total_cuentas_hasta
 from .broker_service import calcular_estadisticas_broker, valor_efectivo_brokers_historico
@@ -58,70 +57,14 @@ def patrimonio_historico(fecha):
         + valor_cdt_historico(fecha)
     )
 
+def ganancia_realizada():
 
-
-
-
-
-
-
-def saldo_total_cuentas():
-    cuentas = Cuenta.objects.all()
-
-    return sum( (cuenta.saldo_actual() for cuenta in cuentas), ZERO )
-
-
-def obtener_precio_actual(activo, fecha=None):
-
-    fecha = fecha or timezone.localdate()
-
-    return (
-        PrecioActivo.objects.filter(activo=activo,fecha__lte=fecha,).order_by("-fecha").first()
+    return ( 
+        ganancias_cdt()
+        + total_dividendos()
+        + total_rendimientos_cuenta()
+        + ganancia_ventas()
     )
-
-
-def obtener_cotizacion_actual(moneda, fecha=None):
-
-    fecha = fecha or timezone.localdate()
-
-    if moneda.codigo == "COP":
-        return Decimal("1")
-
-    return (
-        CotizacionMoneda.objects.filter(moneda=moneda,fecha__lte=fecha,).order_by("-fecha").first()
-    )
-
-
-def valor_actual_activo(activo, fecha=None):
-
-    cantidad = cantidad_disponible_activo(activo)
-
-    if cantidad <= 0:
-        return ZERO
-
-    precio = obtener_precio_actual(activo, fecha)
-
-    if precio is None:
-        return ZERO
-
-    cotizacion = obtener_cotizacion_actual(activo.moneda,fecha)
-
-    if cotizacion is None:
-        return ZERO
-
-    return (cantidad* precio.precio* cotizacion.valor)
-
-
-def valor_actual_activos(fecha=None):
-
-    return sum(
-        (valor_actual_activo(activo, fecha)for activo in Activo.objects.filter(activo=True)),
-        ZERO
-    )
-
-
-def cantidad_inversion():
-    return (valor_actual_activos()+ valor_cdt_no_finalizados())
 
 
 def ganancia_ventas_activo(activo, broker=None):
@@ -277,56 +220,24 @@ def ganancia_no_realizada(fecha):
 
     return ganancia_total
 
-
-def ganancia_realizada():
-
-    return ( 
-        ganancias_cdt()
-        + total_dividendos()
-        + total_rendimientos_cuenta()
-        + ganancia_ventas()
-    )
-
-
-def ganancia_total():
-
+def porcentaje(total, cantidad):
     return (
-        ganancia_realizada() + ganancia_no_realizada()
-    )
-
-
-def porcentaje_ganancia_sobre_patrimonio():
-    patrimonio_actual = saldo_total_cuentas() + cantidad_inversion()
-
-    if patrimonio_actual <= 0:
-        return ZERO
-
-    return (ganancia_total() / patrimonio_actual) * Decimal("100")
-
-
-def rentabilidad_total():
-    capital_invertido = cantidad_invertida()
-
-    if capital_invertido <= 0:
-        return ZERO
-
-    return (ganancia_total() / capital_invertido) * Decimal("100")
+            (total / cantidad) * Decimal("100")
+            if cantidad > 0
+            else ZERO
+        )
 
 def obtener_estadisticas():
-    hoy = timezone.localtime()
+    hoy = now().date()
 
     realizada = ganancia_realizada()
     no_realizada = ganancia_no_realizada(hoy)
     total = realizada + no_realizada
 
-    patrimonio_actual = saldo_total_cuentas() + cantidad_inversion()
+    patrimonio_actual = patrimonio_historico(hoy)
     capital_invertido = cantidad_invertida()
 
-    porcentaje_ganancia = (
-        (total / patrimonio_actual) * Decimal("100")
-        if patrimonio_actual > 0
-        else ZERO
-    )
+    porcentaje_ganancia = porcentaje(total, patrimonio_actual)
 
     rentabilidad = (
         (total / capital_invertido) * Decimal("100")
@@ -336,7 +247,6 @@ def obtener_estadisticas():
 
     return {
         "patrimonio": patrimonio_actual,
-        "cantidad_inversion": cantidad_inversion(),
         "cantidad_invertida": capital_invertido,
         "ganancia": {
             "total": total,

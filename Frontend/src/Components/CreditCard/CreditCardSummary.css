@@ -158,11 +158,8 @@
 .usageCard-bar {
     width: 100%;
     height: 11px;
-
     overflow: hidden;
-
-    background: #252b2f;
-
+    background: var(--progress-bar);
     border-radius: 999px;
 }
 

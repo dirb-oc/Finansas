@@ -45,7 +45,7 @@ const BalanceChart = ({ patrimonio }) => {
         <div className="chart-card">
             <div className="chart-header">
                 <h3>Evolución de Patrimonio</h3>
-                <span>Últimos 6 meses</span>
+                <span>Últimos 6 meses · {formatCOP(patrimonio[5].total)}</span>
             </div>
 
             <ResponsiveContainer width="100%" height={300}>

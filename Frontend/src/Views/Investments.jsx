@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
 import { getStatsInversiones } from "../controllers/investmentsController";
+import { useEffect, useState } from "react";
 
 import InvestmentSummary from "../Components/Investments/InvestmentSummary";
+import IncomeSummary from "../Components/Investments/IncomeSummary";
 import GainsSection from "../Components/Investments/GainsSection";
 import AssetsList from "../Components/Investments/AssetsList";
 import CDTList from "../Components/Investments/CDTList";
-import IncomeSummary from "../Components/Investments/IncomeSummary";
+
 
 import "./Investments.css";
 

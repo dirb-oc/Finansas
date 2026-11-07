@@ -70,6 +70,7 @@ def validar_saldo_broker(*, broker, moneda, monto):
             )
         })
 
+
 def valor_efectivo_brokers_historico(fecha):
     total = ZERO
 

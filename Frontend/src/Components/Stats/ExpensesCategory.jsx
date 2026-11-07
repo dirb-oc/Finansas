@@ -1,5 +1,4 @@
 import formatCOP, {formatPercentage} from "../../Services/utils";
-import { Link } from "react-router-dom";
 import "./ExpensesCategory.css";
 
 export default function ExpensesCategory({ categorias }) {
@@ -9,7 +8,7 @@ export default function ExpensesCategory({ categorias }) {
     return (
         <div className="chart-card Investment">
 
-            <h3>Distribución de <Link to="/movimientos/">gastos</Link></h3>
+            <h3>Distribución de gastos</h3>
             <span>Categorias {categorias.length} · {formatCOP(total)}</span>
 
             <div className="investment-list">

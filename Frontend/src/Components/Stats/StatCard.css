@@ -8,10 +8,9 @@
 
 /* CARD BASE */
 .card {
-    --color: #3b82f6; /* fallback */
 
     background: var(--bg-card);
-    border: 1px solid #222323;
+    border: 1px solid var(--border);
     border-radius: 18px;
     padding: 12px 22px;
     transition: all 0.25s ease;
@@ -91,7 +90,7 @@
 }
 
 /* 🎯 COLORES*/
-.card.disponible { --color: #3b82f6; }
+.card.disponible { --color: var(--accent-blue); }
 .card.invertido { --color: var(--investment); }
 .card.patrimonio { --color: var(--total); }
 .card.ingresos { --color: #10b981; }
