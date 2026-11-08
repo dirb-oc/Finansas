@@ -1,0 +1,116 @@
+.cdt-panel {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 28px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+    min-width: 0;
+    padding: 20px;
+    transition: border-color 0.2s ease;
+}
+
+.cdt-panel:hover {
+    border-color: var(--investment);
+}
+
+/* Encabezado */
+
+.cdt-summary-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cdt-summary-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.cdt-summary-title svg {
+    color: var(--investment);
+}
+
+.cdt-summary-title h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.cdt-summary-count {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+}
+
+/* Datos */
+
+.cdt-summary-content {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.cdt-summary-invested,
+.cdt-summary-maturity {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    min-width: 0;
+}
+
+.cdt-summary-invested span,
+.cdt-summary-maturity span {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+
+.cdt-summary-invested strong,
+.cdt-summary-maturity strong {
+    font-weight: 700;
+}
+
+.cdt-invested{
+    font-size: 32px;
+}
+
+/* Vencimiento */
+
+.cdt-summary-maturity {
+    padding: 10px 32px;
+    background: #141416;
+    border: 1px solid #302c1e;
+    border-radius: 12px;
+}
+
+.cdt-summary-maturity strong {
+    white-space: nowrap;
+    font-size: 1rem;
+}
+
+@media (max-width: 480px) {
+    .cdt-summary-content {
+        gap: 10px;
+    }
+
+    .cdt-summary-invested strong {
+        font-size: 1.05rem;
+    }
+
+    .cdt-summary-maturity {
+        padding: 9px 10px;
+    }
+
+    .cdt-summary-maturity strong {
+        font-size: 0.9rem;
+    }
+}

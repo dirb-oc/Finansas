@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ExpensesCategory from "../Components/Stats/ExpensesCategory"
 import CashFlowChart from "../Components/Stats/CashFlowChart";
 import BalanceChart from "../Components/Stats/BalanceChart";
-import Investments from "../Components/Stats/Investments"
+import MoneyDistribution from "../Components/Stats/MoneyDistribution"
 import CreditCards from "../Components/Stats/CreditCards"
 import Accounts from "../Components/Stats/Accounts";
 import { getStats } from "../controllers/statsController";
@@ -73,7 +73,10 @@ export default function Dashboard() {
                 </div>
 
                 <div className="stats-side">
-                    <Investments inversiones={stats.inversiones} />
+                    <MoneyDistribution
+                        disponible={stats.disponible}
+                        invertido={stats.invertido}
+                    />
                 </div>
 
             </div>

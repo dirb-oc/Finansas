@@ -24,13 +24,15 @@ class CDTViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
 
-        crear_cdt(
+        cdt = crear_cdt(
             cuenta=serializer.validated_data["cuenta"],
             entidad=serializer.validated_data["entidad"],
             monto=serializer.validated_data["monto"],
             fecha_inicio=serializer.validated_data["fecha_inicio"],
             fecha_vencimiento=serializer.validated_data["fecha_vencimiento"],
         )
+    
+        serializer.instance = cdt
 
     @action(detail=True, methods=["post"])
     def finalizar(self, request, pk=None):

@@ -47,7 +47,7 @@ export default function AccountDetaild() {
                 onCreateMovimiento={handleCreateMovimiento}
             />
 
-            <Modal isOpen={openCreate} onClose={handleCloseModal} className="modal-FormGame" >
+            <Modal isOpen={openCreate} onClose={handleCloseModal} className="modal-Form" >
 
                 <FormMovimiento
                     cuenta={id}

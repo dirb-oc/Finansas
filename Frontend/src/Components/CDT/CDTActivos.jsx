@@ -1,11 +1,57 @@
 import formatCOP, { formatExpiration } from "../../Services/utils";
+import { Plus } from "lucide-react";
 
 import "./CDTActivos.css";
 
-function CDTActivoCard({ cdt }) {
+export default function CDTActivos({ cdts = [], onCreate, onFinalizar }) {
+
+    const ordenados = [...cdts].sort(
+        (a, b) => a.fecha_vencimiento.localeCompare(b.fecha_vencimiento)
+    );
 
     return (
-        <article className="cdt-active-card">
+        <section className="cdt-section cdt-section-active">
+
+            <div className="cdt-section-heading">
+                <div>
+                    <h2>CDTs activos</h2>
+                    <p>Seguimiento de tus inversiones actuales</p>
+                </div>
+
+                <div className="cdt-section-actions">
+
+                    <button className="cdt-create-button" onClick={onCreate} >
+                        <Plus size={17} />
+                        Nuevo CDT
+                    </button>
+                </div>
+            </div>
+
+            {ordenados.length > 0 ? (
+                <div className="cdt-active-grid">
+                    {ordenados.map(cdt => (
+                        <CDTActivoCard key={cdt.id} cdt={cdt} onFinalizar={onFinalizar}/>
+                    ))}
+                </div>
+            ) : (
+                <div className="cdt-empty">
+                    No tienes CDTs activos.
+                </div>
+            )}
+
+        </section>
+    );
+}
+
+function CDTActivoCard({ cdt, onFinalizar }) {
+
+    return (
+        <article className="cdt-active-card" onClick={() => onFinalizar(cdt)} onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onFinalizar(cdt);
+                }
+            }}>
 
             <header className="cdt-active-header">
                 <h3>{cdt.entidad}</h3>
@@ -53,41 +99,5 @@ function CDTActivoCard({ cdt }) {
             </div>
 
         </article>
-    );
-}
-
-export default function CDTActivos({ cdts = [] }) {
-
-    const ordenados = [...cdts].sort(
-        (a, b) => a.fecha_vencimiento.localeCompare(b.fecha_vencimiento)
-    );
-
-    return (
-        <section className="cdt-section cdt-section-active">
-
-            <div className="cdt-section-heading">
-                <div>
-                    <h2>CDTs activos</h2>
-                    <p>Seguimiento de tus inversiones actuales</p>
-                </div>
-
-                <span className="cdt-section-count">
-                    {cdts.length} activos
-                </span>
-            </div>
-
-            {ordenados.length > 0 ? (
-                <div className="cdt-active-grid">
-                    {ordenados.map(cdt => (
-                        <CDTActivoCard key={cdt.id} cdt={cdt} />
-                    ))}
-                </div>
-            ) : (
-                <div className="cdt-empty">
-                    No tienes CDTs activos.
-                </div>
-            )}
-
-        </section>
     );
 }

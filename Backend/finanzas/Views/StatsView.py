@@ -40,7 +40,7 @@ def StatsView(request):
         "flujo_6_meses": get_flujo_meses(hoy),
         "cuentas": get_cuentas(),
         "patrimonio_6_meses": patrimonio_ultimos_6_meses(),
-        "inversiones": inversiones_actuales(),
+        # "inversiones": inversiones_actuales(),
         "deuda": get_deuda(),
         "gastos_categoria": get_gastos_categoria(inicio_mes, fin_mes),
         "tarjetas": get_tarjetas(),

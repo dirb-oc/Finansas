@@ -83,7 +83,7 @@ export default function CardDetaild() {
 
             </div>
 
-            <Modal isOpen={openCreate} onClose={handleCloseCompra} className="modal-FormGame" >
+            <Modal isOpen={openCreate} onClose={handleCloseCompra} className="modal-Form" >
                 <FormCompra
                     tarjeta={id}
                     compra={compraSeleccionada}
@@ -96,7 +96,7 @@ export default function CardDetaild() {
                 />
             </Modal>
 
-            <Modal isOpen={openPago} onClose={handleClosePago} className="modal-FormGame" >
+            <Modal isOpen={openPago} onClose={handleClosePago} className="modal-Form" >
                 <FormPagoCredito
                     pago={pagoSeleccionado}
                     onSubmit={handleSubmitPago}

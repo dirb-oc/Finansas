@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import InvestmentSummary from "../Components/Investments/InvestmentSummary";
 import IncomeSummary from "../Components/Investments/IncomeSummary";
 import GainsSection from "../Components/Investments/GainsSection";
-import AssetsList from "../Components/Investments/AssetsList";
-import CDTList from "../Components/Investments/CDTList";
-
+import AssetsCard from "../Components/Investments/AssetsCard";
+import CDTCard from "../Components/Investments/CDTCard";
 
 import "./Investments.css";
 
@@ -92,8 +91,8 @@ function Investments() {
 
             {/* ACTIVOS + CDT */}
             <div className="invest-duo">
-                <AssetsList activos={stats.activos} />
-                <CDTList cdts={stats.cdts} />
+                <AssetsCard activos={stats.activos} />
+                <CDTCard cdts={stats.cdts} />
             </div>
 
             {/* DIVIDENDOS + RENDIMIENTOS DE CUENTAS */}

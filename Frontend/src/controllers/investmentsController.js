@@ -8,6 +8,14 @@ export async function getCDTs() {
   return await apiGet("/pruebas/CDTstats");
 }
 
+export async function createCDT(data) {
+  return apiPost("/pruebas/cdt/", data);
+}
+
+export async function finalizarCDT(id, data) {
+  return apiPost(`/pruebas/cdt/${id}/finalizar/`, data);
+}
+
 
 
 export async function getInversiones() {
