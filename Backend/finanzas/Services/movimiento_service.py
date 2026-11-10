@@ -104,6 +104,7 @@ def actualizar_movimiento( *, movimiento, cuenta, tipo, monto, descripcion="", f
 
     return movimiento
 
+
 def saldo_total_cuentas_hasta(fecha):
     return sum((saldo_cuenta_hasta(cuenta, fecha)for cuenta in Cuenta.objects.all()),ZERO)
 

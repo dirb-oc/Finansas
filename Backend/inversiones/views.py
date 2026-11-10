@@ -10,6 +10,7 @@ from .serializers import *
 from .Services.CDT_service import crear_cdt, finalizar_cdt, obtener_dashboard_cdt
 from .Services.precioActivo_service import crear_precio_activo
 from .Services.estadisticas_service import obtener_estadisticas
+from .Services.dashboard_activos import obtener_dashboard_activos
 from .Services.operacionActivo_service import crear_operacion_activo
 from .Services.dividendoActivo_service import crear_dividendo_activo
 from .Services.cotizacionMoneda_service import crear_cotizacion_moneda
@@ -63,6 +64,7 @@ class DashboardCDTView(APIView):
             "activos": CDTSerializer(data["activos"], many=True).data,
             "finalizados": CDTSerializer(data["finalizados"], many=True).data,
         })
+
 # Moneda
 class MonedaViewSet(ModelViewSet):
     queryset = Moneda.objects.all().order_by("codigo")
@@ -167,6 +169,18 @@ class OperacionActivoViewSet(ModelViewSet):
 
         serializer.instance = operacion
 
+class DashboardActivosView(APIView):
+
+    def get(self, request):
+        data = obtener_dashboard_activos()
+
+        return Response({
+            "fecha_corte": data["fecha_corte"],
+            "resumen": data["resumen"],
+            "activos": data["activos"],
+            "brokers": data["brokers"],
+            "historial": data["historial"],
+        }, status=status.HTTP_200_OK)
 
 # Dividendos
 class DividendoActivoViewSet(ModelViewSet):

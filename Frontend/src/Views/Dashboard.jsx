@@ -88,7 +88,10 @@ export default function Dashboard() {
                 </div>
 
                 <div className="stats-side">
-                    <ExpensesCategory categorias={stats.gastos_categoria} />
+                    <ExpensesCategory 
+                        gastos_categoria={stats.gastos_categoria} 
+                        ingreso_categoria={stats.ingreso_categoria} 
+                    />
                 </div>
 
             </div>

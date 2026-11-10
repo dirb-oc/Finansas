@@ -1,14 +1,6 @@
 import { Landmark, PiggyBank, TrendingUp, Percent } from "lucide-react";
-import formatCOP, { formatPercentage } from "../../Services/utils";
+import formatCOP, { formatPercentage, formatSigned } from "../../Services/utils";
 import SummaryCards from "../SummaryCards";
-
-const formatSigned = (value) => {
-    const number = Number(value) || 0;
-
-    if (number === 0) return formatCOP(0);
-
-    return `${number > 0 ? "+" : "-"}${formatCOP(Math.abs(number))}`;
-};
 
 export default function InvestmentSummary({ patrimonio, cantidadInvertida, ganancia, rentabilidadTotal, }) {
     const gananciaTotal = Number(ganancia?.total) || 0;

@@ -12,10 +12,10 @@ export default function Accounts({ data }) {
         <div className="chart-card">
 
             <div className="chart-header">
-                <h3>Cuentas y distribución</h3>
+                <h3>Cuentas y Distribución</h3>
 
                 <span>
-                    {data.cuentas.length} cuentas · {" "}
+                    {data.cuentas.length} Cuentas · {" "}
                     {formatCOP(data.disponible)}
                 </span>
             </div>

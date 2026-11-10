@@ -134,7 +134,7 @@ class OperacionActivo(models.Model):
     ]
 
     activo = models.ForeignKey( Activo, on_delete=models.PROTECT, related_name="operaciones" )
-    broker = models.ForeignKey( Broker, on_delete=models.PROTECT, related_name="operaciones", default=1,)
+    broker = models.ForeignKey( Broker, on_delete=models.PROTECT, related_name="operaciones",)
     tipo = models.CharField( max_length=10, choices=TIPO_CHOICES )
     cantidad = models.DecimalField( max_digits=18, decimal_places=8 )
     comision = models.DecimalField( max_digits=15, decimal_places=2, default=0 )

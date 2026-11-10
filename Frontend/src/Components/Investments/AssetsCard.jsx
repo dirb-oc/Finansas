@@ -1,16 +1,9 @@
 import { TrendingUp, TrendingDown, LineChart } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import formatCOP from "../../Services/utils";
+import formatCOP, { formatSigned } from "../../Services/utils";
 import "./AssetsCard.css";
 
-const formatSigned = (value) => {
-    const number = Number(value) || 0;
-
-    if (number === 0) return formatCOP(0);
-
-    return `${number > 0 ? "+" : "-"}${formatCOP(Math.abs(number))}`;
-};
 
 export default function AssetsCard({ activos }) {
     const cantidad = Number(activos?.cantidad) || 0;
@@ -18,7 +11,7 @@ export default function AssetsCard({ activos }) {
     const isPositive = ganancia >= 0;
 
     return (
-        <Link to="/CDT/" className="assets-panel">
+        <Link to="/assets/" className="assets-panel">
             <div className="assets-header">
                 <div className="assets-title">
                     <LineChart size={20} />

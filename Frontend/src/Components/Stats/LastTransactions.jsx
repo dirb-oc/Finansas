@@ -1,4 +1,6 @@
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Link } from "react-router-dom";
+
 import formatCOP from "../../Services/utils";
 import "./LastTransactions.css";
 
@@ -16,9 +18,9 @@ export default function LastTransactions({ movimientos = [] }) {
     return (
         <div className="chart-card">
 
-
             <div className="chart-header">
                 <h3>Últimos movimientos</h3>
+                <span>Los movimientos mas recientes</span>
             </div>
 
             {movimientos.length === 0 ? (
@@ -38,7 +40,8 @@ export default function LastTransactions({ movimientos = [] }) {
                     const esGasto = mov.categoria === "gasto";
 
                     return (
-                        <div
+                        
+                        <Link to={`/cuentas/${mov.idcuenta}/`} 
                             key={mov.id}
                             className="mov-item"
                         >
@@ -58,7 +61,7 @@ export default function LastTransactions({ movimientos = [] }) {
                                 </div>
 
                                 <div className="mov-sub">
-                                    {formatDate(mov.fecha)}
+                                    <strong>{mov.cuenta}</strong> · {formatDate(mov.fecha)}
                                 </div>
 
                             </div>
@@ -77,7 +80,7 @@ export default function LastTransactions({ movimientos = [] }) {
 
                             </div>
 
-                        </div>
+                        </Link>
                     );
                 })
 

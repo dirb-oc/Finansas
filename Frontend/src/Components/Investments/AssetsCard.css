@@ -1,5 +1,3 @@
-
-
 .assets-panel {
     display: flex;
     flex-direction: column;
@@ -46,7 +44,7 @@
     font-weight: 600;
 }
 
-.assets-header > span {
+.assets-header>span {
     color: var(--text-secondary);
     font-size: 0.82rem;
 }
@@ -67,7 +65,7 @@
 
     min-width: 0;
     padding: 5px 25px;
-    background: #060a0e;
+    background-color: var(--bg-label);
     border: 1px solid #0d1115;
     border-radius: 12px;
 }
@@ -118,18 +116,18 @@
     font-weight: 500;
 }
 
-.assets-performance > strong {
+.assets-performance>strong {
     font-size: 1rem;
     font-weight: 700;
     text-align: right;
     overflow-wrap: anywhere;
 }
 
-.decrement{
+.decrement {
     color: var(--spent);
 }
 
-.increase{
+.increase {
     color: var(--income);
 }
 
@@ -150,7 +148,7 @@
         padding: 13px;
     }
 
-    .assets-performance > strong {
+    .assets-performance>strong {
         font-size: 1.05rem;
     }
 }

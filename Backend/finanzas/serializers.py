@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import Sum
 from rest_framework import serializers
 from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito, PagoCredito
-from .Services.card_service import calcular_ciclo_actual, get_proximo_pago
+from .Services.card_service import calcular_ciclo_actual, calcular_minimo_tarjeta
 from django.utils.timezone import localtime
 
 class CuentaSerializer(serializers.ModelSerializer):
@@ -330,7 +330,7 @@ class TarjetaCreditoDetailSerializer(serializers.ModelSerializer):
         }
 
     def get_proximo(self, obj):
-            proximo = get_proximo_pago(obj)
+            proximo = calcular_minimo_tarjeta(obj)
     
             return {
                 "fecha": proximo["fecha"],

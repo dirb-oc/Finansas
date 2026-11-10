@@ -22,4 +22,5 @@ urlpatterns = [
     path("", include(router.urls)),
     path("stats/", EstadisticasView.as_view(), name="estadisticas"),
     path("CDTstats/", DashboardCDTView.as_view(), name="estadisticasCDT"),
+    path("assetsstats/", DashboardActivosView.as_view(), name="estadisticasActicos"),
 ]

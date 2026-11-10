@@ -16,6 +16,10 @@ export async function finalizarCDT(id, data) {
   return apiPost(`/pruebas/cdt/${id}/finalizar/`, data);
 }
 
+export async function getassets() {
+  return await apiGet("/pruebas/assetsstats");
+}
+
 
 
 export async function getInversiones() {

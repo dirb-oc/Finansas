@@ -7,6 +7,29 @@ export default function formatCOP(value) {
     }).format(value || 0);
 }
 
+export function formatMoney(value, currency = "USD") {
+    const amount = new Intl.NumberFormat("es-CO", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(value ?? 0);
+
+    const symbols = {
+        USD: "USD",
+        COP: "$",
+        EUR: "€",
+    };
+
+    return `${symbols[currency] ?? currency} ${amount}`;
+}
+
+export const formatSigned = (value) => {
+    const number = Number(value) || 0;
+
+    if (number === 0) return formatCOP(0);
+
+    return `${number > 0 ? "+" : "-"}${formatCOP(Math.abs(number))}`;
+};
+
 export function formatDate(date) {
     if (!date) return "--";
 

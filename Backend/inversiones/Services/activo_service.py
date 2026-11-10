@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from ..models import OperacionActivo, Activo, Broker
 from .broker_service import calcular_estadisticas_broker
 
-
 from .precioActivo_service import obtener_ultimo_precio
 from .cotizacionMoneda_service import obtener_ultima_cotizacion
 

@@ -98,6 +98,7 @@ class Inversion(models.Model):
     def __str__(self):
         return self.nombre
 
+# Credito
 class TarjetaCredito(models.Model):
 
     nombre = models.CharField(max_length=100)

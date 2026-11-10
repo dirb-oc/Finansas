@@ -86,18 +86,6 @@ def valor_efectivo_brokers_historico(fecha):
 
 
 def calcular_estadisticas_broker(broker, fecha_corte):
-    """
-    Reconstruye el capital histórico del broker hasta una fecha.
-
-    Devuelve:
-    - Capital histórico que permanece en el broker.
-    - Efectivo disponible por moneda.
-    - Capital histórico invertido por activo.
-    - Ganancias/pérdidas realizadas por activo.
-
-    Las cifras COP son costos históricos asignados, no valores
-    de mercado actuales.
-    """
 
     movimientos = list(
         MovimientoBroker.objects.filter(
