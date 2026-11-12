@@ -7,7 +7,6 @@ import AssetsCard from "../Components/Investments/AssetsCard";
 import CDTCard from "../Components/Investments/CDTCard";
 import BackFooter from "../Components/BackFooter";
 
-import "./Investments.css";
 
 function Investments() {
 

@@ -2,6 +2,7 @@
 /* ========================================
    PANEL PRINCIPAL
 ======================================== */
+
 .broker-section {
     width: 100%;
     min-width: 0;
@@ -32,10 +33,12 @@
 .broker-summary {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+
     min-width: 0;
     min-height: 0;
-
     padding-right: 26px;
+
     border-right: 1px solid var(--border);
 }
 
@@ -47,11 +50,11 @@
 }
 
 .broker-avatar {
-    width: 46px;
-    height: 46px;
-
     display: grid;
     place-items: center;
+
+    width: 46px;
+    height: 46px;
     flex-shrink: 0;
 
     border-radius: 12px;
@@ -73,17 +76,41 @@
     font-size: 0.78rem;
 }
 
+.broker-summary-header button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+    padding: 8px 11px;
 
-/* ESTADÍSTICAS */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 500;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.broker-summary-header button:hover {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    background: var(--bg-secondary);
+}
+
+
+/* Estadísticas */
 
 .broker-stats {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: 18px;
-    row-gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
 
     margin: 15px 0;
-    padding: 18px 0;
 }
 
 .broker-stat {
@@ -100,7 +127,7 @@
 
 .broker-stat strong {
     color: var(--text-primary);
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 650;
     white-space: nowrap;
     overflow: hidden;
@@ -108,38 +135,52 @@
 }
 
 
-/* PATRIMONIO COP */
-
+/* Patrimonio COP */
 .broker-cop {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-
-    flex-shrink: 0;
-    padding-top: 15px;
-    border-top: 1px solid var(--border);
-
-    flex-shrink: 0;
+    justify-content: space-between;
+    gap: 16px;
     padding: 14px 16px;
-
-    background: color-mix(in srgb, var(--accent-blue) 9%, var(--bg-secondary));
-    border: 1px solid color-mix(in srgb, var(--accent-blue) 20%, transparent);
-    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
 }
 
-.broker-cop span {
-    color: var(--accent-blue);
-    font-size: 0.8rem;
+.broker-cop-value,
+.broker-exchange-rate {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.broker-cop-value span,
+.broker-exchange-rate span {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.broker-cop-value strong {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.broker-exchange-rate {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.broker-exchange-rate strong {
+    font-size: 14px;
     font-weight: 650;
 }
 
-.broker-cop strong {
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    white-space: nowrap;
+.broker-exchange-rate small {
+    color: var(--text-secondary);
+    font-size: 10px;
 }
+
+
 
 /* ========================================
    ACTIVIDAD
@@ -155,41 +196,40 @@
 }
 
 
-/* ENCABEZADO */
+/* Encabezado */
 
 .broker-activity-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 15px;
+    gap: 16px;
 
     flex-shrink: 0;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
-.broker-activity-header h3 {
+.broker-activity-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
+}
+
+.broker-activity-title h3 {
     margin: 0;
     color: var(--text-primary);
-    font-size: 1.1rem;
-}
-
-.broker-activity-header p {
-    margin: 5px 0 0;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 
-/* ========================================
-   SWITCH
-======================================== */
+/* Switch */
 
 .broker-switch {
     display: flex;
     align-items: center;
     gap: 3px;
-
-    padding: 4px;
+    padding: 3px;
     flex-shrink: 0;
 
     background: var(--bg-secondary);
@@ -197,39 +237,63 @@
 }
 
 .broker-switch button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-
-    padding: 8px 11px;
+    padding: 7px 12px;
     border: none;
     border-radius: 7px;
 
     background: transparent;
     color: var(--text-secondary);
 
-    font-size: 0.76rem;
+    font-size: 0.8rem;
+    font-weight: 500;
     white-space: nowrap;
 
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
 }
 
-.broker-switch button:hover:not(.active) {
+.broker-switch button:hover {
     color: var(--text-primary);
-    background: color-mix(in srgb, var(--text-primary) 5%, transparent);
 }
 
 .broker-switch button.active {
     background: var(--bg-card);
     color: var(--text-primary);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.broker-switch button span {
-    font-size: 0.69rem;
-    opacity: 0.65;
+
+/* Botón agregar */
+
+.broker-add-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 9px 13px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    background: transparent;
+    color: var(--text-primary);
+
+    font-size: 0.82rem;
+    font-weight: 550;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.broker-add-button:hover {
+    background: var(--bg-secondary);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.broker-add-button:active {
+    transform: scale(0.97);
 }
 
 
@@ -244,20 +308,16 @@
 
     overflow-y: auto;
     overflow-x: hidden;
-
     padding-right: 7px;
 
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
-
     overscroll-behavior: contain;
 }
 
 .broker-records-scroll:hover {
     scrollbar-color: var(--border) transparent;
 }
-
-/* Chrome, Edge y Safari */
 
 .broker-records-scroll::-webkit-scrollbar {
     width: 5px;
@@ -307,19 +367,19 @@
 }
 
 .broker-record:last-child {
-    border-bottom: none;
     padding-bottom: 3px;
+    border-bottom: none;
 }
 
 
-/* ICONOS */
+/* Iconos */
 
 .broker-record-icon {
-    width: 38px;
-    height: 38px;
-
     display: grid;
     place-items: center;
+
+    width: 38px;
+    height: 38px;
     flex-shrink: 0;
 
     border-radius: 10px;
@@ -338,7 +398,7 @@
 }
 
 
-/* INFORMACIÓN */
+/* Información */
 
 .broker-record-info {
     flex: 1;
@@ -376,14 +436,13 @@
 }
 
 
-/* ETIQUETAS */
+/* Etiquetas */
 
 .record-tag {
     padding: 3px 7px;
     border-radius: 5px;
 
     background: var(--bg-secondary);
-
     font-size: 0.67rem;
     font-weight: 500;
 }
@@ -399,7 +458,7 @@
 }
 
 
-/* MONTOS */
+/* Montos */
 
 .broker-record-amount {
     flex-shrink: 0;
@@ -422,7 +481,7 @@
 }
 
 
-/* ESTADO VACÍO */
+/* Estado vacío */
 
 .broker-records-empty {
     display: grid;
@@ -455,7 +514,7 @@
     }
 
     .broker-stats {
-        column-gap: 10px;
+        gap: 8px;
     }
 
     .broker-stat strong {
@@ -483,15 +542,12 @@
     .broker-summary {
         padding-right: 0;
         padding-bottom: 20px;
-
         border-right: none;
         border-bottom: 1px solid var(--border);
     }
 
     .broker-stats {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
         margin: 22px 0;
-        padding: 0;
     }
 
     .broker-activity {
@@ -525,6 +581,13 @@
         flex-direction: column;
     }
 
+    .broker-activity-title {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
     .broker-switch {
         width: 100%;
         box-sizing: border-box;
@@ -532,6 +595,10 @@
 
     .broker-switch button {
         flex: 1;
+    }
+
+    .broker-add-button {
+        width: 100%;
     }
 
     .broker-record {
@@ -552,156 +619,4 @@
     .broker-record-info > strong {
         font-size: 0.81rem;
     }
-}
-
-
-
-.broker-activity-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 20px;
-}
-
-.broker-activity-title {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    min-width: 0;
-}
-
-.broker-activity-title h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-/* Selector de historial */
-.broker-switch {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    padding: 3px;
-    border-radius: 9px;
-    background: var(--bg-secondary);
-}
-
-.broker-switch button {
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    padding: 7px 12px;
-    border-radius: 7px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
-}
-
-.broker-switch button:hover {
-    color: var(--text-primary);
-}
-
-.broker-switch button.active {
-    background: var(--bg-card);
-    color: var(--text-primary);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-/* Acción de creación */
-.broker-add-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    padding: 9px 13px;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    background: transparent;
-    color: var(--text-primary);
-    font-size: 0.82rem;
-    font-weight: 550;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.broker-add-button:hover {
-    background: var(--bg-secondary);
-    border-color: var(--accent-blue);
-    color: var(--accent-blue);
-}
-
-.broker-add-button:active {
-    transform: scale(0.97);
-}
-
-@media (max-width: 600px) {
-    .broker-activity-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .broker-activity-title {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .broker-add-button {
-        width: 100%;
-    }
-}
-
-.broker-summary-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.broker-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    flex-shrink: 0;
-    border-radius: 11px;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
-
-.broker-summary-header h3 {
-    margin: 0 0 3px;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.broker-summary-header span {
-    color: var(--text-secondary);
-    font-size: 0.78rem;
-}
-
-.broker-summary-header button {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    margin-left: auto;
-    padding: 8px 11px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 0.78rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.broker-summary-header button:hover {
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
-    background: var(--bg-secondary);
 }
