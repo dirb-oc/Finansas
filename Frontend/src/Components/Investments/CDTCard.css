@@ -1,9 +1,6 @@
 .cdt-panel {
     display: flex;
     flex-direction: column;
-
-    margin-top: 28px;
-
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);

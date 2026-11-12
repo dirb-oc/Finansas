@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
     --bg-primary: #030509;
     --bg-secondary: #111320;
@@ -35,6 +37,7 @@
     
     --transition: all 0.2s ease;
 }
+
 
 * {
     margin: 0;
@@ -91,6 +94,7 @@ input, select {
 
 .General {
     margin: 40px 14%;
+    margin-bottom: 20px;
 }
 
 .header {
@@ -156,6 +160,41 @@ h2 {
 }
 
 
+/* Section Heading */
+.heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px 0 14px;
+    font-family: 'Inter', sans-serif;
+}
+
+.heading h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.4;
+}
+
+.heading p {
+    margin: 3px 0 0;
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
+    opacity: 0.85;
+}
+
+.heading > span {
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+    font-weight: 500;
+}
+
 
 @media (max-width: 900px) {
     .General {
@@ -179,6 +218,7 @@ h2 {
     display: flex;
     gap: 20px;
     align-items: stretch;
+    margin-bottom: 25px;
 }
 
 .Stats > * {
@@ -200,30 +240,37 @@ h2 {
     max-height:420px;
 }
 
+
+.invest-duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    align-items: stretch;
+    min-width: 0;
+    margin-bottom: 25px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+
+    .invest-duo {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .invest-header .subtitle {
+        font-size: 0.95rem;
+    }
+
+}
+
 /* Tablets y móviles */
 @media (max-width: 1024px) {
     .Stats {
         flex-direction: column;
     }
-}
-
-.card-detail__back {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-
-    cursor: pointer;
-    user-select: none;
-
-    transition: .2s all;
-}
-
-.card-detail__back:hover {
-    color: greenyellow;
-}
-
-.card-detail__back:active {
-    transform: scale(0.97);
 }

@@ -1,0 +1,30 @@
+
+.back-footer {
+    margin-top: 30px;
+    width: 100%;
+}
+
+.back-footer hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0 0 7px;
+}
+
+.back-footer-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border: none;
+    background: transparent;
+    color: #4ecc8d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.back-footer-button:hover {
+    color: #15803d;
+    gap: 12px;
+}

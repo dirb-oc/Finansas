@@ -9,6 +9,7 @@ import CDTActivos from "../Components/CDT/CDTActivos";
 import FormCDT from "../Components/Forms/FormCDT";
 import CDTList from "../Components/CDT/CDTList";
 import Modal from "../Components/Modal"
+import BackFooter from "../Components/BackFooter";
 
 export default function CDTDetaild() {
 
@@ -120,6 +121,7 @@ export default function CDTDetaild() {
                     />
                 )}
             </Modal>
+            <BackFooter />
         </div>
     );
 }

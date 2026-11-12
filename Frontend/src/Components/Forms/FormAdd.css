@@ -583,3 +583,98 @@
     }
 
 }
+
+
+
+
+
+/* =================================
+   INFORMACIÓN DE COMPRA Y CUENTA
+================================= */
+
+.purchase-form__info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+
+    margin: -4px 0 20px;
+    padding: 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--bg-card);
+}
+
+.purchase-form__info > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    min-width: 0;
+}
+
+.purchase-form__info span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+}
+
+.purchase-form__info strong {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+}
+
+/* Información de la compra */
+
+.purchase-form__info--purchase {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Información de la cuenta */
+
+.purchase-form__info--account {
+    grid-template-columns: 1fr 1fr;
+
+    border-color: var(--border);
+    margin-top: 2px;
+}
+
+.purchase-form__info--account > div:last-child {
+    padding-left: 16px;
+    border-left: 1px solid var(--border);
+}
+
+.purchase-form__amount {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+}
+
+/* Responsive */
+
+@media (max-width: 500px) {
+    .purchase-form__info--purchase {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .purchase-form__info--purchase > div:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .purchase-form__info--account {
+        grid-template-columns: 1fr;
+    }
+
+    .purchase-form__info--account > div:last-child {
+        padding-left: 0;
+        padding-top: 12px;
+        border-left: none;
+        border-top: 1px solid var(--border);
+    }
+}

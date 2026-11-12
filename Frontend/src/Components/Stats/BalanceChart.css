@@ -4,7 +4,6 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 24px;
-    margin-top: 24px;
     transition: var(--transition);
 }
 

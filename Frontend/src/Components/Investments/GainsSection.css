@@ -1,30 +1,32 @@
-/* INVESTMENTS — GANANCIAS */
+
+/* CONTENEDOR PRINCIPAL */
 .gains-section {
     display: flex;
-    gap: 20px;
     align-items: stretch;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+/* CARDS */
+.gains-section-totals,
+.gains-section-bar {
+    min-width: 0;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .gains-section-totals {
     flex: 1;
-    min-width: 0;
-    margin-top: 24px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    padding: 20px 24px;
 }
 
 .gains-section-bar {
     flex: 2;
-    min-width: 0;
-    margin-top: 24px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    padding: 20px 24px;
 }
 
 /* HEADER */
@@ -32,13 +34,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
 }
 
-.gains-section__header span {
-    color: var(--text-secondary);
-}
-
-.gains-section h3 {
+.gains-section__header h3 {
     margin: 0;
     color: var(--text-primary);
     font-size: 1.15rem;
@@ -46,168 +45,74 @@
     letter-spacing: -0.015em;
 }
 
-.gains-total{
-    font-size: 44px;
+.gains-section__header span {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* GANANCIA TOTAL */
+.gains-total {
+    display: block;
+    font-size: 2.4rem;
     font-weight: 700;
     color: var(--income);
 }
 
-.gain-label{
+/* GANANCIAS REALIZADAS Y NO REALIZADAS */
+.gain-label {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 6px 18px;
-    border: none;
-    border-radius: 12px;
-    background-color: var(--bg-label);
+
+    padding: 10px 14px;
     margin-top: 10px;
+
+    background: var(--bg-label);
+    border-radius: 12px;
 }
 
 .gain-performance__label {
     display: flex;
     align-items: center;
     gap: 9px;
+    min-width: 0;
 }
 
 .gain-performance__label span {
-    color: #9399a0;
+    color: var(--text-secondary);
     font-size: 0.8rem;
     font-weight: 500;
 }
 
-
-@media (max-width: 768px) {
-    .gains-section {
-        flex-direction: column;
-    }
-
-    .gains-section-totals,
-    .gains-section-bar {
-        flex: unset;
-        width: 100%;
-    }
+.gain-label strong {
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
-
-
-/* MÉTRICAS */
-.gains-section__metrics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-
-    padding: 20px 24px;
+.increase {
+    color: var(--income);
 }
 
-.gains-metric {
-    --gains-color: var(--income);
-
-    display: flex;
-    align-items: flex-start;
-
-    gap: 14px;
-
-    padding: 18px;
-
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+.decrement {
+    color: var(--spent);
 }
 
-.gains-metric--total { --gains-color: var(--total); }
-.gains-metric--realizada { --gains-color: var(--income); }
-.gains-metric--no-realizada { --gains-color: var(--accent-blue); }
-
-.gains-metric.is-negative { --gains-color: var(--spent); }
-
-.gains-metric__icon {
-    width: 40px;
-    height: 40px;
-
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 11px;
-
-    color: var(--gains-color);
-
-    background: color-mix(
-        in srgb,
-        var(--gains-color) 12%,
-        transparent
-    );
-}
-
-.gains-metric__content {
-    display: flex;
-    flex-direction: column;
-
-    gap: 6px;
-
-    min-width: 0;
-}
-
-.gains-metric__content span {
-    color: var(--text-secondary);
-
-    font-size: 0.78rem;
-}
-
-.gains-metric__content strong {
-    color: var(--gains-color);
-
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-}
-
-/* BARRA DIVIDIDA EN DOS COLORES */
-
-.gains-section__bar-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 12px;
-
-    margin-bottom: 10px;
-}
-
-.gains-section__bar-top span {
-    color: var(--text-secondary);
-
-    font-size: 0.8rem;
-}
-
-.gains-section__bar-top strong {
-    color: var(--text-primary);
-
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
+/* BARRA DE DISTRIBUCIÓN */
 .gains-section__bar-track {
     display: flex;
-
     width: 100%;
-    height: 12px;
+    height: 18px;
+    margin: 25px 0 10px;
 
     overflow: hidden;
-
     background: var(--bg-secondary);
-
     border-radius: 999px;
 }
 
 .gains-section__bar-fill {
     height: 100%;
-
     min-width: 0;
-
     transition: width 0.4s ease;
 }
 
@@ -223,33 +128,30 @@
     background: var(--accent-blue);
 }
 
+/* LEYENDA */
 .gains-section__bar-legend {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
 
-    gap: 12px;
-
-    margin-top: 10px;
+    margin: 10px 0 20px;
 }
 
 .gains-section__bar-legend span {
     display: flex;
     align-items: center;
-
     gap: 6px;
 
     color: var(--text-secondary);
-
     font-size: 0.75rem;
 }
 
 .gains-section__bar-legend i {
     width: 9px;
     height: 9px;
-
     flex-shrink: 0;
-
     border-radius: 50%;
 }
 
@@ -262,36 +164,34 @@
 }
 
 /* RENTABILIDADES */
-
 .gains-section__yields {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+
+    margin-top: auto;
 }
 
 .gains-section__yield {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 12px;
 
     padding: 14px 16px;
-
-    background: color-mix(in srgb, var(--bg-secondary) 55%, transparent);
-    border: 1px solid var(--border);
+    background: var(--bg-label);
     border-radius: var(--radius-md);
 }
 
 .gains-section__yield span {
     color: var(--text-secondary);
-
     font-size: 0.8rem;
 }
 
 .gains-section__yield strong {
     font-size: 0.95rem;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .gains-section__yield.is-positive strong {
@@ -303,46 +203,43 @@
 }
 
 /* RESPONSIVE */
-
 @media (max-width: 900px) {
-
-    .gains-section__metrics {
-        grid-template-columns: 1fr;
-    }
-
     .gains-section__yields {
         grid-template-columns: 1fr;
     }
-
 }
 
-@media (max-width: 600px) {
-
-    .gains-section__header {
-        padding: 16px 18px;
-    }
-
-    .gains-section__metrics {
-        padding: 14px 18px;
-    }
-
-    .gains-section__bar {
-        padding: 0 18px 18px;
-    }
-
-    .gains-section__bar-top {
+@media (max-width: 768px) {
+    .gains-section {
         flex-direction: column;
-        align-items: flex-start;
+    }
 
-        gap: 4px;
+    .gains-section-totals,
+    .gains-section-bar {
+        flex: none;
+        width: 100%;
     }
 
     .gains-section__yields {
-        padding: 0 18px 18px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .gains-section-totals,
+    .gains-section-bar {
+        padding: 18px;
     }
 
-    .gains-metric {
-        padding: 15px;
+    .gains-total {
+        font-size: 2.2rem;
     }
 
+    .gains-section__yields {
+        grid-template-columns: 1fr;
+    }
+
+    .gain-label {
+        padding: 10px;
+    }
 }

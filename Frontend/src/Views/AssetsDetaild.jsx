@@ -1,12 +1,15 @@
 import { Wallet, Layers, CreditCard, TrendingUp, } from "lucide-react";
 import { getassets } from "../controllers/investmentsController";
+import { formatMoney } from "../Services/utils";
 import { useEffect, useState } from "react";
 
 import FormFinalizarCDT from "../Components/Forms/FormFinalizarCDT";
-import { formatMoney } from "../Services/utils";
+import BrokerSection from "../Components/Ass/BrokerSection";
 import SummaryCards from "../Components/SummaryCards";
+import Activos from "../Components/Ass/Activos";
 import FormCDT from "../Components/Forms/FormCDT";
 import Modal from "../Components/Modal"
+import BackFooter from "../Components/BackFooter"
 
 export default function AssetsDetaild() {
 
@@ -91,6 +94,15 @@ export default function AssetsDetaild() {
                 cards={cards}
                 ariaLabel="Resumen CDTs"
             />
+
+            <Activos activos={stats.activos} />
+
+            <BrokerSection
+                brokers={stats.brokers}
+                historial={stats.historial}
+            />
+
+            <BackFooter />
 
             <Modal
                 isOpen={openCreate}

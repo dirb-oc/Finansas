@@ -1,4 +1,4 @@
-import { TrendingUp, CircleDollarSign, LineChart } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { formatPercentage, formatSigned } from "../../Services/utils";
 import "./GainsSection.css";
 
@@ -71,11 +71,11 @@ export default function GainsSection({ ganancia, rentabilidadTotal, gananciaSobr
                 <div className="gains-section__bar-track">
                     <div
                         className="gains-section__bar-fill realized"
-                        style={{ width: `${porRealizada}%` }}
+                        style={{ width: `${Math.max(0, porRealizada)}%` }}
                     />
                     <div
                         className="gains-section__bar-fill unrealized"
-                        style={{ width: `${porNoRealizada}%` }}
+                        style={{ width: `${Math.max(0, porNoRealizada)}%` }}
                     />
                 </div>
 

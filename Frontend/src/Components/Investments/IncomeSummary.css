@@ -1,0 +1,76 @@
+
+.invest-income {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    min-width: 0;
+}
+
+.invest-income__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
+    padding: 22px 24px;
+}
+
+.invest-income__item + .invest-income__item {
+    border-left: 1px solid var(--border);
+}
+
+.invest-income__info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.invest-income__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    color: var(--income);
+    background: color-mix(in srgb, var(--income) 12%, transparent);
+    border-radius: 12px;
+}
+
+.invest-income__info div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.invest-income__info strong {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.invest-income__info span:not(.invest-income__icon) {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+}
+
+.invest-income__total {
+    white-space: nowrap;
+    font-size: 1.25rem;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 600px) {
+    .invest-income {
+        grid-template-columns: 1fr;
+    }
+
+    .invest-income__item + .invest-income__item {
+        border-left: none;
+        border-top: 1px solid var(--border);
+    }
+}

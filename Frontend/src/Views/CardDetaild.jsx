@@ -1,4 +1,4 @@
-import { getCardById, CreateCompra, EditCompra, CreatePago, EditPago} from "../controllers/cardController";
+import { getCardById, CreateCompra, EditCompra, CreatePago, EditPago } from "../controllers/cardController";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -10,6 +10,7 @@ import CreditCardPayments from "../Components/CreditCard/CreditCardPayments";
 import FormPagoCredito from "../Components/Forms/FormPagoCredito";
 import FormCompra from "../Components/Forms/FormCompra";
 import Modal from "../Components/Modal";
+import BackFooter from "../Components/BackFooter";
 
 export default function CardDetaild() {
     const { id } = useParams();
@@ -18,13 +19,13 @@ export default function CardDetaild() {
     const [tarjeta, setTarjeta] = useState(null);
     const [openCreate, setOpenCreate] = useState(false);
     const [openPago, setOpenPago] = useState(false);
-    
+
     const refreshCard = () => { getCardById(id).then(setTarjeta); };
-    
+
     useEffect(() => { refreshCard(); }, [id]);
 
     const [compraSeleccionada, setCompraSeleccionada] = useState(null);
-    
+
     const handleCreateCompra = () => { setCompraSeleccionada(null); setOpenCreate(true); };
     const handleEditCompra = (compra) => { setCompraSeleccionada(compra); setOpenCreate(true); };
     const handleCloseCompra = () => { setOpenCreate(false); setCompraSeleccionada(null); };
@@ -45,7 +46,7 @@ export default function CardDetaild() {
 
     const handleSubmitPago = async (data) => {
         if (pagoSeleccionado) {
-            await EditPago( pagoSeleccionado.id, data );
+            await EditPago(pagoSeleccionado.id, data);
         } else {
             await CreatePago(data);
         }
@@ -56,12 +57,8 @@ export default function CardDetaild() {
     return (
         <div className="General">
 
-            <h1 className="title" > Mi Tarjeta de Crédito </h1>
-
-            <p className="subtitle card-detail__back" onClick={() => navigate(-1)} >
-                <ArrowLeft size={18} />
-                <span>Volver</span>
-            </p>
+            <h1 className="title">Tarjeta de Crédito</h1>
+            <p className="subtitle">Consulta los movimientos, compras y pagos de esta tarjeta.</p>
 
             <div className="divisor" />
 
@@ -82,6 +79,8 @@ export default function CardDetaild() {
                 />
 
             </div>
+
+            <BackFooter />
 
             <Modal isOpen={openCreate} onClose={handleCloseCompra} className="modal-Form" >
                 <FormCompra

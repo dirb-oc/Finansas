@@ -166,7 +166,8 @@ class CompraCredito(models.Model):
     )
 
     def __str__(self):
-        return f"{self.tipo.nombre} - ${self.monto}"
+        monto = f"{self.monto:,.0f}".replace(",", ".")
+        return f"{self.tipo.nombre} - ${monto}"
 
     @property
     def total_pagado(self):

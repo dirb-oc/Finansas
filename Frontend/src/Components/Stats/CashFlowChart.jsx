@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Toolti
 import formatCOP from "../../Services/utils";
 import "./CashFlowChart.css";
 
-// 🧠 FIX MES
+
 const getMonthName = (mesStr) => {
     const [year, month] = mesStr.split("-");
     const date = new Date(Number(year), Number(month) - 1, 1);

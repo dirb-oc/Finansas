@@ -2,7 +2,7 @@ import { CalendarDays, CreditCard, Wallet, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getComprasPendientes } from "../../controllers/cardController";
 import { getCuentas } from "../../controllers/AccountController";
-import { handleFormattedPriceChange, getToday } from "../../Services/utils";
+import formatCOP, { handleFormattedPriceChange, getToday, } from "../../Services/utils";
 import "./FormAdd.css";
 
 function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
@@ -201,7 +201,7 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
                                             {compra.descripcion ||
                                                 `Compra #${compra.id}`}
                                             {" - "}
-                                            ${compra.monto}
+                                            {formatCOP(compra.monto)}
                                         </option>
 
                                     ))}
@@ -216,31 +216,32 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
                         {/* Información de la compra */}
 
                         {compraSeleccionada && (
-
-                            <div className="purchase-form__info">
+                            <div className="purchase-form__info purchase-form__info--purchase">
 
                                 <div>
-
                                     <span>Tarjeta</span>
-
-                                    <strong>
-                                        {compraSeleccionada.tarjeta_nombre}
-                                    </strong>
-
+                                    <strong>{compraSeleccionada.tarjeta_nombre}</strong>
                                 </div>
 
                                 <div>
-
                                     <span>Saldo pendiente</span>
-
-                                    <strong>
-                                        ${compraSeleccionada.saldo_pendiente}
+                                    <strong className="purchase-form__amount">
+                                        {formatCOP(compraSeleccionada.saldo_pendiente)}
                                     </strong>
+                                </div>
 
+                                <div>
+                                    <span>Valor de la cuota</span>
+                                    <strong className="purchase-form__amount">
+                                        {formatCOP(
+                                            Number(compraSeleccionada.monto) /
+                                            Number(compraSeleccionada.numero_cuotas),
+
+                                        )}
+                                    </strong>
                                 </div>
 
                             </div>
-
                         )}
 
 
@@ -261,7 +262,7 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
                                         name="cuenta"
                                         value={form.cuenta}
                                         onChange={handleChange}
-                                        // disabled={isEditing}
+                                    // disabled={isEditing}
                                     >
 
                                         <option value="">
@@ -317,22 +318,22 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
                             <div className="form-input form-input--amount">
 
                                 <input
-                                        id="monto"
-                                        name="monto"
-                                        type="text"
-                                        inputMode="numeric"
-                                        value={form.montoFormatted || ""}
-                                        onChange={(e) =>
-                                            handleFormattedPriceChange(e, setForm, "monto")
-                                        }
-                                        placeholder="$10.000"
-                                        max={
+                                    id="monto"
+                                    name="monto"
+                                    type="text"
+                                    inputMode="numeric"
+                                    value={form.montoFormatted || ""}
+                                    onChange={(e) =>
+                                        handleFormattedPriceChange(e, setForm, "monto")
+                                    }
+                                    placeholder="$10.000"
+                                    max={
                                         compraSeleccionada
                                             ? Number(compraSeleccionada.saldo_pendiente) +
                                             (pago ? Number(pago.monto) : 0)
                                             : undefined
                                     }
-                                    />
+                                />
 
                             </div>
 
@@ -342,25 +343,26 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
                         {/* Información de la cuenta */}
 
                         {cuentaSeleccionada && (
-
-                            <div className="purchase-form__info">
+                            <div className="purchase-form__info purchase-form__info--account">
 
                                 <div>
+                                    <span>
+                                        <Wallet size={14} />
+                                        Cuenta seleccionada
+                                    </span>
 
-                                    <span>Cuenta</span>
                                     <strong>{cuentaSeleccionada.nombre}</strong>
-
                                 </div>
 
                                 <div>
-
                                     <span>Saldo disponible</span>
-                                    <strong>${cuentaSeleccionada.saldo}</strong>
 
+                                    <strong className="purchase-form__amount">
+                                        {formatCOP(cuentaSeleccionada.saldo)}
+                                    </strong>
                                 </div>
 
                             </div>
-
                         )}
 
 

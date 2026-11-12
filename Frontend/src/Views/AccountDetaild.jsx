@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getCuentaById } from "../controllers/AccountController";
 
-import Modal from "../Components/Modal";
-import Totals from "../Components/Accounts/Totals";
-import FormMovimiento from "../Components/Forms/FormMovimiento";
 import ActivityAccount from "../Components/Accounts/ActivityAccount";
+import FormMovimiento from "../Components/Forms/FormMovimiento";
+import Totals from "../Components/Accounts/Totals";
+import Modal from "../Components/Modal";
+import BackFooter from "../Components/BackFooter"
 
 export default function AccountDetaild() {
 
@@ -31,11 +32,7 @@ export default function AccountDetaild() {
         <div className="General account-detail">
 
             <h1 className="title">Mi Cuenta</h1>
-
-            <p className="subtitle card-detail__back" onClick={() => navigate(-1)} >
-                <ArrowLeft size={18} />
-                <span>Volver</span>
-            </p>
+            <p className="subtitle">Consulta tu saldo, movimientos y actividad financiera.</p>
 
             <div className="divisor" />
 
@@ -46,6 +43,8 @@ export default function AccountDetaild() {
                 onEditMovimiento={handleEditMovimiento}
                 onCreateMovimiento={handleCreateMovimiento}
             />
+
+            <BackFooter />
 
             <Modal isOpen={openCreate} onClose={handleCloseModal} className="modal-Form" >
 
