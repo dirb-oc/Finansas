@@ -594,7 +594,7 @@
 
 .purchase-form__info {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 
     margin: -4px 0 20px;
@@ -676,5 +676,176 @@
         padding-top: 12px;
         border-left: none;
         border-top: 1px solid var(--border);
+    }
+}
+
+
+.broker-movement-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.broker-movement-types button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.broker-movement-types button.active.entrada {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    background: color-mix(in srgb, var(--accent-blue) 10%, transparent);
+}
+
+.broker-movement-types button.active.salida {
+    color: var(--investment);
+    border-color: var(--investment);
+    background: color-mix(in srgb, var(--investment) 10%, transparent);
+}
+
+.broker-movement-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+}
+
+.broker-movement-summary > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.broker-movement-summary span {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.broker-movement-summary strong {
+    font-size: 14px;
+    text-align: right;
+}
+
+.broker-movement-summary > div:first-child strong {
+    font-size: 18px;
+}
+
+.broker-movement-summary .negativo {
+    color: #e05252;
+}
+
+
+.broker-movement-fields {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 12px;
+    align-items: end;
+}
+
+.broker-movement-fields .form-group {
+    min-width: 0;
+    margin: 0;
+}
+
+.broker-movement-fields label {
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.broker-movement-fields .form-input {
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+.broker-exchange-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.broker-exchange-info strong {
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.broker-exchange-info small {
+    margin-left: auto;
+    font-size: 11px;
+}
+
+.broker-movement-summary {
+    gap: 10px;
+    padding: 12px 14px;
+}
+
+.broker-movement-summary .summary-total {
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
+
+
+
+.rendimiento-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.rendimiento-fields .form-group {
+    min-width: 0;
+    margin: 0;
+}
+
+.rendimiento-account-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 13px 15px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+}
+
+.rendimiento-account-summary > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.rendimiento-account-summary span {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.rendimiento-account-summary strong {
+    font-size: 14px;
+}
+
+.rendimiento-account-summary .positive {
+    color: var(--investment);
+}
+
+@media (max-width: 480px) {
+    .rendimiento-fields {
+        grid-template-columns: 1fr;
     }
 }

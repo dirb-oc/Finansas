@@ -20,6 +20,35 @@ export async function getassets() {
   return await apiGet("/pruebas/assetsstats");
 }
 
+export async function createCotizacion(data) {
+  return apiPost("/pruebas/cotizaciones/", data);
+}
+
+export async function createPrecioActivo(data) {
+    return apiPost("/pruebas/precios-activos/", data);
+}
+
+export async function createMovimientoBroker(data) {
+    return apiPost("/pruebas/movimientosbroker/", data);
+}
+
+export async function getCotizacion(moneda, fecha) {
+    return apiGet(
+        `/pruebas/cotizaciones/ultima/?moneda=${moneda}&fecha=${fecha}`
+    );
+}
+
+export async function getActivos() {
+  return await apiGet("/pruebas/activos");
+}
+
+export async function createOperacionBroker(data) {
+    return apiPost("/pruebas/operaciones/", data);
+}
+
+export async function createRendimientoCuenta(data) {
+    return apiPost("/pruebas/rendimientos/", data);
+}
 
 
 export async function getInversiones() {

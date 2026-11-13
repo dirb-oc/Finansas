@@ -3,7 +3,7 @@ import { formatMoney, formatExpiration } from "../../Services/utils";
 import "./Activos.css";
 
 
-export default function Activos({ activos = [] }) {
+export default function Activos({ activos = [], onCreate }) {
     return (
         <section className="activos-section">
             <div className="heading">
@@ -19,6 +19,7 @@ export default function Activos({ activos = [] }) {
                     <Activo
                         key={`${activo.broker_id}-${activo.activo_id}`}
                         activo={activo}
+                        onCreate={onCreate}
                     />
                 ))}
             </div>
@@ -26,7 +27,7 @@ export default function Activos({ activos = [] }) {
     );
 }
 
-function Activo({ activo = [] }) {
+function Activo({ activo = [], onCreate}) {
     const moneda = activo.moneda || "USD";
 
     const ganancia =
@@ -37,7 +38,17 @@ function Activo({ activo = [] }) {
     const positivo = ganancia >= 0;
 
     return (
-        <article className="activo-card" >
+        <article key={activo.id}
+                    className="activo-card"
+                    onClick={() => onCreate?.(activo)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            onCreate?.(activo);
+                        }
+                    }} >
             {/* FILA 1: IDENTIFICACIÓN */}
             <div className="activo-header">
                 <div className="activo-avatar">

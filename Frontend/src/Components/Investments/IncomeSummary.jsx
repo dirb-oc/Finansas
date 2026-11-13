@@ -3,7 +3,11 @@ import { CircleDollarSign, PiggyBank } from "lucide-react";
 import formatCOP from "../../Services/utils";
 import "./IncomeSummary.css";
 
-export default function IncomeSummary({ dividendos, rendimientos }) {
+export default function IncomeSummary({
+    dividendos,
+    rendimientos,
+    onCreateRendimiento
+}) {
     return (
         <div className="invest-income">
             <IncomeItem
@@ -20,16 +24,35 @@ export default function IncomeSummary({ dividendos, rendimientos }) {
                 cantidad={rendimientos?.cantidad}
                 total={rendimientos?.total}
                 singular="registrado"
+                onClick={onCreateRendimiento}
             />
         </div>
     );
 }
 
-function IncomeItem({ icon, title, cantidad, total, singular }) {
+function IncomeItem({
+    icon,
+    title,
+    cantidad,
+    total,
+    singular,
+    onClick
+}) {
     const count = Number(cantidad) || 0;
 
     return (
-        <div className="invest-income__item">
+        <div
+            className={`invest-income__item ${onClick ? "clickable" : ""}`}
+            onClick={onClick}
+            role={onClick ? "button" : undefined}
+            tabIndex={onClick ? 0 : undefined}
+            onKeyDown={onClick ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onClick();
+                }
+            } : undefined}
+        >
             <div className="invest-income__info">
                 <span className="invest-income__icon">{icon}</span>
 

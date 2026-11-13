@@ -19,8 +19,9 @@ router.register(r"movimientosbroker", MovimientoBrokerViewSet, basename="movimie
 
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("cotizaciones/ultima/", obtener_cotizacion, name="obtener_cotizacion"),
     path("stats/", EstadisticasView.as_view(), name="estadisticas"),
     path("CDTstats/", DashboardCDTView.as_view(), name="estadisticasCDT"),
     path("assetsstats/", DashboardActivosView.as_view(), name="estadisticasActicos"),
+    path("", include(router.urls)),
 ]

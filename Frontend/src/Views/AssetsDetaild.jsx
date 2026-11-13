@@ -3,45 +3,48 @@ import { getassets } from "../controllers/investmentsController";
 import { formatMoney } from "../Services/utils";
 import { useEffect, useState } from "react";
 
-import FormFinalizarCDT from "../Components/Forms/FormFinalizarCDT";
+import FormMovimientoBroker from "../Components/Forms/FormMovimientoBroker";
+import FormOperacionActivo from "../Components/Forms/FormOperacionActivo";
+import FormPrecioActivo from "../Components/Forms/FormPrecioActivo";
+import FormCotizacion from "../Components/Forms/FormCotizacion";
+
 import BrokerSection from "../Components/Ass/BrokerSection";
 import SummaryCards from "../Components/SummaryCards";
-import Activos from "../Components/Ass/Activos";
-import FormCDT from "../Components/Forms/FormCDT";
-import Modal from "../Components/Modal"
 import BackFooter from "../Components/BackFooter"
+import Activos from "../Components/Ass/Activos";
+import Modal from "../Components/Modal"
 
 export default function AssetsDetaild() {
 
     const [stats, setStats] = useState(null);
 
-    const [openCreate, setOpenCreate] = useState(false);
+    const [openOperacion, setOpenOperacion] = useState(false);
+    const [openMovimiento, setOpenMovimiento] = useState(false);
+    const [openCotizacion, setOpenCotizacion] = useState(false);
+    const [activoSeleccionado, setActivoSeleccionado] = useState(null);
     const [refresh, setRefresh] = useState(0);
 
     useEffect(() => {
         getassets().then(setStats);
     }, [refresh]);
 
-    const handleCloseModal = () => setOpenCreate(false);
+
+    const handleCloseCotizacion = () => setOpenCotizacion(false);
 
     const handleRefresh = () => {
         setRefresh(prev => prev + 1);
     };
 
-    const [cdtSeleccionado, setCdtSeleccionado] = useState(null);
 
-    const handleFinalizar = (cdt) => {
-        setCdtSeleccionado(cdt);
+    const handleClosePrecio = () => {
+        setActivoSeleccionado(null);
     };
 
-    const handleCloseFinalizar = () => {
-        setCdtSeleccionado(null);
+    const handleSuccessPrecio = () => {
+        setActivoSeleccionado(null);
+        handleRefresh();
     };
 
-    const handleSuccessFinalizar = () => {
-        setCdtSeleccionado(null);
-        setRefresh(prev => prev + 1);
-    };
 
     useEffect(() => { getassets().then(setStats); }, []);
 
@@ -95,41 +98,78 @@ export default function AssetsDetaild() {
                 ariaLabel="Resumen CDTs"
             />
 
-            <Activos activos={stats.activos} />
+            <Activos
+                activos={stats.activos}
+                onCreate={(activo) => setActivoSeleccionado(activo)}
+            />
 
             <BrokerSection
                 brokers={stats.brokers}
                 historial={stats.historial}
+                onCreateOperacion={() => setOpenOperacion(true)}
+                onCreateMovimiento={() => setOpenMovimiento(true)}
+                onCotizacion={() => setOpenCotizacion(true)}
             />
 
             <BackFooter />
 
             <Modal
-                isOpen={openCreate}
-                onClose={handleCloseModal}
+                isOpen={openCotizacion}
+                onClose={handleCloseCotizacion}
                 className="modal-Form"
             >
-                <FormCDT
-                    onClose={handleCloseModal}
+                <FormCotizacion
+                    broker={stats.brokers?.[0]}
                     onSuccess={() => {
                         handleRefresh();
-                        handleCloseModal();
+                        handleCloseCotizacion();
                     }}
+                    onClose={handleCloseCotizacion}
                 />
             </Modal>
 
             <Modal
-                isOpen={!!cdtSeleccionado}
-                onClose={handleCloseFinalizar}
-                className="modal-FormGame"
+                isOpen={!!activoSeleccionado}
+                onClose={handleClosePrecio}
+                className="modal-Form"
             >
-                {cdtSeleccionado && (
-                    <FormFinalizarCDT
-                        cdt={cdtSeleccionado}
-                        onClose={handleCloseFinalizar}
-                        onSuccess={handleSuccessFinalizar}
+                {activoSeleccionado && (
+                    <FormPrecioActivo
+                        activo={activoSeleccionado}
+                        onSuccess={handleSuccessPrecio}
+                        onClose={handleClosePrecio}
                     />
                 )}
+            </Modal>
+
+            <Modal
+                isOpen={openMovimiento}
+                onClose={() => setOpenMovimiento(false)}
+                className="modal-Form"
+            >
+                <FormMovimientoBroker
+                    broker={stats.brokers?.[0]}
+                    onSuccess={() => {
+                        handleRefresh();
+                        setOpenMovimiento(false);
+                    }}
+                    onClose={() => setOpenMovimiento(false)}
+                />
+            </Modal>
+
+            <Modal
+                isOpen={openOperacion}
+                onClose={() => setOpenOperacion(false)}
+                className="modal-Form"
+            >
+                <FormOperacionActivo
+                    broker={stats.brokers?.[0]}
+                    onSuccess={() => {
+                        handleRefresh();
+                        setOpenOperacion(false);
+                    }}
+                    onClose={() => setOpenOperacion(false)}
+                />
             </Modal>
         </div>
     );

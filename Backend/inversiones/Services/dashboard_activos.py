@@ -195,6 +195,7 @@ def obtener_datos_brokers(fecha_corte):
                 "broker_id": broker.id,
                 "broker": broker.nombre,
                 "moneda": codigo,
+                "idmoneda": moneda.id,
                 "saldo_disponible": saldo_disponible,
                 "valor_invertido": valor_invertido,
                 "patrimonio": patrimonio,

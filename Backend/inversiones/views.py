@@ -1,8 +1,9 @@
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.utils.dateparse import parse_date
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action, api_view
 
 from .models import *
 from .serializers import *
@@ -84,6 +85,50 @@ class CotizacionMonedaViewSet(ModelViewSet):
             valor=serializer.validated_data["valor"],
         )
 
+
+@api_view(["GET"])
+def obtener_cotizacion(request):
+    moneda_id = request.query_params.get("moneda")
+    fecha = request.query_params.get("fecha")
+
+    if not moneda_id or not fecha:
+        return Response(
+            {"error": "Debes proporcionar moneda y fecha."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    fecha = parse_date(fecha)
+
+    if not fecha:
+        return Response(
+            {"error": "La fecha no tiene un formato válido (YYYY-MM-DD)."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        moneda = Moneda.objects.get(pk=moneda_id)
+    except Moneda.DoesNotExist:
+        return Response(
+            {"error": "La moneda no existe."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    cotizacion = CotizacionMoneda.objects.filter(
+        moneda=moneda,
+        fecha__lte=fecha,
+    ).order_by("-fecha").first()
+
+    if not cotizacion:
+        return Response(
+            {"error": f"No existe una cotización disponible para {moneda.codigo}."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    return Response({
+        "moneda": moneda.codigo,
+        "valor": cotizacion.valor,
+        "fecha": cotizacion.fecha,
+    })
 
 # Broker
 class BrokerViewSet(ModelViewSet):

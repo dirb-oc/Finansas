@@ -1,0 +1,26 @@
+
+.loader-container {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text-secondary);
+}
+
+.loader-container p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.loader-spinner {
+    color: var(--investment);
+    animation: loader-spin 0.9s linear infinite;
+}
+
+@keyframes loader-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

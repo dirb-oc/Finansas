@@ -27,7 +27,6 @@ def crear_movimiento_broker( *, broker, cuenta, moneda, monto, costo=0, tipo, fe
     # Fecha
     # -----------------------------------
 
-    print(fecha)
     fecha = fecha or timezone.localdate()
 
     # -----------------------------------

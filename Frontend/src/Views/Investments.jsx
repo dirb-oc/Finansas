@@ -1,11 +1,14 @@
 import { getStatsInversiones } from "../controllers/investmentsController";
 import { useEffect, useState } from "react";
 
+import FormRendimientoCuenta from "../Components/Forms/FormRendimientoCuenta";
 import IncomeSummary from "../Components/Investments/IncomeSummary";
 import GainsSection from "../Components/Investments/GainsSection";
 import AssetsCard from "../Components/Investments/AssetsCard";
 import CDTCard from "../Components/Investments/CDTCard";
 import BackFooter from "../Components/BackFooter";
+import Loader from "../Components/Loader";
+import Modal from "../Components/Modal";
 
 
 function Investments() {
@@ -13,41 +16,41 @@ function Investments() {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [openRendimiento, setOpenRendimiento] = useState(false);
+    const [refresh, setRefresh] = useState(0);
+
 
     useEffect(() => {
-
         async function cargarStats() {
+            setLoading(true);
+            setError(null);
+
+            const inicio = Date.now();
 
             try {
-
-                setLoading(true);
-
                 const data = await getStatsInversiones();
-
                 setStats(data);
 
             } catch (error) {
-
                 console.error("Error cargando estadísticas:", error);
                 setError("No se pudieron cargar las estadísticas.");
 
             } finally {
+                const tiempoTranscurrido = Date.now() - inicio;
+                const tiempoRestante = Math.max(0, 0 - tiempoTranscurrido);
+
+                await new Promise(resolve => setTimeout(resolve, tiempoRestante));
 
                 setLoading(false);
-
             }
         }
 
         cargarStats();
+    }, [refresh]);
 
-    }, []);
 
     if (loading) {
-        return (
-            <div className="General">
-                <p className="loading">Cargando estadísticas...</p>
-            </div>
-        );
+        return <Loader message="Cargando inversiones..." />;
     }
 
     if (error) {
@@ -116,9 +119,24 @@ function Investments() {
             <IncomeSummary
                 dividendos={stats.dividendos}
                 rendimientos={stats.rendimientos}
+                onCreateRendimiento={() => setOpenRendimiento(true)}
             />
 
             <BackFooter />
+
+            <Modal
+                isOpen={openRendimiento}
+                onClose={() => setOpenRendimiento(false)}
+                className="modal-Form"
+            >
+                <FormRendimientoCuenta
+                    onSuccess={() => {
+                        setOpenRendimiento(false);
+                        setRefresh((prev) => prev + 1);
+                    }}
+                    onClose={() => setOpenRendimiento(false)}
+                />
+            </Modal>
 
         </div>
     );

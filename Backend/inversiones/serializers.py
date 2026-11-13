@@ -169,6 +169,8 @@ class MovimientoBrokerSerializer(serializers.ModelSerializer):
 class ActivoSerializer(serializers.ModelSerializer):
 
     cantidad = serializers.SerializerMethodField()
+    ultimo_precio = serializers.SerializerMethodField()
+    fecha_precio = serializers.SerializerMethodField()
 
     class Meta:
         model = Activo
@@ -180,14 +182,27 @@ class ActivoSerializer(serializers.ModelSerializer):
             "moneda",
             "activo",
             "cantidad",
+            "ultimo_precio",
+            "fecha_precio",
         ]
 
         read_only_fields = [
             "id",
+            "cantidad",
+            "ultimo_precio",
+            "fecha_precio",
         ]
 
     def get_cantidad(self, obj):
         return cantidad_disponible_activo(obj)
+
+    def get_ultimo_precio(self, obj):
+        precio = obj.precios.order_by("-fecha").first()
+        return precio.precio if precio else None
+
+    def get_fecha_precio(self, obj):
+        precio = obj.precios.order_by("-fecha").first()
+        return precio.fecha if precio else None
 
 class PrecioActivoSerializer(serializers.ModelSerializer):
 
