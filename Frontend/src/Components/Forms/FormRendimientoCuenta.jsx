@@ -4,10 +4,7 @@ import { getCuentas } from "../../controllers/AccountController";
 import { createRendimientoCuenta } from "../../controllers/investmentsController";
 import formatCOP, { getToday } from "../../Services/utils";
 
-export default function FormRendimientoCuenta({
-    onSuccess,
-    onClose
-}) {
+export default function FormRendimientoCuenta({ onSuccess, onClose }) {
     const [cuentas, setCuentas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -74,10 +71,10 @@ export default function FormRendimientoCuenta({
             const message = typeof response === "string"
                 ? response
                 : response?.detail ||
-                  response?.monto ||
-                  response?.cuenta ||
-                  response?.fecha ||
-                  "No se pudo registrar el rendimiento.";
+                response?.monto ||
+                response?.cuenta ||
+                response?.fecha ||
+                "No se pudo registrar el rendimiento.";
 
             setError(message);
         } finally {
@@ -90,107 +87,114 @@ export default function FormRendimientoCuenta({
     }
 
     return (
-        <form className="form-add" onSubmit={handleSubmit}>
-            <div className="form-header">
-                <div>
-                    <h2>Registrar rendimiento</h2>
-                    <p>Registra los intereses generados por una cuenta.</p>
-                </div>
-            </div>
+        <>
+            <div className="form-add" onSubmit={handleSubmit}>
 
-            <div className="form-group">
-                <label>Cuenta</label>
-
-                <select
-                    className="form-input"
-                    value={form.cuenta}
-                    onChange={(e) => setForm({
-                        ...form,
-                        cuenta: e.target.value
-                    })}
-                >
-                    <option value="">Seleccionar cuenta</option>
-
-                    {cuentas.map((cuenta) => (
-                        <option key={cuenta.id} value={cuenta.id}>
-                            {cuenta.nombre}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            {cuentaSeleccionada && (
-                <div className="rendimiento-account-summary">
+                <div className="purchase-form__header">
                     <div>
-                        <span>Saldo actual</span>
-                        <strong>{formatCOP(saldoActual)}</strong>
-                    </div>
-
-                    <div>
-                        <span>Saldo después del rendimiento</span>
-                        <strong className="positive">
-                            {formatCOP(saldoNuevo)}
-                        </strong>
+                        <h2>Registrar rendimiento</h2>
+                        <p>Registra los intereses generados por una cuenta.</p>
                     </div>
                 </div>
-            )}
 
-            <div className="rendimiento-fields">
-                <div className="form-group">
-                    <label>Monto del rendimiento (COP)</label>
+                <div className="purchase-form__body">
 
-                    <input
-                        type="number"
-                        className="form-input"
-                        min="0"
-                        step="any"
-                        placeholder="0"
-                        value={form.monto}
-                        onChange={(e) => setForm({
-                            ...form,
-                            monto: e.target.value
-                        })}
-                    />
+                    <div className="form-group">
+                        <label>Cuenta</label>
+
+                        <div className="form-input">
+                            <select
+                                className="cuenta"
+                                value={form.cuenta}
+                                onChange={(e) => setForm({
+                                    ...form,
+                                    cuenta: e.target.value
+                                })}
+                            >
+                                <option value="">Seleccionar cuenta</option>
+
+                                {cuentas.map((cuenta) => (
+                                    <option key={cuenta.id} value={cuenta.id}>
+                                        {cuenta.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Monto del rendimiento (COP)</label>
+
+                        <input
+                            type="number"
+                            className="form-input"
+                            min="0"
+                            step="any"
+                            placeholder="0"
+                            value={form.monto}
+                            onChange={(e) => setForm({
+                                ...form,
+                                monto: e.target.value
+                            })}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Fecha</label>
+
+                        <input
+                            type="date"
+                            className="form-input"
+                            max={getToday()}
+                            value={form.fecha}
+                            onChange={(e) => setForm({
+                                ...form,
+                                fecha: e.target.value
+                            })}
+                        />
+                    </div>
+
+                    {cuentaSeleccionada && (
+                        <div className="broker-movement-summary">
+                            <div>
+                                <span>Saldo actual</span>
+                                <strong>{formatCOP(saldoActual)}</strong>
+                            </div>
+
+                            <div>
+                                <span>Saldo después del rendimiento</span>
+                                <strong className="plus">
+                                    {formatCOP(saldoNuevo)}
+                                </strong>
+                            </div>
+                        </div>
+                    )}
+
+
+                    {error && (
+                        <p className="form-error">{error}</p>
+                    )}
                 </div>
 
-                <div className="form-group">
-                    <label>Fecha</label>
+                <div className="purchase-form__footer">
+                    <button
+                        type="button"
+                        className="purchase-form__button purchase-form__button--secondary"
+                        onClick={onClose}
+                        disabled={saving}
+                    >
+                        Cancelar
+                    </button>
 
-                    <input
-                        type="date"
-                        className="form-input"
-                        max={getToday()}
-                        value={form.fecha}
-                        onChange={(e) => setForm({
-                            ...form,
-                            fecha: e.target.value
-                        })}
-                    />
+                    <button
+                        type="submit"
+                        className="purchase-form__button purchase-form__button--primary"
+                        disabled={saving}
+                    >
+                        {saving ? "Guardando..." : "Registrar rendimiento"}
+                    </button>
                 </div>
             </div>
-
-            {error && (
-                <p className="form-error">{error}</p>
-            )}
-
-            <div className="form-actions">
-                <button
-                    type="button"
-                    className="btn-cancel"
-                    onClick={onClose}
-                    disabled={saving}
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="submit"
-                    className="btn-submit"
-                    disabled={saving}
-                >
-                    {saving ? "Guardando..." : "Registrar rendimiento"}
-                </button>
-            </div>
-        </form>
+        </>
     );
 }

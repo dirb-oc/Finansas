@@ -1,7 +1,8 @@
 import { CalendarDays, Loader2, Wallet, Landmark, } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { handleFormattedPriceChange, getToday } from "../../Services/utils";
+
+import formatCOP, { handleFormattedPriceChange, getToday } from "../../Services/utils";
 import { createCDT } from "../../controllers/investmentsController";
 import { getCuentas } from "../../controllers/AccountController";
 
@@ -64,6 +65,10 @@ function FormCDT({ onSuccess, onClose }) {
 
     };
 
+    const cuentaSeleccionada = cuentas.find(
+        cuenta => cuenta.id === Number(form.cuenta)
+    );
+
     // Crear CDT
     const handleSave = async () => {
 
@@ -115,19 +120,14 @@ function FormCDT({ onSuccess, onClose }) {
             <div className="purchase-form__header">
 
                 <div>
-                    <span className="purchase-form__eyebrow">
-                        Inversión
-                    </span>
+                    <span className="purchase-form__eyebrow">Inversión</span>
 
                     <h2>Nuevo CDT</h2>
 
-                    <p>
-                        Registra una inversión de renta fija.
-                    </p>
+                    <p>Registra una inversión de renta fija.</p>
                 </div>
 
             </div>
-
 
             {/* Cuerpo */}
             <div className="purchase-form__body">
@@ -146,98 +146,94 @@ function FormCDT({ onSuccess, onClose }) {
 
                     <>
 
-                        {/* Cuenta */}
-                        <div className="form-group">
+                        {/* Monto */}
+                        <div className="form-group form-group--amount">
 
-                            <label htmlFor="cuenta">
-                                Cuenta de origen
-                            </label>
+                            <label htmlFor="monto">Capital invertido</label>
 
-                            <div className="form-input">
-
-                                <Wallet size={18} />
-
-                                <select
-                                    id="cuenta"
-                                    name="cuenta"
-                                    value={form.cuenta}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">
-                                        Selecciona una cuenta
-                                    </option>
-
-                                    {cuentas.map(cuenta => (
-                                        <option
-                                            key={cuenta.id}
-                                            value={cuenta.id}
-                                        >
-                                            {cuenta.nombre}
-                                        </option>
-                                    ))}
-
-                                </select>
-
-                            </div>
-
-                        </div>
-
-
-                        {/* Entidad */}
-                        <div className="form-group">
-
-                            <label htmlFor="entidad">
-                                Entidad financiera
-                            </label>
-
-                            <div className="form-input">
-
-                                <Landmark size={18} />
+                            <div className="form-input form-input--amount">
 
                                 <input
-                                    id="entidad"
-                                    name="entidad"
+                                    id="monto"
+                                    name="monto"
                                     type="text"
-                                    value={form.entidad}
-                                    onChange={handleChange}
-                                    placeholder="Ej. Nu, Bancolombia..."
+                                    inputMode="numeric"
+                                    value={form.montoFormatted}
+                                    onChange={(e) =>
+                                        handleFormattedPriceChange(
+                                            e,
+                                            setForm,
+                                            "monto"
+                                        )
+                                    }
+                                    placeholder="$1.000.000"
                                 />
 
                             </div>
 
                         </div>
 
-
                         <div className="purchase-form__grid">
 
-                            {/* Monto */}
-                            <div className="form-group form-group--amount">
+                            {/* Cuenta */}
+                            <div className="form-group">
 
-                                <label htmlFor="monto">
-                                    Capital invertido
+                                <label htmlFor="cuenta">Cuenta de origen</label>
+
+                                <div className="form-input">
+
+                                    <Wallet size={18} />
+
+                                    <select
+                                        id="cuenta"
+                                        name="cuenta"
+                                        value={form.cuenta}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">
+                                            Selecciona una cuenta
+                                        </option>
+
+                                        {cuentas.map(cuenta => (
+                                            <option
+                                                key={cuenta.id}
+                                                value={cuenta.id}
+                                            >
+                                                {cuenta.nombre}
+                                            </option>
+                                        ))}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                            {/* Entidad */}
+                            <div className="form-group">
+
+                                <label htmlFor="entidad">
+                                    Entidad financiera
                                 </label>
 
-                                <div className="form-input form-input--amount">
+                                <div className="form-input">
+
+                                    <Landmark size={18} />
 
                                     <input
-                                        id="monto"
-                                        name="monto"
+                                        id="entidad"
+                                        name="entidad"
                                         type="text"
-                                        inputMode="numeric"
-                                        value={form.montoFormatted}
-                                        onChange={(e) =>
-                                            handleFormattedPriceChange(
-                                                e,
-                                                setForm,
-                                                "monto"
-                                            )
-                                        }
-                                        placeholder="$1.000.000"
+                                        value={form.entidad}
+                                        onChange={handleChange}
+                                        placeholder="Ej. Nu, Bancolombia..."
                                     />
 
                                 </div>
 
                             </div>
+
+
 
                         </div>
 
@@ -293,6 +289,29 @@ function FormCDT({ onSuccess, onClose }) {
 
                         </div>
 
+                        {/* Información de la cuenta */}
+                        {cuentaSeleccionada && (
+                            <div className="purchase-form__info purchase-form__info--account">
+
+                                <div>
+                                    <span>
+                                        <Wallet size={14} />
+                                        Cuenta seleccionada
+                                    </span>
+
+                                    <strong>{cuentaSeleccionada.nombre}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Saldo disponible</span>
+
+                                    <strong className="purchase-form__amount">
+                                        {formatCOP(cuentaSeleccionada.saldo)}
+                                    </strong>
+                                </div>
+
+                            </div>
+                        )}
 
                         {error && (
                             <div className="purchase-form__error">
@@ -306,7 +325,6 @@ function FormCDT({ onSuccess, onClose }) {
 
             </div>
 
-
             {/* Footer */}
             <div className="purchase-form__footer">
 
@@ -318,7 +336,6 @@ function FormCDT({ onSuccess, onClose }) {
                 >
                     Cancelar
                 </button>
-
 
                 <button
                     type="button"

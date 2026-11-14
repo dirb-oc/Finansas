@@ -1,79 +1,26 @@
-/* ================================
-   HEADER
-================================ */
-
+/* Header */
 .purchase-form__header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 20px;
-
     padding: 24px 28px 20px;
-
     border-bottom: 1px solid var(--border);
-}
-
-.purchase-form__eyebrow {
-    display: block;
-
-    margin-bottom: 5px;
-
-    color: var(--text-secondary);
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
 }
 
 .purchase-form__header h2 {
     margin: 0;
-
     color: var(--text-primary);
     font-size: 1.45rem;
     font-weight: 700;
 }
 
 .purchase-form__header p {
-    margin: 6px 0 0;
-
     color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
-.purchase-form__close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 36px;
-    height: 36px;
-
-    flex-shrink: 0;
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: transparent;
-    color: var(--text-secondary);
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.purchase-form__close:hover {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-    border-color: var(--text-secondary);
-}
-
-/* ================================
-   BODY
-================================ */
-
+/* BODY */
 .purchase-form__body {
     padding: 24px 28px;
 }
@@ -82,8 +29,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-
-    margin-bottom: 18px;
+    margin-bottom: 15px;
 }
 
 .form-group label {
@@ -92,37 +38,26 @@
     font-weight: 600;
 }
 
-/* ================================
-   INPUTS
-================================ */
+/* INPUTS */
 
 .form-input {
     display: flex;
     align-items: center;
-
     min-height: 46px;
-
     padding: 0 13px;
-
     border: 1px solid var(--border);
     border-radius: 10px;
-
     background: var(--bg-card);
-
     color: var(--text-secondary);
-
     transition:
         border-color 0.2s ease,
-        box-shadow 0.2s ease,
         background 0.2s ease;
 }
 
 .form-input svg {
     flex-shrink: 0;
     margin-right: 10px;
-
     color: var(--text-secondary);
-
     transition: color 0.2s ease;
 }
 
@@ -134,12 +69,30 @@
     border: none;
     outline: none;
 
-    background: transparent;
-
+    background: var(--bg-card);
     color: var(--text-primary);
 
     font-family: inherit;
     font-size: 0.9rem;
+
+    color-scheme: dark;
+}
+
+.form-input select option {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+}
+
+/* Evitar que Chrome cambie los colores al autocompletar */
+.form-input input:-webkit-autofill,
+.form-input input:-webkit-autofill:hover,
+.form-input input:-webkit-autofill:focus,
+.form-input select:-webkit-autofill {
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-card) inset !important;
+    box-shadow: 0 0 0 1000px var(--bg-card) inset !important;
+
+    transition: background-color 9999s ease-in-out 0s;
 }
 
 .form-input input::placeholder {
@@ -150,51 +103,19 @@
 .form-input:focus-within {
     border-color: var(--text-secondary);
 
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
 }
 
 .form-input:focus-within svg {
     color: var(--text-primary);
 }
 
-/* ================================
-   MONTO
-================================ */
-
-.form-group--amount {
-    margin-bottom: 22px;
-}
-
-.form-group--amount label {
-    font-size: 0.9rem;
-}
-
-.form-input--amount {
-    min-height: 58px;
-
-    border-radius: 12px;
-}
-
-.form-input--amount svg {
-    width: 22px;
-    height: 22px;
-}
-
+/* Input MONTO */
 .form-input--amount input {
-    height: 56px;
-
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     font-weight: 600;
 }
 
-.form-input--amount input::placeholder {
-    opacity: 0.35;
-}
-
-/* ================================
-   GRID
-================================ */
-
+/* GRID */
 .purchase-form__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -202,15 +123,7 @@
     column-gap: 16px;
 }
 
-/* El tipo ocupa todo el ancho */
-.purchase-form__grid .form-group:last-child {
-    grid-column: 1 / -1;
-}
-
-/* ================================
-   SELECT
-================================ */
-
+/* SELECT  */
 .form-input select {
     cursor: pointer;
 }
@@ -220,35 +133,12 @@
     color: var(--text-primary);
 }
 
-/* ================================
-   ERROR
-================================ */
-
-.purchase-form__error {
-    margin-top: 4px;
-    padding: 11px 13px;
-
-    border: 1px solid rgba(68, 94, 72, 0.25);
-    border-radius: 9px;
-
-    background: rgba(239, 68, 68, 0.08);
-
-    color: #ef4444;
-
-    font-size: 0.85rem;
-}
-
-/* ================================
-   FOOTER
-================================ */
-
+/* FOOTER  */
 .purchase-form__footer {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-
     padding: 18px 28px 24px;
-
     border-top: 1px solid var(--border);
 }
 
@@ -283,7 +173,8 @@
 
 .purchase-form__button:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
 }
 
 .purchase-form__button--secondary {
@@ -294,25 +185,22 @@
 }
 
 .purchase-form__button--secondary:hover:not(:disabled) {
-    background: var(--bg-hover);
-    color: var(--text-primary);
+    background: var(--border);
 }
 
 .purchase-form__button--primary {
-    border: 1px solid var(--text-primary);
-
+    border: 1px solid var(--border);
+    
     background: var(--text-primary);
-    color: var(--bg-primary);
+    color: var(--border);
 }
 
 .purchase-form__button--primary:hover:not(:disabled) {
     opacity: 0.9;
 }
 
-/* ================================
-   LOADING
-================================ */
 
+/*  LOADING  */
 .purchase-form__spinner {
     animation: purchase-spin 0.8s linear infinite;
 }
@@ -323,87 +211,23 @@
     }
 }
 
-/* ================================
-   RESPONSIVE
-================================ */
 
-@media (max-width: 600px) {
-
-    .purchase-form__header {
-        padding: 20px;
-    }
-
-    .purchase-form__body {
-        padding: 20px;
-    }
-
-    .purchase-form__footer {
-        padding: 16px 20px 20px;
-    }
-
-    .purchase-form__grid {
-        grid-template-columns: 1fr;
-    }
-
-    .purchase-form__grid .form-group:last-child {
-        grid-column: auto;
-    }
-
-    .purchase-form__footer {
-        flex-direction: column-reverse;
-    }
-
-    .purchase-form__button {
-        width: 100%;
-    }
-}
-
-
-
+/* OPCIONES */
 
 .movement-type {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
-}
-
-.movement-type__option {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-
-    padding: 0.85rem 1rem;
-
-    border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
-
-    cursor: pointer;
-
-    transition: all 0.2s ease;
 }
 
 .movement-type__option input {
     display: none;
 }
 
-.movement-type__option--active {
-    border-color: var(--accent-color);
-    background: var(--accent-color-soft);
-}
-
-
-.movement-type {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-}
-
 
 /* -------------------------------- */
 /* Opción */
 /* -------------------------------- */
-
 .movement-type__option {
     position: relative;
 
@@ -423,7 +247,6 @@
         border-color 0.2s ease,
         background 0.2s ease,
         transform 0.15s ease,
-        box-shadow 0.2s ease;
 }
 
 
@@ -490,20 +313,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 20px;
     height: 20px;
-
     margin-left: auto;
-
     border-radius: 50%;
-
     font-size: 0.7rem;
     font-weight: 700;
-
     opacity: 0;
     transform: scale(0.7);
-
     transition:
         opacity 0.2s ease,
         transform 0.2s ease;
@@ -525,10 +342,8 @@
 
 
 /* Gasto seleccionado */
-
 .movement-type__option--expense.movement-type__option--active {
     border-color: #ef4444;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
 }
 
 .movement-type__option--expense.movement-type__option--active
@@ -544,7 +359,6 @@
 /* -------------------------------- */
 /* INGRESO */
 /* -------------------------------- */
-
 .movement-type__option--income {
     color: #16a34a;
 }
@@ -556,10 +370,8 @@
 
 
 /* Ingreso seleccionado */
-
 .movement-type__option--income.movement-type__option--active {
     border-color: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
 }
 
 .movement-type__option--income.movement-type__option--active
@@ -571,26 +383,7 @@
     color: white;
 }
 
-
-/* -------------------------------- */
-/* Responsive */
-/* -------------------------------- */
-
-@media (max-width: 500px) {
-
-    .movement-type {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-
-
-
-
-/* =================================
-   INFORMACIÓN DE COMPRA Y CUENTA
-================================= */
+/*  INFORMACIÓN DE COMPRA Y CUENTA*/
 
 .purchase-form__info {
     display: grid;
@@ -656,28 +449,6 @@
     font-weight: 700 !important;
 }
 
-/* Responsive */
-
-@media (max-width: 500px) {
-    .purchase-form__info--purchase {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .purchase-form__info--purchase > div:first-child {
-        grid-column: 1 / -1;
-    }
-
-    .purchase-form__info--account {
-        grid-template-columns: 1fr;
-    }
-
-    .purchase-form__info--account > div:last-child {
-        padding-left: 0;
-        padding-top: 12px;
-        border-left: none;
-        border-top: 1px solid var(--border);
-    }
-}
 
 
 .broker-movement-types {
@@ -739,113 +510,85 @@
     text-align: right;
 }
 
-.broker-movement-summary > div:first-child strong {
-    font-size: 18px;
-}
-
 .broker-movement-summary .negativo {
     color: #e05252;
 }
 
-
-.broker-movement-fields {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr 1fr;
-    gap: 12px;
-    align-items: end;
-}
-
-.broker-movement-fields .form-group {
-    min-width: 0;
-    margin: 0;
-}
-
-.broker-movement-fields label {
-    font-size: 12px;
-    margin-bottom: 6px;
-}
-
-.broker-movement-fields .form-input {
-    width: 100%;
-    min-width: 0;
-    height: 40px;
-    box-sizing: border-box;
-}
-
-.broker-exchange-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.broker-exchange-info strong {
-    color: var(--text-primary);
-    font-size: 13px;
-}
-
-.broker-exchange-info small {
-    margin-left: auto;
-    font-size: 11px;
-}
-
-.broker-movement-summary {
-    gap: 10px;
-    padding: 12px 14px;
-}
-
-.broker-movement-summary .summary-total {
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
-}
-
-
-
-
-.rendimiento-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.rendimiento-fields .form-group {
-    min-width: 0;
-    margin: 0;
-}
-
-.rendimiento-account-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 13px 15px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--bg-card);
-}
-
-.rendimiento-account-summary > div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.rendimiento-account-summary span {
-    color: var(--text-secondary);
-    font-size: 12px;
-}
-
-.rendimiento-account-summary strong {
-    font-size: 14px;
-}
-
-.rendimiento-account-summary .positive {
+.broker-movement-summary .plus {
     color: var(--investment);
+    font-weight: 700;
+    font-size: 18px;
 }
 
-@media (max-width: 480px) {
-    .rendimiento-fields {
+
+.purchase-form__eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 600px) {
+
+    .purchase-form__header {
+        padding: 20px;
+    }
+
+    .purchase-form__body {
+        padding: 20px;
+    }
+
+    .purchase-form__footer {
+        padding: 16px 20px 20px;
+    }
+
+    .purchase-form__grid {
         grid-template-columns: 1fr;
+    }
+
+    .purchase-form__grid .form-group:last-child {
+        grid-column: auto;
+    }
+
+    .purchase-form__footer {
+        flex-direction: column-reverse;
+    }
+
+    .purchase-form__button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .movement-type {
+        grid-template-columns: 1fr;
+    }
+
+    .purchase-form__info--purchase {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .purchase-form__info--purchase > div:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .purchase-form__info--account {
+        grid-template-columns: 1fr;
+    }
+
+    .purchase-form__info--account > div:last-child {
+        padding-left: 0;
+        padding-top: 12px;
+        border-left: none;
+        border-top: 1px solid var(--border);
     }
 }

@@ -133,19 +133,13 @@ function FormMovimiento({ cuenta, movimiento = null, onSuccess, onClose }) {
         <>
             <div className="purchase-form__header">
                 <div>
-                    <span className="purchase-form__eyebrow">Movimiento</span>
 
-                    <h2>
-                        {movimiento
-                            ? "Editar movimiento"
-                            : "Nuevo movimiento"
-                        }
-                    </h2>
+                    <h2> {movimiento ? "Editar movimiento" : "Nuevo movimiento" } </h2>
 
                     <p>
                         {movimiento
-                            ? "Modifica los datos de este movimiento."
-                            : "Registra un ingreso o gasto en esta cuenta."
+                        ? "Modifica los datos de este movimiento."
+                        : "Registra un ingreso o gasto en esta cuenta."
                         }
                     </p>
 
@@ -160,11 +154,7 @@ function FormMovimiento({ cuenta, movimiento = null, onSuccess, onClose }) {
 
                     <div className="purchase-form__loading">
 
-                        <Loader2
-                            size={22}
-                            className="purchase-form__spinner"
-                        />
-
+                        <Loader2 size={22} className="purchase-form__spinner" />
                         Cargando tipos...
 
                     </div>
@@ -244,6 +234,52 @@ function FormMovimiento({ cuenta, movimiento = null, onSuccess, onClose }) {
 
                         </div>
 
+                        <div className="purchase-form__grid">
+
+                            <div className="form-group form-group--amount">
+
+                                <label htmlFor="monto">Monto</label>
+
+                                <div className="form-input form-input--amount">
+
+                                    <input
+                                        id="monto"
+                                        name="monto"
+                                        type="text"
+                                        inputMode="numeric"
+                                        value={form.montoFormatted || ""}
+                                        onChange={(e) =>
+                                            handleFormattedPriceChange(e, setForm, "monto")
+                                        }
+                                        placeholder="$10.000"
+                                    />
+
+                                </div>
+
+                            </div>
+
+                            <div className="form-group">
+
+                                <label htmlFor="fecha">Fecha</label>
+
+                                <div className="form-input">
+
+                                    <CalendarDays size={18} />
+
+                                    <input
+                                        id="fecha"
+                                        name="fecha"
+                                        type="date"
+                                        value={form.fecha}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
 
                         {/* Tipo específico */}
 
@@ -276,57 +312,7 @@ function FormMovimiento({ cuenta, movimiento = null, onSuccess, onClose }) {
                         </div>
 
 
-                        <div className="purchase-form__grid">
-
-                            {/* Monto */}
-
-                            <div className="form-group form-group--amount">
-
-                                <label htmlFor="monto">Monto</label>
-
-                                <div className="form-input form-input--amount">
-
-                                    <input
-                                        id="monto"
-                                        name="monto"
-                                        type="text"
-                                        inputMode="numeric"
-                                        value={form.montoFormatted || ""}
-                                        onChange={(e) =>
-                                            handleFormattedPriceChange(e, setForm, "monto")
-                                        }
-                                        placeholder="$10.000"
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* Fecha */}
-
-                            <div className="form-group">
-
-                                <label htmlFor="fecha">Fecha</label>
-
-                                <div className="form-input">
-
-                                    <CalendarDays size={18} />
-
-                                    <input
-                                        id="fecha"
-                                        name="fecha"
-                                        type="date"
-                                        value={form.fecha}
-                                        onChange={handleChange}
-                                    />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
+                        
 
                         {/* Descripción */}
 

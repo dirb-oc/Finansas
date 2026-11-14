@@ -15,7 +15,7 @@ function FormMovimientoBroker({ broker, onSuccess, onClose }) {
     const [loadingData, setLoadingData] = useState(true);
     const [error, setError] = useState(null);
     const [cotizacion, setCotizacion] = useState(null);
-const [loadingCotizacion, setLoadingCotizacion] = useState(false);
+    const [loadingCotizacion, setLoadingCotizacion] = useState(false);
 
     const [form, setForm] = useState({
         tipo: "entrada",
@@ -45,19 +45,19 @@ const [loadingCotizacion, setLoadingCotizacion] = useState(false);
     }, []);
 
     useEffect(() => {
-    if (!broker?.idmoneda || !form.fecha) return;
+        if (!broker?.idmoneda || !form.fecha) return;
 
-    setLoadingCotizacion(true);
+        setLoadingCotizacion(true);
 
-    getCotizacion(broker.idmoneda, form.fecha)
-        .then(setCotizacion)
-        .catch((error) => {
-            console.error("Error obteniendo cotización:", error);
-            setCotizacion(null);
-        })
-        .finally(() => setLoadingCotizacion(false));
+        getCotizacion(broker.idmoneda, form.fecha)
+            .then(setCotizacion)
+            .catch((error) => {
+                console.error("Error obteniendo cotización:", error);
+                setCotizacion(null);
+            })
+            .finally(() => setLoadingCotizacion(false));
 
-}, [broker?.idmoneda, form.fecha]);
+    }, [broker?.idmoneda, form.fecha]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -73,14 +73,14 @@ const [loadingCotizacion, setLoadingCotizacion] = useState(false);
     );
 
     const monto = Number(form.monto) || 0;
-const costo = Number(form.costo) || 0;
-const tasa = Number(cotizacion?.valor) || 0;
+    const costo = Number(form.costo) || 0;
+    const tasa = Number(cotizacion?.valor) || 0;
 
-const valorConvertido = monto * tasa;
+    const valorConvertido = monto * tasa;
 
-const totalCOP = form.tipo === "entrada"
-    ? valorConvertido + costo
-    : valorConvertido - costo;
+    const totalCOP = form.tipo === "entrada"
+        ? valorConvertido + costo
+        : valorConvertido - costo;
 
     // Saldo de la cuenta bancaria después del movimiento.
     const saldoCuenta = Number(cuentaSeleccionada?.saldo || 0);
@@ -157,9 +157,7 @@ const totalCOP = form.tipo === "entrada"
 
                     <h2>Registrar movimiento</h2>
 
-                    <p>
-                        Registra un depósito o retiro de efectivo del broker.
-                    </p>
+                    <p>Registra un depósito o retiro de efectivo del broker.</p>
                 </div>
             </div>
 
@@ -176,7 +174,6 @@ const totalCOP = form.tipo === "entrada"
                 ) : (
                     <>
                         {/* Tipo de movimiento */}
-
                         <div className="form-group">
                             <label>Tipo de movimiento</label>
 
@@ -208,7 +205,6 @@ const totalCOP = form.tipo === "entrada"
                         </div>
 
                         {/* Información del broker */}
-
                         <div className="purchase-form__info">
                             <div>
                                 <span>
@@ -236,89 +232,94 @@ const totalCOP = form.tipo === "entrada"
                         </div>
 
                         {/* Cuenta bancaria */}
+                        <div className="purchase-form__grid">
 
-                       <div className="broker-movement-fields">
+                            {/* Cuenta */}
+                            <div className="form-group">
+                                <label>Cuenta</label>
 
-    {/* Cuenta */}
-    <div className="form-group">
-        <label>Cuenta</label>
+                                <div className="form-input">
 
-        <select
-            className="form-input"
-            value={form.cuenta}
-            onChange={(e) => setForm({
-                ...form,
-                cuenta: e.target.value
-            })}
-        >
-            <option value="">Seleccionar cuenta</option>
+                                    <select
+                                        className="cuenta"
+                                        value={form.cuenta}
+                                        onChange={(e) => setForm({
+                                            ...form,
+                                            cuenta: e.target.value
+                                        })}
+                                    >
+                                        <option value="">Seleccionar cuenta</option>
 
-            {cuentas.map((cuenta) => (
-                <option key={cuenta.id} value={cuenta.id}>
-                    {cuenta.nombre}
-                </option>
-            ))}
-        </select>
-    </div>
+                                        {cuentas.map((cuenta) => (
+                                            <option key={cuenta.id} value={cuenta.id}>
+                                                {cuenta.nombre}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
 
-    {/* Monto */}
-    <div className="form-group">
-        <label>Monto ({broker.moneda})</label>
-
-        <input
-            type="number"
-            className="form-input"
-            min="0"
-            step="any"
-            placeholder="0.00"
-            value={form.monto}
-            onChange={(e) => setForm({
-                ...form,
-                monto: e.target.value
-            })}
-        />
-    </div>
-
-    {/* Costo */}
-    <div className="form-group">
-        <label>Costo (COP)</label>
-
-        <input
-            type="number"
-            className="form-input"
-            min="0"
-            step="any"
-            placeholder="0"
-            value={form.costo}
-            onChange={(e) => setForm({
-                ...form,
-                costo: e.target.value
-            })}
-        />
-    </div>
-
-</div>
-
-                        {/* Fecha */}
-
-                        <div className="form-group">
-                            <label htmlFor="fecha">
-                                Fecha del movimiento
-                            </label>
-
-                            <div className="form-input">
-                                <CalendarDays size={18} />
+                            {/* Monto */}
+                            <div className="form-group">
+                                <label>Monto ({broker.moneda})</label>
 
                                 <input
-                                    id="fecha"
-                                    name="fecha"
-                                    type="date"
-                                    value={form.fecha}
-                                    max={fechaActual}
-                                    onChange={handleChange}
+                                    type="number"
+                                    className="form-input"
+                                    min="0"
+                                    step="any"
+                                    placeholder="0.00"
+                                    value={form.monto}
+                                    onChange={(e) => setForm({
+                                        ...form,
+                                        monto: e.target.value
+                                    })}
                                 />
                             </div>
+
                         </div>
+
+                        <div className="purchase-form__grid">
+
+                            {/* Costo */}
+                            <div className="form-group">
+                                <label>Costo (COP)</label>
+
+                                <input
+                                    type="number"
+                                    className="form-input"
+                                    min="0"
+                                    step="any"
+                                    placeholder="0"
+                                    value={form.costo}
+                                    onChange={(e) => setForm({
+                                        ...form,
+                                        costo: e.target.value
+                                    })}
+                                />
+                            </div>
+
+                            {/* Fecha */}
+                            <div className="form-group">
+                                <label htmlFor="fecha">
+                                    Fecha del movimiento
+                                </label>
+
+                                <div className="form-input">
+                                    <CalendarDays size={18} />
+
+                                    <input
+                                        id="fecha"
+                                        name="fecha"
+                                        type="date"
+                                        value={form.fecha}
+                                        max={fechaActual}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
 
                         {/* Resumen de la operación */}
 

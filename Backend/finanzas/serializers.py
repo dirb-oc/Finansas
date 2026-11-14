@@ -221,6 +221,8 @@ class InversionSerializer(serializers.ModelSerializer):
 class FinalizarInversionSerializer(serializers.Serializer):
     monto_final = serializers.DecimalField(max_digits=12, decimal_places=2)
 
+
+# Credito
 class TarjetaCreditoSerializer(serializers.ModelSerializer):
 
     deuda_actual = serializers.ReadOnlyField()
@@ -231,15 +233,7 @@ class TarjetaCreditoSerializer(serializers.ModelSerializer):
         model = TarjetaCredito
         fields = "__all__"
 
-class CompraCreditoSerializer(serializers.ModelSerializer):
 
-    tarjeta_nombre = serializers.CharField(source="tarjeta.nombre",read_only=True)
-    tipo_nombre = serializers.CharField(source="tipo.nombre",read_only=True)
-    estado = serializers.ReadOnlyField()
-
-    class Meta:
-        model = CompraCredito
-        fields = "__all__"
 
 class PagoCreditoSerializer(serializers.ModelSerializer):
 
@@ -265,6 +259,47 @@ class PagoCreditoSerializer(serializers.ModelSerializer):
             "id",
             "movimiento",
         ]
+
+class CompraCreditoSerializer(serializers.ModelSerializer):
+
+    tarjeta_nombre = serializers.CharField(
+            source="tarjeta.nombre",
+            read_only=True
+        )
+    
+    tipo_nombre = serializers.CharField(
+        source="tipo.nombre",
+        read_only=True
+    )
+
+    total_pagado = serializers.ReadOnlyField()
+    saldo_pendiente = serializers.ReadOnlyField()
+    valor_cuota = serializers.ReadOnlyField()
+
+    pagos = PagoCreditoSerializer(
+        many=True,
+        read_only=True
+    )
+    estado = serializers.ReadOnlyField()
+
+    class Meta:
+        model = CompraCredito
+        fields = [
+                    "id",
+                    "tarjeta",
+                    "tarjeta_nombre",
+                    "tipo",
+                    "tipo_nombre",
+                    "monto",
+                    "descripcion",
+                    "fecha_compra",
+                    "numero_cuotas",
+                    "valor_cuota",
+                    "total_pagado",
+                    "saldo_pendiente",
+                    "estado",
+                    "pagos",
+                ]
 
 class CompraCreditoDetailSerializer(serializers.ModelSerializer):
 

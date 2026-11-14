@@ -1,7 +1,8 @@
 import { CalendarDays, CreditCard, Wallet, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { getComprasPendientes } from "../../controllers/cardController";
 import { getCuentas } from "../../controllers/AccountController";
+import { useEffect, useState } from "react";
+
 import formatCOP, { handleFormattedPriceChange, getToday, } from "../../Services/utils";
 import "./FormAdd.css";
 
@@ -92,11 +93,9 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
 
     };
 
-
     const compraSeleccionada = compras.find(
         compra => compra.id === Number(form.compra)
     );
-
 
     const cuentaSeleccionada = cuentas.find(
         cuenta => cuenta.id === Number(form.cuenta)
@@ -176,7 +175,6 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
                     <>
 
                         {/* Compra */}
-
                         <div className="form-group">
 
                             <label htmlFor="compra">Compra</label>
@@ -214,7 +212,6 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
 
 
                         {/* Información de la compra */}
-
                         {compraSeleccionada && (
                             <div className="purchase-form__info purchase-form__info--purchase">
 
@@ -248,7 +245,6 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
                         <div className="purchase-form__grid">
 
                             {/* Cuenta */}
-
                             <div className="form-group">
 
                                 <label htmlFor="cuenta">Cuenta</label>
@@ -262,12 +258,9 @@ function FormPagoCredito({ pago = null, onSubmit, onSuccess, onClose }) {
                                         name="cuenta"
                                         value={form.cuenta}
                                         onChange={handleChange}
-                                    // disabled={isEditing}
                                     >
 
-                                        <option value="">
-                                            Selecciona una cuenta
-                                        </option>
+                                        <option value="">Selecciona una cuenta</option>
 
                                         {cuentas.map(cuenta => (
 

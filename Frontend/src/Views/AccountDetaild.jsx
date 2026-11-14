@@ -1,6 +1,5 @@
-import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getCuentaById } from "../controllers/AccountController";
 
 import ActivityAccount from "../Components/Accounts/ActivityAccount";
@@ -12,7 +11,6 @@ import BackFooter from "../Components/BackFooter"
 export default function AccountDetaild() {
 
     const { id } = useParams();
-    const navigate = useNavigate();
 
     const [cuenta, setCuenta] = useState(null);
     const [refresh, setRefresh] = useState(0);

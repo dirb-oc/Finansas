@@ -1,7 +1,7 @@
 import { CalendarDays, CreditCard, FileText, Layers3, Loader2 } from "lucide-react";
+import { handleFormattedPriceChange, getToday } from "../../Services/utils";
 import { getTiposGasto } from "../../controllers/tiposController";
 import { useEffect, useState } from "react";
-import { handleFormattedPriceChange, getToday} from "../../Services/utils";
 
 import "./FormAdd.css";
 
@@ -157,107 +157,34 @@ function FormCompra({ tarjeta, compra = null, onSubmit, onSuccess, onClose }) {
 
 
             <div className="purchase-form__body">
-
-                {/* Monto */}
-
-                <div className="form-group form-group--amount">
-
-                    <label htmlFor="monto">Monto</label>
-
-                    <div className="form-input form-input--amount">
-
-                        <input
-                            id="monto"
-                            name="monto"
-                            type="text"
-                            inputMode="numeric"
-                            value={form.montoFormatted || ""}
-                            onChange={(e) =>
-                                handleFormattedPriceChange(e, setForm, "monto")
-                            }
-                            placeholder="$10.000"
-                        />
-
-                    </div>
-
-                </div>
-
-
-                {/* Descripción */}
-
-                <div className="form-group">
-
-                    <label htmlFor="descripcion">Descripción</label>
-
-                    <div className="form-input">
-
-                        <FileText size={18} />
-
-                        <input
-                            id="descripcion"
-                            name="descripcion"
-                            type="text"
-                            value={form.descripcion}
-                            onChange={handleChange}
-                            placeholder="Ej. Compra supermercado"
-                        />
-
-                    </div>
-
-                </div>
-
-
+                
+                {/* Monto y Tipo */}
                 <div className="purchase-form__grid">
 
-                    {/* Fecha */}
+                    {/* Monto */}
+                    <div className="form-group form-group--amount">
 
-                    <div className="form-group">
+                        <label htmlFor="monto">Monto</label>
 
-                        <label htmlFor="fecha_compra">Fecha de compra</label>
-
-                        <div className="form-input">
-
-                            <CalendarDays size={18} />
+                        <div className="form-input form-input--amount">
 
                             <input
-                                id="fecha_compra"
-                                name="fecha_compra"
-                                type="date"
-                                value={form.fecha_compra}
-                                onChange={handleChange}
+                                id="monto"
+                                name="monto"
+                                type="text"
+                                inputMode="numeric"
+                                value={form.montoFormatted || ""}
+                                onChange={(e) =>
+                                    handleFormattedPriceChange(e, setForm, "monto")
+                                }
+                                placeholder="$10.000"
                             />
 
                         </div>
 
                     </div>
-
-
-                    {/* Cuotas */}
-
-                    <div className="form-group">
-
-                        <label htmlFor="numero_cuotas">Número de cuotas</label>
-
-                        <div className="form-input">
-
-                            <Layers3 size={18} />
-
-                            <input
-                                id="numero_cuotas"
-                                name="numero_cuotas"
-                                type="number"
-                                min="1"
-                                value={form.numero_cuotas}
-                                onChange={handleChange}
-                            />
-
-                        </div>
-
-                    </div>
-
 
                     {/* Tipo */}
-
                     <div className="form-group">
 
                         <label htmlFor="tipo">Tipo de gasto</label>
@@ -290,6 +217,76 @@ function FormCompra({ tarjeta, compra = null, onSubmit, onSuccess, onClose }) {
                             </select>
 
                         </div>
+
+                    </div>
+
+                </div>
+
+                {/* Fecha y Cuotas */}
+                <div className="purchase-form__grid">
+
+                    {/* Fecha */}
+                    <div className="form-group">
+
+                        <label htmlFor="fecha_compra">Fecha de compra</label>
+
+                        <div className="form-input">
+
+                            <CalendarDays size={18} />
+
+                            <input
+                                id="fecha_compra"
+                                name="fecha_compra"
+                                type="date"
+                                value={form.fecha_compra}
+                                onChange={handleChange}
+                            />
+
+                        </div>
+
+                    </div>
+
+                    {/* Cuotas */}
+                    <div className="form-group">
+
+                        <label htmlFor="numero_cuotas">Número de cuotas</label>
+
+                        <div className="form-input">
+
+                            <Layers3 size={18} />
+
+                            <input
+                                id="numero_cuotas"
+                                name="numero_cuotas"
+                                type="number"
+                                min="1"
+                                value={form.numero_cuotas}
+                                onChange={handleChange}
+                            />
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {/* Descripción */}
+                <div className="form-group">
+
+                    <label htmlFor="descripcion">Descripción</label>
+
+                    <div className="form-input">
+
+                        <FileText size={18} />
+
+                        <input
+                            id="descripcion"
+                            name="descripcion"
+                            type="text"
+                            value={form.descripcion}
+                            onChange={handleChange}
+                            placeholder="Ej. Compra supermercado"
+                        />
 
                     </div>
 
