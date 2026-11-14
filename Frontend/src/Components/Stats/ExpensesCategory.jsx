@@ -5,7 +5,6 @@ import { useState } from "react";
 import "./ExpensesCategory.css";
 
 
-// Genera una escala de colores según el tipo de movimiento
 function generateColors(type, count) {
     const baseColor = type === "gastos"
         ? "#EF4444"

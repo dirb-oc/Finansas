@@ -1,0 +1,155 @@
+
+.cashflow-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+}
+
+.cashflow-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 35px;
+}
+
+.cashflow-header h2 {
+    margin: 0 0 4px;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.cashflow-header span {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.cashflow-legend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cashflow-legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.cashflow-legend i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.cashflow-legend i.green {
+    background: #10b981;
+}
+
+.cashflow-legend i.red {
+    background: var(--spent);
+}
+
+.cashflow-empty {
+    flex: 1;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Tooltip */
+
+.tooltip-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.tooltip-title {
+    margin: 0 0 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.tooltip-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    font-size: 0.8rem;
+}
+
+.tooltip-item strong {
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.tooltip-item.ingreso {
+    color: var(--accent-green);
+}
+
+.tooltip-item.gasto {
+    color: var(--spent);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.dot.green {
+    background: var(--accent-green);
+}
+
+.dot.red {
+    background: var(--spent);
+}
+
+.dot.blue {
+    background: #3b82f6;
+}
+
+.tooltip-item.balance {
+    margin-top: 9px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
+
+.tooltip-item.balance.positive strong {
+    color: #22c55e;
+}
+
+.tooltip-item.balance.negative strong {
+    color: #ef4444;
+}
+
+@media (max-width: 600px) {
+    .cashflow-container {
+        padding: 16px;
+    }
+
+    .cashflow-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

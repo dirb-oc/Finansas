@@ -1,0 +1,32 @@
+
+.account-category {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    width: 100%;
+    min-width: 0;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 8px;
+}
+
+.account-category__item {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 4px;
+}
+
+@media (max-width: 550px) {
+    .account-category {
+        gap: 4px;
+        padding: 5px;
+    }
+
+    .account-category__item {
+        padding: 2px;
+    }
+}

@@ -35,7 +35,14 @@ export default function AccountDetaild() {
             <div className="divisor" />
 
             <Totals cuenta={cuenta} />
-            
+
+            <div className="heading">
+                <div>
+                    <h2>Actividad de la cuenta</h2>
+                    <p>Consulta tus movimientos y revisa cómo han evolucionado tus ingresos y gastos.</p>
+                </div>
+            </div>
+
             <ActivityAccount
                 cuenta={cuenta}
                 onEditMovimiento={handleEditMovimiento}

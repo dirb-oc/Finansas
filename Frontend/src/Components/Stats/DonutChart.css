@@ -1,0 +1,102 @@
+
+.donut-chart {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex: 1;
+}
+
+.donut-chart__visual {
+    width: 100%;
+    height: 230px;
+    min-height: 0;
+}
+
+.donut-chart__total {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding-top: 8px;
+}
+
+.donut-chart__total span {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+}
+
+.donut-chart__total strong {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.donut-chart__total strong.gastos {
+    color: #EF4444;
+}
+
+.donut-chart__total strong.ingresos {
+    color: #00D084;
+}
+
+/* Variante compacta para el detalle de cuenta */
+
+.donut-chart.compact .donut-chart__visual {
+    height: 170px;
+}
+
+.donut-chart.compact .donut-chart__total strong {
+    font-size: 1.05rem;
+}
+
+
+/* Variante horizontal */
+
+.donut-chart.horizontal {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.donut-chart.horizontal .donut-chart__visual {
+    flex: 1 1 60%;
+    width: 60%;
+    height: 210px;
+    min-width: 0;
+}
+
+.donut-chart.horizontal .donut-chart__total {
+    flex: 1 1 40%;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 4px;
+    gap: 7px;
+}
+
+.donut-chart.horizontal .donut-chart__total span {
+    font-size: 0.75rem;
+}
+
+.donut-chart.horizontal .donut-chart__total strong {
+    font-size: clamp(0.9rem, 1.3vw, 1.15rem);
+    overflow-wrap: anywhere;
+}
+
+/* Estado vacío */
+.donut-chart.horizontal .expense-empty {
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 550px) {
+    .donut-chart.horizontal .donut-chart__visual {
+        height: 155px;
+    }
+
+    .donut-chart.horizontal .donut-chart__total strong {
+        font-size: 0.9rem;
+    }
+}
+

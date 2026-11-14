@@ -1,495 +1,249 @@
-/* =========================================================
-   SUMMARY
-   ========================================================= */
+
+/* ================================
+   RESUMEN DE CUENTA
+================================ */
 
 .account-summary {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
     width: 100%;
-    min-height: 200px;
-    padding: 34px 38px;
+    min-width: 0;
+    margin-bottom: 24px;
+}
+
+/* Bloque principal */
+
+.account-content {
+    flex: 0 0 36%;
+    min-width: 0;
+    min-height: 250px;
+    padding: 22px 24px;
+
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    max-width: 40%;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
 }
 
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-.account-summary__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 24px;
-}
-
+/* Identidad */
 
 .account-summary__identity {
     display: flex;
     align-items: center;
-
-    gap: 17px;
-
+    gap: 13px;
     min-width: 0;
 }
 
-
 .account-summary__icon {
-    width: 62px;
-    height: 62px;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    flex-shrink: 0;
-
-    border-radius: 16px;
-
     color: #60a5fa;
-
-    background: color-mix(
-        in srgb,
-        #60a5fa 11%,
-        var(--bg-secondary)
-    );
-
-    border: 1px solid color-mix(
-        in srgb,
-        #60a5fa 18%,
-        transparent
-    );
-
-    box-shadow:
-        0 6px 18px color-mix(
-            in srgb,
-            #60a5fa 8%,
-            transparent
-        );
+    background: color-mix(in srgb, #60a5fa 11%, var(--bg-secondary));
+    border: 1px solid color-mix(in srgb, #60a5fa 18%, transparent);
+    border-radius: 13px;
 }
-
 
 .account-summary__identity-info {
     min-width: 0;
 }
 
-
 .account-summary__label {
     display: block;
-
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 
     color: var(--text-secondary);
-
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     font-weight: 500;
-
-    letter-spacing: 0.02em;
 }
-
 
 .account-summary h2 {
     margin: 0;
-
     overflow: hidden;
 
     color: var(--text-primary);
-
-    font-size: 1.55rem;
+    font-size: clamp(1.1rem, 1.5vw, 1.4rem);
     font-weight: 700;
-
     letter-spacing: -0.025em;
 
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-
-/* =========================================================
-   MONTH
-   ========================================================= */
-
-.account-summary__month {
-    flex-shrink: 0;
-
-    padding: 8px 13px;
-
-    color: var(--text-secondary);
-
-    background: var(--bg-secondary);
-
-    border: 1px solid var(--border);
-    border-radius: 9px;
-
-    font-size: 0.78rem;
-    font-weight: 500;
-}
-
-
-/* =========================================================
-   BALANCE
-   ========================================================= */
+/* Saldo */
 
 .account-summary__balance {
-    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 24px;
+    min-width: 0;
 }
-
 
 .account-summary__balance-label {
     display: block;
-
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 
     color: var(--text-secondary);
-
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 500;
 }
 
-
 .account-summary__balance > strong {
     display: block;
-
     color: var(--text-primary);
 
-    font-size: clamp(2.4rem, 3vw, 3.1rem);
+    font-size: clamp(1.8rem, 2.7vw, 2.6rem);
     font-weight: 750;
+    line-height: 1.15;
+    letter-spacing: -0.045em;
 
-    line-height: 1;
-
-    letter-spacing: -0.04em;
+    overflow-wrap: anywhere;
 }
 
-
-/* =========================================================
-   BALANCE STATUS
-   ========================================================= */
+/* Balance mensual */
 
 .account-summary__balance-status {
-    width: fit-content;
-
-    margin-top: 15px;
-
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 5px 7px;
 
-    gap: 7px;
+    width: 100%;
+    margin-top: 16px;
 
-    font-size: 0.78rem;
+    font-size: 0.74rem;
 }
-
 
 .account-summary__balance-status span {
     color: var(--text-secondary);
 }
 
-
 .account-summary__balance-status strong {
+    margin-left: auto;
     font-weight: 700;
+    white-space: nowrap;
 }
-
 
 .account-summary__balance-status.income {
     color: #4ade80;
 }
 
-
 .account-summary__balance-status.expense {
     color: #fb7185;
 }
-
 
 .account-summary__balance-status.neutral {
     color: var(--text-secondary);
 }
 
+/* Gráficos */
 
-/* =========================================================
-   STATS
-   ========================================================= */
-
-.account-summary__stats {
-    display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 0;
-
-    margin-top: auto;
-    padding-top: 34px;
-}
-
-
-.account-summary__stat {
+.account-summary > .account-category {
+    flex: 1;
     min-width: 0;
-
-    display: flex;
-    align-items: center;
-
-    gap: 13px;
-
-    padding: 0 28px;
-
-    border-left: 1px solid var(--border);
 }
 
-
-.account-summary__stat:first-child {
-    padding-left: 0;
-
-    border-left: 0;
-}
-
-
-.account-summary__stat:last-child {
-    padding-right: 0;
-}
-
-
-.account-summary__stat-icon {
-    width: 40px;
-    height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    border-radius: 10px;
-}
-
-
-.account-summary__stat-icon.income {
-    color: #4ade80;
-
-    background: color-mix(
-        in srgb,
-        #4ade80 10%,
-        transparent
-    );
-}
-
-
-.account-summary__stat-icon.expense {
-    color: #fb7185;
-
-    background: color-mix(
-        in srgb,
-        #fb7185 10%,
-        transparent
-    );
-}
-
-
-.account-summary__stat-icon.balance {
-    color: #60a5fa;
-
-    background: color-mix(
-        in srgb,
-        #60a5fa 10%,
-        transparent
-    );
-}
-
-
-/* =========================================================
-   STAT CONTENT
-   ========================================================= */
-
-.account-summary__stat-content {
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 4px;
-}
-
-
-.account-summary__stat-content span {
-    color: var(--text-secondary);
-
-    font-size: 0.72rem;
-    font-weight: 500;
-}
-
-
-.account-summary__stat-content strong {
-    overflow: hidden;
-
-    font-size: 1.05rem;
-    font-weight: 700;
-
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-
-.account-summary__stat-content strong.income {
-    color: #4ade80;
-}
-
-
-.account-summary__stat-content strong.expense {
-    color: #fb7185;
-}
-
-
-.account-summary__stat-content strong.neutral {
-    color: var(--text-primary);
-}
-
-
-/* =========================================================
+/* ================================
    RESPONSIVE
-   ========================================================= */
+================================ */
 
-@media (max-width: 900px) {
-
+@media (max-width: 950px) {
     .account-summary {
-        min-height: auto;
-
-        padding: 30px;
+        flex-direction: column;
     }
 
-    .account-summary__stats {
-        grid-template-columns: 1fr;
-
-        gap: 20px;
-
-        padding-top: 30px;
+    .account-content {
+        flex: none;
+        width: 100%;
+        min-height: 220px;
     }
 
-    .account-summary__stat,
-    .account-summary__stat:first-child,
-    .account-summary__stat:last-child {
-        padding: 0;
-
-        border-left: 0;
+    .account-summary > .account-category {
+        width: 100%;
     }
-
 }
 
-
-@media (max-width: 600px) {
-
-    .account-summary {
-        padding: 25px;
-    }
-
-    .account-summary__header {
-        align-items: flex-start;
+@media (max-width: 550px) {
+    .account-content {
+        min-height: 205px;
+        padding: 18px;
     }
 
     .account-summary__icon {
-        width: 52px;
-        height: 52px;
-    }
-
-    .account-summary h2 {
-        font-size: 1.3rem;
-    }
-
-    .account-summary__month {
-        font-size: 0.7rem;
+        width: 44px;
+        height: 44px;
     }
 
     .account-summary__balance {
-        margin-top: 36px;
+        margin-top: 22px;
     }
 
     .account-summary__balance > strong {
-        font-size: 2.3rem;
+        font-size: clamp(1.8rem, 8vw, 2.3rem);
     }
 
+    .account-summary__balance-status {
+        margin-top: 12px;
+    }
 }
 
-/* =========================================================
-   CONTENT
-   ========================================================= */
-.account-summary__content {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 42px;
-    min-height: 0;
-}
-
-
-/* =========================================================
-   BALANCE PRINCIPAL
-   ========================================================= */
-
+/* Bloque del saldo */
 .account-summary__balance {
     display: flex;
     flex-direction: column;
-
     justify-content: center;
+    margin-top: 0;
+    min-width: 0;
+    flex: 1;
 }
 
-
+/* Saldo disponible */
 .account-summary__balance-label {
-    display: block;
-    color: var(--text-secondary);
+    margin-bottom: 12px;
     font-size: 0.85rem;
-    font-weight: 500;
 }
-
 
 .account-summary__balance > strong {
-    display: block;
-
-    color: var(--text-primary);
-
-    font-size: clamp(2.8rem, 4vw, 4rem);
-    font-weight: 750;
-
-    line-height: 1;
-
-    letter-spacing: -0.045em;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    line-height: 1.15;
 }
 
-
+/* Balance mensual */
 .account-summary__balance-status {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 7px 9px;
 
-    gap: 7px;
-
-    width: fit-content;
-
-    margin-top: 18px;
-
-    font-size: 0.8rem;
+    width: 100%;
+    margin-top: 30px;
+    font-size: 0.85rem;
 }
 
+.account-summary__balance-status svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+}
 
 .account-summary__balance-status span {
     color: var(--text-secondary);
+    font-size: 0.82rem;
 }
-
 
 .account-summary__balance-status strong {
+    margin-left: auto;
+    font-size: 0.95rem;
     font-weight: 700;
-}
-
-
-.account-summary__balance-status.income {
-    color: #4ade80;
-}
-
-
-.account-summary__balance-status.expense {
-    color: #fb7185;
-}
-
-
-.account-summary__balance-status.neutral {
-    color: var(--text-secondary);
+    white-space: nowrap;
 }

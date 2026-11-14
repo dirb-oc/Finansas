@@ -1,5 +1,6 @@
 import { ArrowUpRight, ArrowDownRight, TrendingUp, TrendingDown, Activity } from "lucide-react";
 import formatCOP, {formatDate} from "../../Services/utils";
+import CashFlow from "./CashFlow";
 import "./ActivityAccount.css";
 
 export default function ActivityAccount({ cuenta, onEditMovimiento, onCreateMovimiento }) {
@@ -27,7 +28,7 @@ export default function ActivityAccount({ cuenta, onEditMovimiento, onCreateMovi
     return (
         <section className="account-activity-grid">
 
-            <div className="account-activity">
+            <div className="account-motion">
 
                 <div className="account-activity__header">
 
@@ -98,128 +99,7 @@ export default function ActivityAccount({ cuenta, onEditMovimiento, onCreateMovi
             {/* DISTRIBUCIÓN */}
 
             <div className="account-distribution">
-
-                <div className="account-distribution__header">
-
-                    <div>
-                        <span className="account-distribution__label">
-                            Análisis
-                        </span>
-
-                        <h3>Distribución</h3>
-                    </div>
-
-                    <span>{cuenta.mes_resumen}</span>
-
-                </div>
-
-
-                <div className="distribution-section">
-
-                    <div className="distribution-section__title">
-                        <TrendingDown size={17} />
-                        <span>Gastos</span>
-                    </div>
-
-
-                    <div className="distribution-list">
-
-                        {cuenta.impacto?.gastos?.length > 0 ? (
-
-                            cuenta.impacto.gastos.map((item) => (
-
-                                <div key={item.nombre} className="distribution-item" >
-
-                                    <div className="distribution-item__header">
-
-                                        <span>{item.nombre}</span>
-
-                                        <strong>{formatCOP(item.total)}</strong>
-
-                                    </div>
-
-
-                                    <div className="distribution-bar">
-
-                                        <div
-                                            className="distribution-bar__fill expense"
-                                            style={{ width: `${item.porcentaje}%` }}
-                                        />
-
-                                    </div>
-
-
-                                    <span className="distribution-item__percentage">
-                                        {item.porcentaje}%
-                                    </span>
-
-                                </div>
-
-                            ))
-
-                        ) : (
-
-                            <span className="distribution-empty">Sin gastos registrados</span>
-
-                        )}
-
-                    </div>
-
-                </div>
-
-
-                <div className="distribution-section">
-
-                    <div className="distribution-section__title">
-                        <TrendingUp size={17} />
-                        <span>Ingresos</span>
-                    </div>
-
-
-                    <div className="distribution-list">
-
-                        {cuenta.impacto?.ingresos?.length > 0 ? (
-
-                            cuenta.impacto.ingresos.map((item) => (
-
-                                <div key={item.nombre} className="distribution-item" >
-
-                                    <div className="distribution-item__header">
-
-                                        <span>{item.nombre}</span>
-                                        <strong>{formatCOP(item.total)}</strong>
-
-                                    </div>
-
-
-                                    <div className="distribution-bar">
-
-                                        <div
-                                            className="distribution-bar__fill income"
-                                            style={{ width: `${item.porcentaje}%` }}
-                                        />
-
-                                    </div>
-
-
-                                    <span className="distribution-item__percentage">
-                                        {item.porcentaje}%
-                                    </span>
-
-                                </div>
-
-                            ))
-
-                        ) : (
-
-                            <span className="distribution-empty">Sin ingresos registrados</span>
-
-                        )}
-
-                    </div>
-
-                </div>
-
+                <CashFlow data={cuenta.flujo_caja || []} />
             </div>
 
         </section>

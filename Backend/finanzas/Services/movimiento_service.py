@@ -5,6 +5,9 @@ from django.db import transaction
 
 from ..models import ( Movimiento, Cuenta )
 from rest_framework.exceptions import ValidationError
+from dateutil.relativedelta import relativedelta
+from django.db.models.functions import TruncMonth
+from django.utils import timezone
 
 ZERO = Decimal("0")
 
@@ -144,3 +147,76 @@ def saldo_cuenta_hasta(cuenta, fecha):
     )
 
     return inicial + ingresos - gastos
+
+def get_flujo_cuenta(cuenta, cantidad=3):
+    hoy = timezone.localtime(timezone.now())
+
+    inicio_periodo = (
+        hoy.replace(
+            day=1,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+        - relativedelta(months=cantidad - 1)
+    )
+
+    fin_periodo = (
+        hoy.replace(
+            day=1,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+        + relativedelta(months=1)
+    )
+
+    movimientos = (
+        Movimiento.objects
+        .filter(
+            cuenta=cuenta,
+            fecha__gte=inicio_periodo,
+            fecha__lt=fin_periodo,
+            tipo__tipo__in=["ingreso", "gasto"]
+        )
+        .annotate(mes=TruncMonth("fecha"))
+        .values("mes")
+        .annotate(
+            ingresos=Sum(
+                "monto",
+                filter=Q(tipo__tipo="ingreso")
+            ),
+            gastos=Sum(
+                "monto",
+                filter=Q(tipo__tipo="gasto")
+            )
+        )
+        .order_by("mes")
+    )
+
+    resultados = {
+        item["mes"].strftime("%Y-%m"): item
+        for item in movimientos
+    }
+
+    flujo = []
+
+    for i in range(cantidad - 1, -1, -1):
+        fecha = inicio_periodo + relativedelta(months=i)
+        mes = fecha.strftime("%Y-%m")
+
+        datos = resultados.get(mes, {})
+
+        ingresos = datos.get("ingresos") or 0
+        gastos = datos.get("gastos") or 0
+
+        flujo.append({
+            "mes": mes,
+            "ingresos": ingresos,
+            "gastos": gastos,
+            "balance": ingresos - gastos
+        })
+
+    return flujo

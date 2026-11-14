@@ -3,6 +3,7 @@ from django.db.models import Sum
 from rest_framework import serializers
 from .models import Cuenta, TipoMovimiento, Movimiento, Inversion, TarjetaCredito, CompraCredito, PagoCredito
 from .Services.card_service import calcular_ciclo_actual, calcular_minimo_tarjeta
+from .Services.movimiento_service import get_flujo_cuenta
 from django.utils.timezone import localtime
 
 class CuentaSerializer(serializers.ModelSerializer):
@@ -38,6 +39,7 @@ class CuentaSerializer(serializers.ModelSerializer):
 
         return round((saldo / disponible_total) * 100, 2)
 
+
 class CuentaDetailSerializer(serializers.ModelSerializer):
 
     saldo = serializers.SerializerMethodField()
@@ -46,6 +48,7 @@ class CuentaDetailSerializer(serializers.ModelSerializer):
     gastos_total = serializers.SerializerMethodField()
     mes_resumen = serializers.SerializerMethodField()
     impacto = serializers.SerializerMethodField()
+    flujo_caja = serializers.SerializerMethodField()
 
     class Meta:
         model = Cuenta
@@ -57,6 +60,7 @@ class CuentaDetailSerializer(serializers.ModelSerializer):
             "ingresos_total",
             "gastos_total",
             "impacto",
+            "flujo_caja",
             "movimientos",
         ]
 
@@ -111,6 +115,9 @@ class CuentaDetailSerializer(serializers.ModelSerializer):
             fecha__month=month
         ).aggregate(total=Sum("monto"))["total"] or 0
 
+    def get_flujo_caja(self, obj):
+        return get_flujo_cuenta(obj)
+    
     def get_impacto(self, obj):
         year, month = self._get_ultimo_mes(obj)
 
@@ -164,11 +171,13 @@ class CuentaDetailSerializer(serializers.ModelSerializer):
             ]
         }
 
+
 class TipoMovimientoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TipoMovimiento
         fields = "__all__"
+
 
 class MovimientoSerializer(serializers.ModelSerializer):
 
@@ -178,6 +187,7 @@ class MovimientoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movimiento
         fields = ["id","cuenta","tipo","tipo_nombre","tipo_base","monto","descripcion","fecha"]
+
 
 class InversionSerializer(serializers.ModelSerializer):
     
@@ -217,7 +227,8 @@ class InversionSerializer(serializers.ModelSerializer):
             inversion = Inversion.objects.create(**validated_data)
 
         return inversion
-        
+
+
 class FinalizarInversionSerializer(serializers.Serializer):
     monto_final = serializers.DecimalField(max_digits=12, decimal_places=2)
 
@@ -232,7 +243,6 @@ class TarjetaCreditoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TarjetaCredito
         fields = "__all__"
-
 
 
 class PagoCreditoSerializer(serializers.ModelSerializer):
@@ -259,6 +269,7 @@ class PagoCreditoSerializer(serializers.ModelSerializer):
             "id",
             "movimiento",
         ]
+
 
 class CompraCreditoSerializer(serializers.ModelSerializer):
 
@@ -301,6 +312,7 @@ class CompraCreditoSerializer(serializers.ModelSerializer):
                     "pagos",
                 ]
 
+
 class CompraCreditoDetailSerializer(serializers.ModelSerializer):
 
     tarjeta_nombre = serializers.CharField(
@@ -340,6 +352,7 @@ class CompraCreditoDetailSerializer(serializers.ModelSerializer):
             "estado",
             "pagos",
         ]
+
 
 class TarjetaCreditoDetailSerializer(serializers.ModelSerializer):
 

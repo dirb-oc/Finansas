@@ -22,7 +22,7 @@
 .account-activity-grid {
     display: grid;
 
-    grid-template-columns: 1.3fr 1fr;
+    display: flex;
 
     gap: 18px;
 
@@ -36,26 +36,21 @@
    COMMON CARD
    ========================================================= */
 
-.account-activity,
+.account-motion,
 .account-distribution {
-    width: 100%;
-    min-width: 0;
-
     height: 440px;
-
     display: flex;
     flex-direction: column;
-
     padding: 26px 28px;
-
     background: var(--bg-card);
-
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
-
     overflow: hidden;
+}
+
+.account-motion {
+    min-width: 40%;
 }
 
 
@@ -63,8 +58,7 @@
    ACTIVITY HEADER
    ========================================================= */
 
-.account-activity__header,
-.account-distribution__header {
+.account-activity__header{
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -77,8 +71,7 @@
 }
 
 
-.account-activity__label,
-.account-distribution__label {
+.account-activity__label {
     display: block;
 
     margin-bottom: 4px;
@@ -89,8 +82,7 @@
 }
 
 
-.account-activity h3,
-.account-distribution h3 {
+.account-activity h3 {
     margin: 0;
 
     color: var(--text-primary);
@@ -303,7 +295,7 @@
    ========================================================= */
 
 .account-distribution {
-    overflow: hidden;
+    width: 60%;
 }
 
 
